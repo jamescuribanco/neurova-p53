@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Neurova P53</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f8fbff;
+      color: #1f2937;
+    }
+    header {
+      background: linear-gradient(90deg, #e0f2fe, #bae6fd, #93c5fd);
+      padding: 20px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    header h1 {
+      margin: 0;
+      color: #0f172a;
+      font-size: 28px;
+      letter-spacing: 1px;
+    }
+    nav a {
+      margin-left: 20px;
+      text-decoration: none;
+      color: #0f172a;
+      font-weight: 500;
+    }
+    .container {
+      max-width: 1100px;
+      margin: 60px auto;
+      padding: 0 20px;
+    }
+    .card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      padding: 40px;
+    }
+    .hidden {
+      display: none;
+    }
+    h2 {
+      color: #1e3a8a;
+      margin-bottom: 20px;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 16px;
+      border-radius: 10px;
+      border: 1px solid #cbd5f5;
+      font-size: 15px;
+    }
+    button {
+      background: #2563eb;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #1d4ed8;
+    }
+    footer {
+      text-align: center;
+      padding: 30px;
+      color: #64748b;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Neurova P53</h1>
+  <nav>
+    <a href="#" onclick="showSection('inicio')">Inicio</a>
+    <a href="#" onclick="showSection('cursos')">Cursos</a>
+    <a href="#" onclick="showSection('material')">Material</a>
+  </nav>
+</header>
+
+<div class="container">
+
+  <!-- LOGIN -->
+  <div id="login" class="card">
+    <h2>Iniciar sesión</h2>
+    <input type="text" id="user" placeholder="Usuario" />
+    <input type="password" id="pass" placeholder="Contraseña" />
+    <button onclick="login()">Entrar</button>
+  </div>
+
+  <!-- CONTENIDO PRIVADO -->
+  <div id="contenido" class="card hidden">
+    <div id="inicio">
+      <h2>Bienvenido a Neurova P53</h2>
+      <p>Academia premium especializada en ciencias de la salud. Formación rigurosa, clara y progresiva, diseñada por ciclos académicos.</p>
+    </div>
+
+    <div id="cursos" class="hidden">
+      <h2>Cursos por ciclos</h2>
+
+      <h3>Ciclo Básico</h3>
+      <ul>
+        <li><strong>Biología Celular y Molecular</strong><br/>Fundamentos celulares, señalización, genética básica y bases moleculares de la vida.</li>
+        <li><strong>Bioquímica</strong><br/>Metabolismo, enzimas, proteínas, carbohidratos y lípidos aplicados a la salud.</li>
+      </ul>
+
+      <h3>Ciclo Intermedio</h3>
+      <ul>
+        <li><strong>Morfofisiología I</strong><br/>Integración de Fisiología e Histología para la comprensión funcional de los tejidos.</li>
+        <li><strong>Anatomía</strong><br/>Anatomía general y topográfica con enfoque clínico.</li>
+      </ul>
+
+      <h3>Ciclo Avanzado</h3>
+      <ul>
+        <li><strong>Morfofisiología II</strong><br/>Anatomía, Fisiología e Histología integradas a nivel sistémico.</li>
+      </ul>
+    </div>
+
+    <div id="material" class="hidden">
+      <h2>Material académico exclusivo</h2>
+      <p>Disponible según curso y ciclo:</p>
+      <ul>
+        <li>📄 PDFs descargables</li>
+        <li>🎥 Videos grabados</li>
+        <li>☁️ Enlaces a Google Drive</li>
+        <li>🎥 Clases en vivo (Zoom)</li>
+      </ul>
+      <p><em>El acceso se habilita automáticamente al confirmar el pago.</em></p>
+    </div>
+
+    <div id="progreso" class="hidden">
+      <h2>Progreso del alumno</h2>
+      <p>Morfofisiología I: 60%</p>
+      <p>Biología Celular y Molecular: 40%</p>
+    </div>
+
+    <div id="certificados" class="hidden">
+      <h2>Certificados</h2>
+      <p>Cuando completes un curso podrás descargar tu certificado digital oficial de Neurova P53.</p>
+      <button>Descargar certificado</button>
+    </div>
+  </div>
+
+    <div id="cursos" class="hidden">
+      <h2>Cursos</h2>
+      <ul>
+        <li><strong>Morfofisiología I</strong><br/>Fisiología e Histología</li>
+        <li><strong>Morfofisiología II</strong><br/>Anatomía, Fisiología e Histología</li>
+        <li><strong>Biología Celular y Molecular</strong></li>
+        <li><strong>Anatomía</strong></li>
+        <li><strong>Bioquímica</strong></li>
+      </ul>
+    </div>
+
+    <div id="material" class="hidden">
+      <h2>Material académico</h2>
+      <p>Apuntes, resúmenes, PPTs, exámenes, banqueos y material exclusivo por ciclos.</p>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  © 2026 Neurova P53 · Educación con base científica
+</footer>
+
+<script>
+  function login() {
+    const u = document.getElementById('user').value;
+    const p = document.getElementById('pass').value;
+
+    if (u && p) {
+      document.getElementById('login').classList.add('hidden');
+      document.getElementById('contenido').classList.remove('hidden');
+    } else {
+      alert('Ingresa usuario y contraseña');
+    }
+  }
+
+  function showSection(id) {
+    const sections = ['inicio', 'cursos', 'material'];
+    sections.forEach(s => document.getElementById(s).classList.add('hidden'));
+    document.getElementById(id).classList.remove('hidden');
+  }
+  // --- SISTEMA SIMULADO DE USUARIOS ---
+  const users = {
+    alumno: { role: 'alumno', ciclos: ['basico', 'intermedio'] },
+    admin: { role: 'admin', ciclos: ['basico', 'intermedio', 'avanzado'] }
+  };
+
+  function login() {
+    const u = document.getElementById('user').value;
+    const p = document.getElementById('pass').value;
+
+    if (users[u] && p) {
+      sessionStorage.setItem('user', u);
+      document.getElementById('login').classList.add('hidden');
+      document.getElementById('contenido').classList.remove('hidden');
+      loadPanel();
+    } else {
+      alert('Credenciales inválidas');
+    }
+  }
+
+  function loadPanel() {
+    const u = sessionStorage.getItem('user');
+    if (!u) return;
+
+    const panel = document.createElement('div');
+    panel.innerHTML = `
+      <h2>Panel del ${users[u].role}</h2>
+      <p>Ciclos habilitados: ${users[u].ciclos.join(', ')}</p>
+      <p>Estado de pago: <strong>Activo</strong></p>
+    `;
+    document.getElementById('inicio').appendChild(panel);
+  }
+</script>
+
+</body>
+</html>
