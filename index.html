@@ -6,137 +6,38 @@
   <title>Neurova P53</title>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
-    body {
-      margin: 0;
-      font-family: 'Roboto', sans-serif;
-      background: #f8fbff;
-      color: #1f2937;
-    }
-    header {
-      background: linear-gradient(90deg, #e0f2fe, #bae6fd, #93c5fd);
-      padding: 20px 40px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-    header h1 {
-      margin: 0;
-      font-size: 28px;
-      color: #0f172a;
-    }
-    nav a {
-      margin-left: 20px;
-      text-decoration: none;
-      color: #0f172a;
-      font-weight: 500;
-      transition: color 0.3s;
-    }
-    nav a:hover {
-      color: #2563eb;
-    }
-    .container {
-      max-width: 1200px;
-      margin: 40px auto;
-      padding: 0 20px;
-    }
-    .card {
-      background: white;
-      border-radius: 16px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-      padding: 20px;
-      margin-bottom: 20px;
-      text-align: center;
-    }
-    .card h3 {
-      color: #0077cc;
-      margin-bottom: 10px;
-    }
-    .card button {
-      margin-top: 10px;
-      padding: 10px 18px;
-      border: none;
-      border-radius: 20px;
-      background: #0077cc;
-      color: white;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-    .card button:hover {
-      background: #005fa3;
-    }
-    .hidden { display: none; }
-    .blocked {
-      background: #ccc !important;
-      color: #555 !important;
-      cursor: not-allowed;
-    }
-    footer {
-      text-align: center;
-      padding: 30px;
-      color: #64748b;
-      background: #f0f4f8;
-      margin-top: 40px;
-    }
-    /* Tabla de semanas */
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
-    th, td {
-      padding: 12px;
-      border: 1px solid #cbd5f5;
-      text-align: left;
-    }
-    th {
-      background: #2563eb;
-      color: white;
-    }
-    td button {
-      padding: 6px 12px;
-      font-size: 14px;
-      border-radius: 12px;
-    }
-    /* Login creativo */
-    #login-card {
-      max-width: 400px;
-      margin: 80px auto;
-      padding: 40px;
-      border-radius: 20px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-      background: linear-gradient(135deg, #e0f7fa, #e1bee7);
-      text-align: center;
-    }
-    #login-card h2 { margin-bottom: 20px; }
-    #login-card input {
-      width: 100%;
-      padding: 12px;
-      margin-bottom: 16px;
-      border-radius: 10px;
-      border: 1px solid #cbd5f5;
-      font-size: 15px;
-    }
-    #google-login {
-      background: #db4437;
-      margin-top: 10px;
-    }
-    #google-login:hover {
-      background: #c1351d;
-    }
-    .sub-section { margin-top: 15px; }
+    body {margin:0;font-family:'Roboto',sans-serif;background:#f8fbff;color:#1f2937;}
+    header {background:linear-gradient(90deg,#e0f2fe,#bae6fd,#93c5fd);padding:20px 40px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 4px 10px rgba(0,0,0,0.1);position:sticky;top:0;z-index:100;}
+    header h1 {margin:0;font-size:28px;color:#0f172a;}
+    nav a {margin-left:20px;text-decoration:none;color:#0f172a;font-weight:500;transition:color 0.3s;}
+    nav a:hover {color:#2563eb;}
+    .container {max-width:1200px;margin:40px auto;padding:0 20px;}
+    .card {background:white;border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,0.08);padding:20px;margin-bottom:20px;text-align:center;}
+    .card h3 {color:#0077cc;margin-bottom:10px;}
+    .card button {margin-top:10px;padding:10px 18px;border:none;border-radius:20px;background:#0077cc;color:white;cursor:pointer;transition:background 0.3s;}
+    .card button:hover {background:#005fa3;}
+    .hidden {display:none;}
+    .blocked {background:#ccc !important;color:#555 !important;cursor:not-allowed;}
+    footer {text-align:center;padding:30px;color:#64748b;background:#f0f4f8;margin-top:40px;}
+    table {width:100%;border-collapse:collapse;margin-top:20px;}
+    th, td {padding:12px;border:1px solid #cbd5f5;text-align:left;}
+    th {background:#2563eb;color:white;}
+    td button {padding:6px 12px;font-size:14px;border-radius:12px;}
+    #login-card {max-width:400px;margin:80px auto;padding:40px;border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,0.1);background:linear-gradient(135deg,#e0f7fa,#e1bee7);text-align:center;}
+    #login-card h2 {margin-bottom:20px;}
+    #login-card button {width:100%;padding:12px;margin-top:10px;border:none;border-radius:12px;color:white;font-size:16px;cursor:pointer;}
+    #google-login {background:#db4437;}
+    #google-login:hover {background:#c1351d;}
+    .sub-section {margin-top:15px;}
+    .back-btn {margin-top:15px;padding:8px 16px;border-radius:12px;background:#2563eb;color:white;cursor:pointer;border:none;}
+    .back-btn:hover {background:#1d4ed8;}
   </style>
   <!-- Firebase -->
   <script type="module">
-    // Import Firebase
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
     import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
     import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
 
-    // Config Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyDAmEVU8J-uk2Yg6bL5n28xbP1771cHGME",
       authDomain: "neurovap53-cdbcf.firebaseapp.com",
@@ -152,96 +53,123 @@
     const db = getFirestore(app);
     const provider = new GoogleAuthProvider();
 
-    // LOGIN GOOGLE
-    async function loginGoogle() {
-      try {
+    async function loginGoogle(){
+      try{
         const result = await signInWithPopup(auth, provider);
         const user = result.user;
-        // Crear documento de usuario si no existe
-        const userDoc = await getDoc(doc(db, "usuarios", user.uid));
-        if (!userDoc.exists()) {
-          await setDoc(doc(db, "usuarios", user.uid), {
-            nombre: user.displayName,
-            email: user.email,
-            role: "alumno",
-            cursos: []
+        const userDoc = await getDoc(doc(db,"usuarios",user.uid));
+        if(!userDoc.exists()){
+          await setDoc(doc(db,"usuarios",user.uid),{
+            nombre:user.displayName,
+            email:user.email,
+            role:"alumno",
+            cursos:[]
           });
         }
-      } catch (err) {
-        alert("Error: " + err.message);
-        console.error(err);
-      }
+      }catch(err){alert("Error: "+err.message);console.error(err);}
     }
 
-    function logout() {
-      signOut(auth);
-    }
+    function logout(){signOut(auth);}
 
-    // Detecta si hay usuario logueado
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
+    onAuthStateChanged(auth,user=>{
+      if(user){
         document.getElementById("login-card").classList.add("hidden");
         document.getElementById("main-content").classList.remove("hidden");
-        document.getElementById("user-name").innerText = user.displayName;
-        loadAlumnoPanel(user.uid);
-      } else {
+        document.getElementById("user-name").innerText=user.displayName;
+        loadPanel(user.uid);
+      }else{
         document.getElementById("login-card").classList.remove("hidden");
         document.getElementById("main-content").classList.add("hidden");
       }
     });
 
-    // Cargar panel alumno
-    async function loadAlumnoPanel(uid) {
-      const docRef = doc(db, "usuarios", uid);
+    async function loadPanel(uid){
+      const docRef = doc(db,"usuarios",uid);
       const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        const panel = document.getElementById("panel-alumno");
-        panel.innerHTML = `<h2>Bienvenido, ${data.nombre}</h2>`;
-        panel.innerHTML += `<p>Rol: ${data.role}</p>`;
-        panel.innerHTML += `<h3>Mis cursos</h3>`;
-        panel.innerHTML += `
-          <div class="card">
-            <h3>Morfofisiología I</h3>
-            <button onclick="openCourse('morf1')">Entrar al curso</button>
-          </div>
-          <div class="card">
-            <h3>Morfofisiología II</h3>
-            <button onclick="openCourse('morf2')">Entrar al curso</button>
-          </div>
-          <div class="card">
-            <h3>Biología Celular y Molecular</h3>
-            <button onclick="openCourse('bio-cel')">Entrar al curso</button>
-          </div>
-          <div class="card">
-            <h3>Bioquímica</h3>
-            <button onclick="openCourse('bioq')">Entrar al curso</button>
-          </div>
-          <div class="card">
-            <h3>Anatomía General</h3>
-            <button onclick="openCourse('anat-gen')">Entrar al curso</button>
-          </div>
-        `;
+      const panel=document.getElementById("panel-content");
+      if(docSnap.exists()){
+        const data=docSnap.data();
+        if(data.role==="admin"){
+          panel.innerHTML=`<h2>Bienvenido Admin: ${data.nombre}</h2>
+          <h3>Todos los cursos y horarios de los alumnos</h3>
+          <div class="card">[Aquí luego se cargará Firestore con los horarios de todos]</div>`;
+        }else{
+          panel.innerHTML=`<h2>Bienvenido ${data.nombre}</h2>
+          <h3>Mis cursos</h3>
+          <div class="card"><h3>Morfofisiología I</h3><button onclick="openCourse('morf1')">Entrar al curso</button></div>
+          <div class="card"><h3>Morfofisiología II</h3><button onclick="openCourse('morf2')">Entrar al curso</button></div>
+          <div class="card"><h3>Biología Celular y Molecular</h3><button onclick="openCourse('bio-cel')">Entrar al curso</button></div>
+          <div class="card"><h3>Bioquímica</h3><button onclick="openCourse('bioq')">Entrar al curso</button></div>
+          <div class="card"><h3>Anatomía General</h3><button onclick="openCourse('anat')">Entrar al curso</button></div>`;
+        }
       }
     }
 
-    // Abrir curso
-    function openCourse(courseId) {
-      const main = document.getElementById("course-content");
-      document.getElementById("main-courses").classList.add("hidden");
+    function openCourse(courseId){
+      const main=document.getElementById("course-content");
+      document.getElementById("panel-content").classList.add("hidden");
       main.classList.remove("hidden");
 
-      let contentHTML = `<h2>Curso seleccionado</h2>`;
-      // TODO: Añadir contenido real por semanas aquí
-      contentHTML += `<p>Contenido organizado por semanas (PDF, Video, Apliquemos lo aprendido)</p>`;
-      contentHTML += `<button onclick="backToCourses()">Volver a mis cursos</button>`;
+      let html=`<button class="back-btn" onclick="backToPanel()">← Volver a mis cursos</button>`;
 
-      main.innerHTML = contentHTML;
+      if(courseId==="morf1"){
+        html+=`<h2>Morfofisiología I</h2>
+        <table>
+        <tr><th>Semana</th><th>Temas de Fisiología</th><th>Temas de Histología</th><th>Acciones</th></tr>
+        <tr><td>1</td><td>Membrana celular, receptores, canales, transporte y potenciales de membrana/acción. Regularización y señalización celular.</td><td>Procesamiento histológico, membrana celular, organelas y núcleo. Desarrollo embrionario del esqueleto y tejido cartilaginoso.</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
+        <tr><td>2</td><td>Transmisión de señales celulares. Composición y regulación del medio interno, ósmosis y líquidos corporales.</td><td>Tejido óseo y osificación. Origen embrionario del sistema muscular y Tejido muscular I.</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
+        <!-- Continúa hasta la semana 8 -->
+        </table>`;
+      } else if(courseId==="morf2"){
+        html+=`<h2>Morfofisiología II</h2>
+        <table>
+        <tr><th>Semana</th><th>Anatomía y Radioanatomía</th><th>Fisiología</th><th>Histología y Embriología</th><th>Acciones</th></tr>
+        <tr><td>1</td><td>Pared torácica, región mamaria y radioanatomía de tórax.</td><td>Hemodinamia y electrofisiología cardiaca.</td><td>Embriología cardiovascular e histología del corazón y válvulas.</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
+        <!-- Continúa hasta la semana 8 -->
+        </table>`;
+      } else if(courseId==="bio-cel"){
+        html+=`<h2>Biología Celular y Molecular</h2>
+        <div class="sub-section"><h3>Teoría</h3>
+        <table>
+        <tr><th>Semana</th><th>Conceptos Clave</th><th>Acciones</th></tr>
+        <tr><td>1</td><td>Niveles de organización, Bioelementos, Enlaces químicos y Agua. Glúcidos y Lípidos.</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
+        <!-- Continúa hasta la semana 8 -->
+        </table></div>
+        <div class="sub-section"><h3>Laboratorio</h3>
+        <table>
+        <tr><th>Semana</th><th>Práctica</th><th>Acciones</th></tr>
+        <tr><td>1</td><td>Normas de Bioseguridad y Manejo del Microscopio. Identificación de Glúcidos y Lípidos.</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
+        <!-- Continúa hasta la semana 8 -->
+        </table></div>`;
+      } else if(courseId==="bioq"){
+        html+=`<h2>Bioquímica</h2>
+        <div class="sub-section"><h3>Teoría</h3>
+        <table>
+        <tr><th>Semana</th><th>Contenido</th><th>Acciones</th></tr>
+        <tr><td>1</td><td>Bioelementos y Biomoléculas: Agua, pH, soluciones buffer, bioelementos y vitaminas. Estructuras supramoleculares.</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
+        <!-- Continúa hasta la semana 8 -->
+        </table></div>
+        <div class="sub-section"><h3>Laboratorio</h3>
+        <table>
+        <tr><th>Semana</th><th>Práctica</th><th>Acciones</th></tr>
+        <tr><td>1</td><td>Espectrofotometría: Principios de bioseguridad y determinación de concentración de compuestos.</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
+        <!-- Continúa hasta la semana 8 -->
+        </table></div>`;
+      } else if(courseId==="anat"){
+        html+=`<h2>Anatomía General</h2>
+        <table>
+        <tr><th>Semana</th><th>Contenido</th><th>Acciones</th></tr>
+        <tr><td>1</td><td>Hombro, Axila, Brazo y Codo.</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
+        <!-- Continúa hasta la semana 8 -->
+        </table>`;
+      }
+
+      main.innerHTML=html;
     }
 
-    function backToCourses() {
+    function backToPanel(){
       document.getElementById("course-content").classList.add("hidden");
-      document.getElementById("main-courses").classList.remove("hidden");
+      document.getElementById("panel-content").classList.remove("hidden");
     }
   </script>
 </head>
@@ -249,7 +177,7 @@
   <header>
     <h1>Neurova P53</h1>
     <nav>
-      <span id="user-name" style="margin-right: 20px;"></span>
+      <span id="user-name" style="margin-right:20px;"></span>
       <a href="#" onclick="logout()">Cerrar sesión</a>
     </nav>
   </header>
@@ -262,9 +190,7 @@
 
   <!-- CONTENIDO PRINCIPAL -->
   <div id="main-content" class="container hidden">
-    <div id="main-courses">
-      <div id="panel-alumno"></div>
-    </div>
+    <div id="panel-content"></div>
     <div id="course-content" class="hidden"></div>
   </div>
 
