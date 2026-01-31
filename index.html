@@ -99,6 +99,46 @@
     }
   </style>
 </head>
+  <!-- Firebase App y Auth -->
+<script type="module">
+  // Importa Firebase
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+  import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+
+  // Configuración de tu proyecto Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyDAmEVU8J-uk2Yg6bL5n28xbP1771cHGME",
+    authDomain: "neurovap53-cdbcf.firebaseapp.com",
+    projectId: "neurovap53-cdbcf",
+    storageBucket: "neurovap53-cdbcf.firebasestorage.app",
+    messagingSenderId: "558340314022",
+    appId: "1:558340314022:web:2027622d3b86af54ddb567",
+    measurementId: "G-70R7JRGVKG"
+  };
+
+  // Inicializar Firebase
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const provider = new GoogleAuthProvider();
+
+  // Función para iniciar sesión con Google
+  window.loginConGoogle = () => {
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        const user = result.user;
+        console.log("Usuario:", user);
+        alert("Bienvenido " + user.displayName);
+        // Aquí puedes ocultar login y mostrar cursos
+        document.getElementById('login-container').classList.add('hidden');
+        document.getElementById('cursos-container').classList.remove('hidden');
+      })
+      .catch((error) => {
+        console.error("Error login:", error);
+        alert("Error al iniciar sesión: " + error.message);
+      });
+  };
+</script>
+
 <body>
 <!-- HEADER CON LOGO Y NAVEGACIÓN -->
 <header>
@@ -596,4 +636,5 @@
 
 </body>
 </html>
+
 
