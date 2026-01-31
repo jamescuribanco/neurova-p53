@@ -140,62 +140,35 @@
 </script>
 
 <body>
-<!-- HEADER CON LOGO Y NAVEGACIÓN -->
-<header>
-  <img src="logo.jpeg" alt="Neurova P53" style="height:90px;">
-  <h1>Neurova P53</h1>
-  <nav>
-    <a href="#" onclick="showSection('inicio')">Inicio</a>
-    <a href="#" onclick="showSection('cursos')">Cursos</a>
-    <a href="#" onclick="showSection('material')">Material</a>
-  </nav>
-</header>
+<!-- LOGIN CON GOOGLE -->
+<div id="login-container" class="container card" style="text-align:center; margin-top:40px;">
+  <h2>Iniciar sesión</h2>
+  <button id="login-google-btn" style="padding:12px 20px; background:#4285F4; color:white; border:none; border-radius:8px; cursor:pointer;">
+    Login con Google
+  </button>
+</div>
 
-<div class="container">
-
-  <!-- LOGIN CON GOOGLE -->
-  <div id="login" class="card">
-    <h2>Iniciar sesión</h2>
-    <button id="login-google">Login con Google</button>
-  </div>
-<!-- CONTENEDOR DE CURSOS Y CONTENIDO -->
-<div id="contenido" class="hidden">
-
-  <!-- INICIO -->
-  <div id="inicio">
-    <h2>Bienvenido a Neurova P53</h2>
-    <p>Academia premium especializada en ciencias de la salud. Formación rigurosa, clara y progresiva, diseñada por ciclos académicos.</p>
-  </div>
-
-  <!-- CURSOS -->
-  <div id="lista-cursos" class="hidden">
-    <h2>Mis cursos</h2>
-    <!-- Aquí se van a generar los cursos dinámicamente con JS -->
-  </div>
-
-  <!-- 
-  <!-- PARTE 5: CURSOS, SUBCURSOS, SEMANAS Y CONTENIDO -->
-<!-- CONTENEDOR PRINCIPAL PARA CURSOS -->
+<!-- CURSOS -->
 <div id="cursos-container" class="container hidden">
   <h2>Cursos Disponibles</h2>
   <div id="cursos-list" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:20px;"></div>
 </div>
 
-<!-- CONTENEDOR DE SUBCURSOS -->
+<!-- SUBCURSOS -->
 <div id="subcurso-container" class="container hidden">
   <h2 id="subcurso-title"></h2>
   <div id="subcurso-list" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:20px;"></div>
   <button onclick="volverACursos()" style="margin-top:20px; padding:10px 20px; background:#2563eb; color:white; border:none; border-radius:10px; cursor:pointer;">Volver a Cursos</button>
 </div>
 
-<!-- CONTENEDOR DE SEMANAS -->
+<!-- SEMANAS -->
 <div id="semana-container" class="container hidden">
   <h2 id="semana-title"></h2>
   <div id="semana-list" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:20px;"></div>
   <button onclick="volverASubcurso()" style="margin-top:20px; padding:10px 20px; background:#2563eb; color:white; border:none; border-radius:10px; cursor:pointer;">Volver a Subcursos</button>
 </div>
 
-<!-- CONTENEDOR DE CONTENIDO -->
+<!-- CONTENIDO -->
 <div id="contenido-semana-container" class="container hidden">
   <h2 id="contenido-title"></h2>
   <div style="margin-top:20px;">
@@ -205,6 +178,144 @@
   </div>
   <button onclick="volverASemanas()" style="margin-top:20px; padding:10px 20px; background:#2563eb; color:white; border:none; border-radius:10px; cursor:pointer;">Volver a Semanas</button>
 </div>
+
+<!-- ================== SCRIPT UNIFICADO ================== -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js";
+  import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-auth.js";
+
+  // Configuración Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyDAmEVU8J-uk2Yg6bL5n28xbP1771cHGME",
+    authDomain: "neurovap53-cdbcf.firebaseapp.com",
+    projectId: "neurovap53-cdbcf",
+    storageBucket: "neurovap53-cdbcf.firebasestorage.app",
+    messagingSenderId: "558340314022",
+    appId: "1:558340314022:web:2027622d3b86af54ddb567",
+    measurementId: "G-70R7JRGVKG"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth();
+  const provider = new GoogleAuthProvider();
+
+  const loginBtn = document.getElementById('login-google-btn');
+
+  loginBtn.addEventListener('click', async () => {
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      alert("Bienvenido " + user.displayName);
+      document.getElementById('login-container').classList.add('hidden');
+      mostrarCursos();
+    } catch (error) {
+      console.error(error);
+      alert("Error al iniciar sesión: " + error.message);
+    }
+  });
+
+  // Controlar estado de sesión
+  onAuthStateChanged(auth, (user) => {
+    if(user){
+      document.getElementById('login-container').classList.add('hidden');
+      mostrarCursos();
+    } else {
+      document.getElementById('login-container').classList.remove('hidden');
+    }
+  });
+
+  // ================== CURSOS, SUBCURSOS, SEMANAS ==================
+  let cursoActual = '';
+  let subcursoActual = '';
+
+  const cursos = {
+    "Morfofisiología 1": {
+      semanas: [
+        {sem:1, fisiologia:"Membrana celular, receptores, canales, transporte y potenciales de membrana/acción.", histologia:"Procesamiento histológico, membrana celular, organelas y núcleo."},
+        {sem:2, fisiologia:"Transmisión de señales celulares.", histologia:"Tejido óseo y osificación."},
+        {sem:3, fisiologia:"Neurotransmisores y sinapsis.", histologia:"Tejido muscular II."}
+        // ... sigue completando todas las semanas
+      ]
+    },
+    "Morfofisiología 2": {
+      subcursos:{
+        "Anatomía":[ {sem:1,tema:"Pared torácica"} ], // Ejemplo, completa las 8 semanas
+        "Fisiología":[ {sem:1,tema:"Hemodinamia"} ],
+        "Histología":[ {sem:1,tema:"Embriología cardiovascular"} ]
+      }
+    },
+    "Anatomía General": {semanas:[{sem:1,tema:"Hombro, Axila, Brazo y Codo"}]},
+    "Biología Celular y Molecular": {subcursos:{ "Teoría":[{sem:1,tema:"Niveles de organización"}]}},
+    "Bioquímica": {subcursos:{ "Teoría":[{sem:1,tema:"Bioelementos y Biomoléculas"}]}}
+  };
+
+  function mostrarCursos(){
+    document.getElementById('cursos-container').classList.remove('hidden');
+    const cursosList = document.getElementById('cursos-list');
+    cursosList.innerHTML = '';
+    for(const c in cursos){
+      const card = document.createElement('div');
+      card.className='card';
+      card.innerHTML=`<h3>${c}</h3>
+      <button onclick="abrirCurso('${c}')">Entrar al curso</button>`;
+      cursosList.appendChild(card);
+    }
+  }
+
+  function abrirCurso(curso){
+    cursoActual=curso;
+    const tieneSubcursos = cursos[curso].subcursos!==undefined;
+    document.getElementById('cursos-container').classList.add('hidden');
+    if(tieneSubcursos) mostrarSubcursos(curso);
+    else mostrarSemanas(curso);
+  }
+
+  function mostrarSubcursos(curso){
+    document.getElementById('subcurso-container').classList.remove('hidden');
+    document.getElementById('subcurso-title').innerText=`Subcursos de ${curso}`;
+    const subcursoList = document.getElementById('subcurso-list');
+    subcursoList.innerHTML='';
+    Object.keys(cursos[curso].subcursos).forEach(sc=>{
+      const card = document.createElement('div');
+      card.className='card';
+      card.innerHTML=`<h3>${sc}</h3><button onclick="abrirSubcurso('${sc}')">Ver semanas</button>`;
+      subcursoList.appendChild(card);
+    });
+  }
+
+  function abrirSubcurso(subcurso){
+    subcursoActual=subcurso;
+    document.getElementById('subcurso-container').classList.add('hidden');
+    mostrarSemanas(cursoActual,subcurso);
+  }
+
+  function mostrarSemanas(curso,subcurso=null){
+    document.getElementById('semana-container').classList.remove('hidden');
+    let semanas = subcurso ? cursos[curso].subcursos[subcurso] : cursos[curso].semanas;
+    document.getElementById('semana-title').innerText=subcurso?`${curso} - ${subcurso} (Semanas)`: `${curso} (Semanas)`;
+    const semanaList = document.getElementById('semana-list');
+    semanaList.innerHTML='';
+    semanas.forEach(s=>{
+      const card = document.createElement('div');
+      card.className='card';
+      card.innerHTML=`<h3>Semana ${s.sem}</h3><p>${s.fisiologia||s.histologia||s.tema}</p>
+      <button onclick="abrirContenido('${curso}','${subcurso||''}',${s.sem})">Ver contenido</button>`;
+      semanaList.appendChild(card);
+    });
+  }
+
+  function abrirContenido(curso,subcurso,sem){
+    document.getElementById('semana-container').classList.add('hidden');
+    document.getElementById('contenido-semana-container').classList.remove('hidden');
+    const semanaObj = subcurso ? cursos[curso].subcursos[subcurso].find(s=>s.sem===sem) : cursos[curso].semanas.find(s=>s.sem===sem);
+    document.getElementById('contenido-title').innerText=`Semana ${sem}: ${semanaObj.tema||semanaObj.fisiologia||semanaObj.histologia}`;
+  }
+
+  function volverACursos(){ document.getElementById('subcurso-container').classList.add('hidden'); mostrarCursos();}
+  function volverASubcurso(){ document.getElementById('semana-container').classList.add('hidden'); mostrarSubcursos(cursoActual);}
+  function volverASemanas(){ document.getElementById('contenido-semana-container').classList.add('hidden'); mostrarSemanas(cursoActual,subcursoActual||null);}
+</script>
+
 
 <script>
   let cursoActual = '';
@@ -636,5 +747,6 @@
 
 </body>
 </html>
+
 
 
