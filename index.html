@@ -1,191 +1,210 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Neurova P53</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neurova P53</title>
 
-  <!-- Estilos Generales -->
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', Arial, sans-serif;
-      background: #f8fbff;
-      color: #1f2937;
-    }
-    header {
-      background: linear-gradient(90deg, #e0f2fe, #bae6fd, #93c5fd);
-      padding: 20px 40px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    header h1 {
-      margin: 0;
-      color: #0f172a;
-      font-size: 28px;
-      letter-spacing: 1px;
-    }
-    nav a {
-      margin-left: 20px;
-      text-decoration: none;
-      color: #0f172a;
-      font-weight: 500;
-      cursor: pointer;
-    }
-    .container {
-      max-width: 1100px;
-      margin: 40px auto;
-      padding: 0 20px;
-    }
-    .card {
-      background: white;
-      border-radius: 16px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-      padding: 30px;
-      margin-bottom: 20px;
-      text-align: center;
-    }
-    .card h3 { color: #0077cc; }
-    button {
-      margin-top: 15px;
-      padding: 12px 20px;
-      border: none;
-      border-radius: 12px;
-      background: #0077cc;
-      color: white;
-      cursor: pointer;
-    }
-    button:hover { background: #005fa3; }
-    .hidden { display: none; }
-    .blocked {
-      background: #ccc;
-      color: #555;
-      cursor: not-allowed;
-    }
-    h2 { color: #1e3a8a; margin-bottom: 20px; }
-  </style>
+<style>
+body {
+  margin:0;
+  font-family:'Segoe UI', Arial, sans-serif;
+  background:#f8fbff;
+  color:#1f2937;
+}
+header {
+  background: linear-gradient(90deg, #e0f2fe, #bae6fd, #93c5fd);
+  padding: 20px 40px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+header h1 { margin:0; color:#0f172a; font-size:28px; letter-spacing:1px;}
+nav a { margin-left:20px; text-decoration:none; color:#0f172a; font-weight:500; cursor:pointer;}
+.container { max-width:1100px; margin:40px auto; padding:0 20px; }
+.card {
+  background:white;
+  border-radius:16px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.08);
+  padding:30px;
+  margin-bottom:20px;
+  text-align:center;
+}
+.card h3 { color:#0077cc; }
+button {
+  margin-top:15px;
+  padding:12px 20px;
+  border:none;
+  border-radius:12px;
+  background:#0077cc;
+  color:white;
+  cursor:pointer;
+}
+button:hover { background:#005fa3; }
+.hidden { display:none; }
+h2 { color:#1e3a8a; margin-bottom:20px; }
+</style>
 </head>
 
 <body>
-  <!-- HEADER -->
-  <header>
-    <img src="logo.jpeg" alt="Neurova P53" style="height:90px;">
-    <h1>Neurova P53</h1>
-    <nav>
-      <a onclick="showSection('inicio')">Inicio</a>
-      <a onclick="showSection('cursos-container')">Cursos</a>
-      <a onclick="showSection('horario-container')">Horario</a>
-    </nav>
-  </header>
 
-  <div class="container">
+<header>
+  <img src="logo.jpeg" alt="Neurova P53" style="height:90px;">
+  <h1>Neurova P53</h1>
+  <nav>
+    <a onclick="showSection('inicio')">Inicio</a>
+    <a onclick="showSection('cursos-container')">Cursos</a>
+    <a onclick="showSection('horario-container')">Horario</a>
+    <a id="admin-nav" class="hidden" onclick="showSection('admin-panel')">Admin</a>
+  </nav>
+</header>
 
-    <!-- LOGIN -->
-    <div id="login-container" class="card">
-      <h2>Iniciar sesión</h2>
-      <button id="login-btn">Login con Google</button>
-      <div id="user-display" style="margin-top:10px; font-weight:bold;"></div>
-      <button id="logout-btn" class="hidden" style="background:#ef4444;">Cerrar sesión</button>
-    </div>
+<!-- LOGIN -->
+<div class="container card" id="login-container">
+  <h2>Iniciar sesión</h2>
+  <button id="login-btn">Login con Google</button>
+  <div id="user-display" style="margin-top:10px; font-weight:bold;"></div>
+  <button id="logout-btn" class="hidden" style="background:#ef4444;">Cerrar sesión</button>
+</div>
 
-    <!-- CONTENEDOR CURSOS -->
-    <div id="cursos-container" class="container hidden">
-      <h2>Cursos Disponibles</h2>
-      <div id="cursos-list" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:20px;"></div>
-    </div>
+<!-- INICIO -->
+<div id="inicio" class="container">
+  <h2>Bienvenido a Neurova P53</h2>
+  <p>Academia premium especializada en ciencias de la salud. Formación rigurosa, clara y progresiva, diseñada por ciclos académicos.</p>
+</div>
 
-    <!-- PANEL ADMIN -->
-    <div id="admin-panel" class="container card hidden">
-      <h2>Panel Admin</h2>
-      <p>Aquí podrás agregar cursos, subir PDFs, grabaciones y formularios para los alumnos.</p>
-      <button onclick="alert('Función de agregar curso')">Agregar Curso</button>
-      <button onclick="alert('Función de agregar PDF/Grabación')">Agregar Contenido</button>
-      <button onclick="alert('Ver avance de alumnos')">Ver Avance</button>
-    </div>
+<!-- CURSOS -->
+<div id="cursos-container" class="container hidden">
+  <h2>Cursos Disponibles</h2>
+  <div id="cursos-list" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:20px;"></div>
+</div>
 
-    <!-- CONTENEDOR HORARIO -->
-    <div id="horario-container" class="container hidden"></div>
+<!-- ADMIN PANEL -->
+<div id="admin-panel" class="container card hidden">
+  <h2>Panel Admin</h2>
+  <p>Aquí puedes agregar cursos, subir PDFs, grabaciones y formularios para los alumnos.</p>
+  <button onclick="alert('Agregar curso')">Agregar Curso</button>
+  <button onclick="alert('Agregar Contenido')">Agregar PDF/Grabación</button>
+  <button onclick="alert('Ver avance de alumnos')">Ver Avance</button>
+</div>
 
-    <!-- INICIO -->
-    <div id="inicio" class="container">
-      <h2>Bienvenido a Neurova P53</h2>
-      <p>Academia premium especializada en ciencias de la salud. Formación rigurosa, clara y progresiva, diseñada por ciclos académicos.</p>
-    </div>
+<!-- HORARIO -->
+<div id="horario-container" class="container hidden"></div>
 
-  </div>
+<!-- SUBCURSOS Y SEMANAS -->
+<div id="subcurso-container" class="container hidden">
+  <h2 id="subcurso-title"></h2>
+  <div id="subcurso-list" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:20px;"></div>
+  <button onclick="volverACursos()" style="margin-top:20px; padding:10px 20px; background:#2563eb; color:white; border:none; border-radius:10px; cursor:pointer;">Volver a Cursos</button>
+</div>
 
-  <!-- FIREBASE -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js";
-    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-auth.js";
+<div id="semana-container" class="container hidden">
+  <h2 id="semana-title"></h2>
+  <div id="semana-list" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:20px;"></div>
+  <button onclick="volverASubcurso()" style="margin-top:20px; padding:10px 20px; background:#2563eb; color:white; border:none; border-radius:10px; cursor:pointer;">Volver a Subcursos</button>
+</div>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyDAmEVU8J-uk2Yg6bL5n28xbP1771cHGME",
-      authDomain: "neurovap53-cdbcf.firebaseapp.com",
-      projectId: "neurovap53-cdbcf",
-      storageBucket: "neurovap53-cdbcf.firebasestorage.app",
-      messagingSenderId: "558340314022",
-      appId: "1:558340314022:web:2027622d3b86af54ddb567"
-    };
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-auth.js";
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth();
-    const provider = new GoogleAuthProvider();
+const firebaseConfig = {
+  apiKey:"AIzaSyDAmEVU8J-uk2Yg6bL5n28xbP1771cHGME",
+  authDomain:"neurovap53-cdbcf.firebaseapp.com",
+  projectId:"neurovap53-cdbcf"
+};
+const app = initializeApp(firebaseConfig);
+const auth = getAuth();
+const provider = new GoogleAuthProvider();
 
-    const loginBtn = document.getElementById('login-btn');
-    const logoutBtn = document.getElementById('logout-btn');
-    const userDisplay = document.getElementById('user-display');
+const loginBtn = document.getElementById('login-btn');
+const logoutBtn = document.getElementById('logout-btn');
+const userDisplay = document.getElementById('user-display');
+const adminNav = document.getElementById('admin-nav');
 
-    loginBtn.addEventListener('click', async () => {
-      try {
-        const result = await signInWithPopup(auth, provider);
-        const user = result.user;
+loginBtn.addEventListener('click', async ()=>{
+  try{
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
+    loginBtn.classList.add('hidden');
+    logoutBtn.classList.remove('hidden');
+    userDisplay.innerText=`Hola, ${user.displayName}`;
+    document.getElementById('login-container').classList.add('hidden');
 
-        if(user.email === "jamesucribanco333@gmail.com") {
-          document.getElementById('admin-panel').classList.remove('hidden');
-        }
-
-        userDisplay.innerText = `Hola, ${user.displayName}`;
-        loginBtn.classList.add('hidden');
-        mostrarCursos();
-      } catch(err) {
-        alert("Error al iniciar sesión: " + err.message);
-      }
-    });
-
-    logoutBtn.addEventListener('click', async () => {
-      await signOut(auth);
-      document.getElementById('admin-panel').classList.add('hidden');
-      userDisplay.innerText = '';
-      loginBtn.classList.remove('hidden');
-      document.getElementById('cursos-container').classList.add('hidden');
-    });
-
-    function showSection(id) {
-      const sections = ['inicio','cursos-container','horario-container','admin-panel'];
-      sections.forEach(s => {
-        document.getElementById(s).classList.add('hidden');
-      });
-      document.getElementById(id).classList.remove('hidden');
+    if(user.email === "jamesucribanco333@gmail.com"){
+      adminNav.classList.remove('hidden');
+      document.getElementById('admin-panel').classList.remove('hidden');
     }
 
-    function mostrarCursos() {
-      const cursosList = document.getElementById('cursos-list');
-      cursosList.innerHTML = '';
-      const cursos = [
-        "Morfofisiología 1", "Morfofisiología 2", "Anatomía General",
-        "Biología Celular y Molecular", "Bioquímica"
-      ];
-      cursos.forEach(c => {
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.innerHTML = `<h3>${c}</h3><button onclick="alert('Abrir curso: ${c}')">Entrar</button>`;
-        cursosList.appendChild(card);
-      });
-      document.getElementById('cursos-container').classList.remove('hidden');
-    }
-  </script>
+    mostrarCursos();
+  }catch(err){alert("Error: "+err.message);}
+});
+
+logoutBtn.addEventListener('click', async ()=>{
+  await signOut(auth);
+  loginBtn.classList.remove('hidden');
+  logoutBtn.classList.add('hidden');
+  adminNav.classList.add('hidden');
+  userDisplay.innerText='';
+  document.getElementById('cursos-container').classList.add('hidden');
+  document.getElementById('admin-panel').classList.add('hidden');
+});
+
+function showSection(id){
+  const sections = ['inicio','cursos-container','horario-container','admin-panel','subcurso-container','semana-container'];
+  sections.forEach(s=>document.getElementById(s).classList.add('hidden'));
+  document.getElementById(id).classList.remove('hidden');
+}
+
+let cursoActual='';
+
+const cursos = {
+  "Morfofisiología 1": ["Semana 1","Semana 2","Semana 3","Semana 4","Semana 5","Semana 6","Semana 7","Semana 8"],
+  "Morfofisiología 2": ["Semana 1","Semana 2","Semana 3","Semana 4","Semana 5","Semana 6","Semana 7","Semana 8"],
+  "Anatomía General": ["Semana 1","Semana 2","Semana 3","Semana 4","Semana 5","Semana 6","Semana 7","Semana 8"],
+  "Biología Celular y Molecular": ["Semana 1","Semana 2","Semana 3","Semana 4","Semana 5","Semana 6","Semana 7","Semana 8"],
+  "Bioquímica": ["Semana 1","Semana 2","Semana 3","Semana 4","Semana 5","Semana 6","Semana 7","Semana 8"]
+};
+
+function mostrarCursos(){
+  const cursosList = document.getElementById('cursos-list');
+  cursosList.innerHTML='';
+  for(const c in cursos){
+    const card = document.createElement('div');
+    card.className='card';
+    card.innerHTML=`<h3>${c}</h3><button onclick="abrirCurso('${c}')">Entrar</button>`;
+    cursosList.appendChild(card);
+  }
+  showSection('cursos-container');
+}
+
+function abrirCurso(curso){
+  cursoActual=curso;
+  const subContainer=document.getElementById('subcurso-container');
+  const title=document.getElementById('subcurso-title');
+  const list=document.getElementById('subcurso-list');
+  list.innerHTML='';
+  title.innerText=`${curso} - Semanas`;
+  cursos[curso].forEach((s,idx)=>{
+    const card=document.createElement('div');
+    card.className='card';
+    card.innerHTML=`<h3>${s}</h3><button onclick="abrirSemana(${idx+1})">Ver contenido</button>`;
+    list.appendChild(card);
+  });
+  showSection('subcurso-container');
+}
+
+function abrirSemana(semana){
+  const semanaContainer=document.getElementById('semana-container');
+  const title=document.getElementById('semana-title');
+  title.innerText=`${cursoActual} - Semana ${semana}`;
+  showSection('semana-container');
+}
+
+function volverACursos(){ mostrarCursos(); }
+function volverASubcurso(){ showSection('subcurso-container'); }
+
+</script>
 </body>
 </html>
 
@@ -876,4 +895,5 @@
 
 </body>
 </html>
+
 
