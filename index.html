@@ -5,23 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Neurova P53</title>
 <style>
-body {
-  margin:0; font-family:'Segoe UI', Arial, sans-serif; background:#f8fbff; color:#1f2937;
-}
-header {
-  background: linear-gradient(90deg,#e0f2fe,#bae6fd,#93c5fd);
-  padding:20px 40px; display:flex; justify-content:space-between; align-items:center;
-}
+body {margin:0; font-family:'Segoe UI', Arial, sans-serif; background:#f8fbff; color:#1f2937;}
+header {background: linear-gradient(90deg,#e0f2fe,#bae6fd,#93c5fd); padding:20px 40px; display:flex; justify-content:space-between; align-items:center;}
 header h1 { margin:0; color:#0f172a; font-size:28px; letter-spacing:1px; }
-nav a { margin-left:20px; text-decoration:none; color:#0f172a; font-weight:500; }
+nav a { margin-left:20px; text-decoration:none; color:#0f172a; font-weight:500; cursor:pointer; }
 .container { max-width:1100px; margin:40px auto; padding:0 20px; }
-.card {
-  background:white; border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,0.08); padding:20px;
-  margin-bottom:20px;
-}
-button {
-  background:#2563eb; color:white; border:none; padding:10px 18px; border-radius:12px; cursor:pointer;
-}
+.card { background:white; border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,0.08); padding:20px; margin-bottom:20px; }
+button { background:#2563eb; color:white; border:none; padding:10px 18px; border-radius:12px; cursor:pointer; }
 button:hover { background:#1d4ed8; }
 .hidden { display:none; }
 table { width:100%; border-collapse:collapse; margin-top:15px; }
@@ -33,121 +23,173 @@ footer { text-align:center; padding:30px; color:#64748b; }
 
 <!-- Firebase -->
 <script type="module">
-  // Import Firebase
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-analytics.js";
-  import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-analytics.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
 
-  // Tu configuración Firebase
-  const firebaseConfig = {
-    apiKey: "AIzaSyDAmEVU8J-uk2Yg6bL5n28xbP1771cHGME",
-    authDomain: "neurovap53-cdbcf.firebaseapp.com",
-    projectId: "neurovap53-cdbcf",
-    storageBucket: "neurovap53-cdbcf.firebasestorage.app",
-    messagingSenderId: "558340314022",
-    appId: "1:558340314022:web:2027622d3b86af54ddb567",
-    measurementId: "G-70R7JRGVKG"
-  };
+const firebaseConfig = {
+  apiKey: "AIzaSyDAmEVU8J-uk2Yg6bL5n28xbP1771cHGME",
+  authDomain: "neurovap53-cdbcf.firebaseapp.com",
+  projectId: "neurovap53-cdbcf",
+  storageBucket: "neurovap53-cdbcf.firebasestorage.app",
+  messagingSenderId: "558340314022",
+  appId: "1:558340314022:web:2027622d3b86af54ddb567",
+  measurementId: "G-70R7JRGVKG"
+};
 
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-  const auth = getAuth();
-  const provider = new GoogleAuthProvider();
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+const auth = getAuth();
+const provider = new GoogleAuthProvider();
 
-  // LOGIN GOOGLE
-  function loginGoogle() {
-    signInWithPopup(auth, provider)
-    .then((result)=>{
-      const user = result.user;
-      document.getElementById('login-card').classList.add('hidden');
-      document.getElementById('main-content').classList.remove('hidden');
-      document.getElementById('user-name').innerText = user.displayName;
-      loadPanel(user);
-    }).catch((error)=>{
-      alert("Error al iniciar sesión: "+error.message);
-    });
-  }
-
-  // LOGOUT
-  function logout() {
-    signOut(auth).then(()=>{
-      document.getElementById('main-content').classList.add('hidden');
-      document.getElementById('login-card').classList.remove('hidden');
-    });
-  }
-
-  // BOTÓN LOGIN
-  window.addEventListener("DOMContentLoaded",()=>{
-    document.getElementById("google-login").addEventListener("click", loginGoogle);
+// LOGIN GOOGLE
+function loginGoogle() {
+  signInWithPopup(auth, provider)
+  .then((result)=>{
+    const user = result.user;
+    document.getElementById('login-card').classList.add('hidden');
+    document.getElementById('main-content').classList.remove('hidden');
+    document.getElementById('user-name').innerText = user.displayName;
+    loadPanel(user);
+  }).catch((error)=>{
+    alert("Error al iniciar sesión: "+error.message);
   });
+}
 
-  // CARGAR PANEL
-  function loadPanel(user){
-    const panel = document.getElementById("panel-content");
-    panel.innerHTML = `
-      <h2>Bienvenido ${user.displayName}</h2>
-      <p>Rol: Alumno</p>
-      <p>Horarios y cursos:</p>
-      <div id="courses-panel"></div>
-    `;
-    loadCourses();
+// LOGOUT
+function logout() {
+  signOut(auth).then(()=>{
+    document.getElementById('main-content').classList.add('hidden');
+    document.getElementById('login-card').classList.remove('hidden');
+  });
+}
+
+window.addEventListener("DOMContentLoaded",()=>{
+  document.getElementById("google-login").addEventListener("click", loginGoogle);
+});
+
+// CARGAR PANEL
+function loadPanel(user){
+  const panel = document.getElementById("panel-content");
+  panel.innerHTML = `
+    <h2>Bienvenido ${user.displayName}</h2>
+    <p>Rol: Alumno</p>
+    <p>Horarios y cursos:</p>
+    <div id="courses-panel"></div>
+  `;
+  loadCourses();
+}
+
+// ************ CURSOS ************
+function loadCourses(){
+  const c = document.getElementById("courses-panel");
+  c.innerHTML = `
+    <div class="card"><h3>Morfofisiología I</h3><button onclick="showCourse('morfo1')">Entrar al curso</button></div>
+    <div class="card"><h3>Morfofisiología II</h3><button onclick="showCourse('morfo2')">Entrar al curso</button></div>
+    <div class="card"><h3>Biología Celular y Molecular</h3><button onclick="showCourse('bio')">Entrar al curso</button></div>
+    <div class="card"><h3>Bioquímica</h3><button onclick="showCourse('bioq')">Entrar al curso</button></div>
+    <div class="card"><h3>Anatomía General</h3><button onclick="showCourse('anat')">Entrar al curso</button></div>
+  `;
+}
+
+function showCourse(courseId){
+  const panel = document.getElementById("panel-content");
+  panel.innerHTML = `<button onclick="backToPanel()">← Volver a panel</button>`;
+  let html = "";
+
+  // Morfofisiología 1
+  if(courseId==="morfo1"){
+    html+=`<h2>Morfofisiología I</h2>
+    <table>
+      <tr><th>Semana</th><th>Fisiología</th><th>Histología</th><th>Acciones</th></tr>
+      <tr><td>1</td><td>Membrana celular, receptores, canales...</td><td>Procesamiento histológico, membrana, organelas</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
+      <tr><td>2</td><td>Transmisión de señales, ósmosis...</td><td>Tejido óseo y muscular I</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
+      <tr><td>3</td><td>Neurotransmisores, sinapsis...</td><td>Tejido muscular II y nervioso</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
+      <tr><td>4</td><td>Metabolismo óseo, evaluación parcial</td><td>Sistema vascular, evaluación parcial</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
+      <tr><td>5</td><td>Sangre, hemograma, fisiología eritrocitaria</td><td>Tejido epitelial</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
+      <tr><td>6</td><td>Fisiología plaquetaria y hemostasia</td><td>Matriz extracelular, tejido conectivo</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
+      <tr><td>7</td><td>Sistema inmunológico, respuesta innata y adquirida</td><td>Tejido linfoide y MALT</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
+      <tr><td>8</td><td>Respuesta inflamatoria, evaluación final</td><td>Sistema tegumentario, evaluación final</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
+    </table>`;
   }
 
-  // ************ CURSOS ************
-  function loadCourses(){
-    const c = document.getElementById("courses-panel");
-    c.innerHTML = `
-      <div class="card"><h3>Morfofisiología I</h3><button onclick="showCourse('morfo1')">Entrar al curso</button></div>
-      <div class="card"><h3>Morfofisiología II</h3><button onclick="showCourse('morfo2')">Entrar al curso</button></div>
-      <div class="card"><h3>Biología Celular y Molecular</h3><button onclick="showCourse('bio')">Entrar al curso</button></div>
-      <div class="card"><h3>Bioquímica</h3><button onclick="showCourse('bioq')">Entrar al curso</button></div>
-      <div class="card"><h3>Anatomía General</h3><button onclick="showCourse('anat')">Entrar al curso</button></div>
-    `;
+  // Morfofisiología 2
+  else if(courseId==="morfo2"){
+    html+=`<h2>Morfofisiología II</h2>
+    <table>
+      <tr><th>Semana</th><th>Anatomía y Radioanatomía</th><th>Fisiología</th><th>Histología y Embriología</th><th>Acciones</th></tr>
+      <tr><td>1</td><td>Pared torácica, región mamaria</td><td>Hemodinamia y electrofisiología</td><td>Embriología cardiovascular, histología del corazón</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
+      <tr><td>2</td><td>Mediastino superior, anterior y medio</td><td>ECG I, contracción y ciclo cardiaco</td><td>Histología vascular</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
+      <tr><td>3</td><td>Mediastino medio II, radioanatomía cardiaca</td><td>Presión arterial, gasto cardiaco</td><td>Integración embriología/histología cardiaca</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
+      <tr><td>4</td><td>Mediastino posterior, radioanatomía mediastino</td><td>Mecánica respiratoria, volúmenes</td><td>Integración histología vascular</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
+      <tr><td>5</td><td>Pulmones, radioanatomía pulmonar</td><td>Intercambio de gases y transporte</td><td>Embriología e histología aparato respiratorio</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
+      <tr><td>6</td><td>Columna vertebral dorsal, músculos paravertebrales</td><td>Estructura renal y filtración glomerular</td><td>Embriología urinaria, histología riñón</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
+      <tr><td>7</td><td>Radioanatomía columna torácica y riñón</td><td>Regulación electrolitos y ácido-base</td><td>Histología vías urinarias</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
+      <tr><td>8</td><td>Radioanatomía riñón y vías urinarias, examen final</td><td>Fisiología de aviación y buceo, examen final</td><td>Histopatología renal y vías urinarias, examen final</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
+    </table>`;
   }
 
-  function showCourse(courseId){
-    const panel = document.getElementById("panel-content");
-    panel.innerHTML = `<button onclick="backToPanel()">← Volver a panel</button>`;
-    let html = "";
-    // AQUÍ VAN LOS CURSOS, con 8 semanas y botones Grabación/PDF/Apliquemos
-    if(courseId==="morfo1"){
-      html+=`<h2>Morfofisiología I</h2>
-      <table><tr><th>Semana</th><th>Fisiología</th><th>Histología</th><th>Acciones</th></tr>
-      <tr><td>1</td><td>Membrana celular, receptores...</td><td>Procesamiento histológico...</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
-      <!-- Semana 2 a 8 aquí igual... --> 
-      </table>`;
-    }
-    else if(courseId==="morfo2"){
-      html+=`<h2>Morfofisiología II</h2>
-      <table><tr><th>Semana</th><th>Anatomía y Radioanatomía</th><th>Fisiología</th><th>Histología y Embriología</th><th>Acciones</th></tr>
-      <tr><td>1</td><td>Pared torácica...</td><td>Hemodinamia...</td><td>Embriología...</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
-      <!-- Semana 2 a 8 aquí igual... --> 
-      </table>`;
-    }
-    else if(courseId==="bio"){
-      html+=`<h2>Biología Celular</h2>
-      <div class="sub-section"><h3>Teoría</h3>Tabla con semanas...</div>
-      <div class="sub-section"><h3>Laboratorio</h3>Tabla con semanas...</div>`;
-    }
-    else if(courseId==="bioq"){
-      html+=`<h2>Bioquímica</h2>
-      <div class="sub-section"><h3>Teoría</h3>Tabla con semanas...</div>
-      <div class="sub-section"><h3>Laboratorio</h3>Tabla con semanas...</div>`;
-    }
-    else if(courseId==="anat"){
-      html+=`<h2>Anatomía General</h2>
-      <table><tr><th>Semana</th><th>Contenido</th><th>Acciones</th></tr>
-      <tr><td>1</td><td>Hombro, Axila...</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
-      <!-- Semana 2 a 8 aquí igual... --> 
-      </table>`;
-    }
-    panel.innerHTML+=html;
+  // Biología Celular
+  else if(courseId==="bio"){
+    html+=`<h2>Biología Celular y Molecular</h2>
+    <div class="sub-section"><h3>Teoría</h3>
+      <table>
+      <tr><th>Semana</th><th>Contenido</th><th>Acciones</th></tr>
+      <tr><td>1</td><td>Niveles de organización, bioelementos, glúcidos y lípidos</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
+      <tr><td>2</td><td>Aminoácidos, proteínas y enzimas</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
+      <tr><td>3</td><td>La célula: membrana, transporte</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
+      <tr><td>4</td><td>Citoesqueleto, matriz extracelular, evaluación parcial</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
+      <tr><td>5</td><td>Sistema endomembranas y mitocondrias</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
+      <tr><td>6</td><td>Núcleo, cromatina, replicación y ARN</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
+      <tr><td>7</td><td>Traducción, ciclo celular, mitosis y apoptosis</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
+      <tr><td>8</td><td>Señalización celular, cáncer, genética molecular, evaluación final</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
+      </table>
+    </div>
+    <div class="sub-section"><h3>Laboratorio</h3>
+      <table>
+      <tr><th>Semana</th><th>Práctica</th><th>Acciones</th></tr>
+      <tr><td>1</td><td>Normas bioseguridad, microscopio, identificación glúcidos/lípidos</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
+      <!-- Semana 2 a 8 igual --> 
+      </table>
+    </div>`;
   }
 
-  function backToPanel(){
-    loadPanel({displayName:"Alumno"}); // recarga panel
+  // Bioquímica
+  else if(courseId==="bioq"){
+    html+=`<h2>Bioquímica</h2>
+    <div class="sub-section"><h3>Teoría</h3>
+      <table>
+      <tr><th>Semana</th><th>Contenido</th><th>Acciones</th></tr>
+      <tr><td>1</td><td>Bioelementos, agua, pH, buffer</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
+      <!-- Semana 2 a 8 igual -->
+      </table>
+    </div>
+    <div class="sub-section"><h3>Laboratorio</h3>
+      <table>
+      <tr><th>Semana</th><th>Práctica</th><th>Acciones</th></tr>
+      <tr><td>1</td><td>Espectrofotometría, determinación concentración</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
+      <!-- Semana 2 a 8 igual -->
+      </table>
+    </div>`;
   }
 
+  // Anatomía General
+  else if(courseId==="anat"){
+    html+=`<h2>Anatomía General</h2>
+    <table>
+      <tr><th>Semana</th><th>Contenido</th><th>Acciones</th></tr>
+      <tr><td>1</td><td>Hombro, axila, brazo, codo</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
+      <tr><td>2</td><td>Antebrazo, muñeca y mano</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
+      <!-- Semana 3 a 8 igual -->
+    </table>`;
+  }
+
+  panel.innerHTML+=html;
+}
+
+function backToPanel(){
+  loadPanel({displayName:"Alumno"});
+}
 </script>
 </head>
 <body>
@@ -155,7 +197,7 @@ footer { text-align:center; padding:30px; color:#64748b; }
   <h1>Neurova P53</h1>
   <nav>
     <span id="user-name"></span>
-    <a href="#" onclick="logout()">Cerrar sesión</a>
+    <a onclick="logout()">Cerrar sesión</a>
   </nav>
 </header>
 
