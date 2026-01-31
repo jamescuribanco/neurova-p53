@@ -1,170 +1,40 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Neurova P53</title>
-  <style>
-    .hidden {
-  display: none;
-}
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Neurova P53</title>
+<style>
+  body { margin:0; font-family:'Segoe UI', Arial, sans-serif; background:#f8fbff; color:#1f2937; }
+  header { background: linear-gradient(90deg,#e0f2fe,#bae6fd,#93c5fd); padding:20px 40px; display:flex; align-items:center; justify-content:space-between; }
+  header h1 { margin:0; color:#0f172a; font-size:28px; letter-spacing:1px; }
+  nav a { margin-left:20px; text-decoration:none; color:#0f172a; font-weight:500; cursor:pointer; }
+  .container { max-width:1100px; margin:60px auto; padding:0 20px; }
+  .card { background:white; padding:20px; border-radius:14px; box-shadow:0 4px 12px rgba(0,0,0,0.08); text-align:center; margin-bottom:20px; }
+  .card h3 { color:#0077cc; }
+  .card button { margin-top:15px; padding:10px 18px; border:none; border-radius:20px; background:#0077cc; color:white; cursor:pointer; }
+  .card button:hover { background:#005ea3; }
+  .hidden { display:none; }
+  .blocked { background:#ccc; color:#555; cursor:not-allowed; }
+  h2 { color:#1e3a8a; margin-bottom:20px; }
+  input { width:100%; padding:12px; margin-bottom:16px; border-radius:10px; border:1px solid #cbd5f5; font-size:15px; }
+  button { background:#2563eb; color:white; border:none; padding:12px 24px; border-radius:12px; font-size:15px; cursor:pointer; }
+  button:hover { background:#1d4ed8; }
+  footer { text-align:center; padding:30px; color:#64748b; }
 
-.blocked {
-  background: #ccc;
-  color: #555;
-  cursor: not-allowed;
-}
-
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', Arial, sans-serif;
-      background: #f8fbff;
-      color: #1f2937;
-    }
-    .card {
-  background: white;
-  padding: 20px;
-  border-radius: 14px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  text-align: center;
-}
-
-.card h3 {
-  color: #0077cc;
-}
-
-.card button {
-  margin-top: 15px;
-  padding: 10px 18px;
-  border: none;
-  border-radius: 20px;
-  background: #0077cc;
-  color: white;
-  cursor: pointer;
-}
-    header {
-      background: linear-gradient(90deg, #e0f2fe, #bae6fd, #93c5fd);
-      padding: 20px 40px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    header h1 {
-      margin: 0;
-      color: #0f172a;
-      font-size: 28px;
-      letter-spacing: 1px;
-    }
-    nav a {
-      margin-left: 20px;
-      text-decoration: none;
-      color: #0f172a;
-      font-weight: 500;
-    }
-    .container {
-      max-width: 1100px;
-      margin: 60px auto;
-      padding: 0 20px;
-    }
-    .card {
-      background: white;
-      border-radius: 16px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-      padding: 40px;
-    }
-    .hidden {
-      display: none;
-    }
-    h2 {
-      color: #1e3a8a;
-      margin-bottom: 20px;
-    }
-    input {
-      width: 100%;
-      padding: 12px;
-      margin-bottom: 16px;
-      border-radius: 10px;
-      border: 1px solid #cbd5f5;
-      font-size: 15px;
-    }
-    button {
-      background: #2563eb;
-      color: white;
-      border: none;
-      padding: 12px 24px;
-      border-radius: 12px;
-      font-size: 15px;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #1d4ed8;
-    }
-    footer {
-      text-align: center;
-      padding: 30px;
-      color: #64748b;
-    }
-  </style>
+  #course-weeks .card button { background:#10b981; color:white; margin-top:10px; }
+  #course-weeks .card button:hover { background:#059669; }
+</style>
 </head>
-  <script>
-  // CAMBIA AQUÍ EL ROL
-  const rol = "admin"; // "alumno" o "admin"
-
-  if (rol === "admin") {
-    document.getElementById("admin-panel").classList.remove("hidden");
-  } else {
-    document.getElementById("alumno-panel").classList.remove("hidden");
-  }
-</script>
 <body>
-  <!-- ====== PANEL ADMIN ====== -->
-<div id="admin-panel" class="hidden">
-  <section style="padding:40px; background:#fff3e0;">
-    <h2 style="color:#8b0000;">Panel del administrador</h2>
 
-    <p><strong>Rol:</strong> Administrador</p>
-    <p><strong>Estado del sistema:</strong> Activo</p>
-
-    <div class="card">
-      <h3>Morfofisiología I</h3>
-      <p>Acceso: TODOS los alumnos</p>
-      <button>Gestionar curso</button>
-    </div>
-
-    <div class="card">
-      <h3>Bioquímica</h3>
-      <p>Acceso: Parcial</p>
-      <button>Gestionar curso</button>
-    </div>
-  </section>
-</div>
-  <!-- ====== VISTA ALUMNO ====== -->
-<div id="alumno-panel" class="hidden">
-  <section style="padding:40px;">
-    <h2 style="color:#003366;">Mis cursos</h2>
-
-    <div class="card">
-      <h3>Morfofisiología I</h3>
-      <p>Curso activo</p>
-      <button>Entrar al curso</button>
-    </div>
-
-    <div class="card">
-      <h3>Anatomía</h3>
-      <p>Curso no matriculado</p>
-      <button class="blocked">Bloqueado 🔒</button>
-    </div>
-  </section>
-</div>
-<header style="background:white; padding:20px; text-align:center;">
-  <img src="logo.jpeg" alt="Neurova P53" style="height:90px;">
-</header>
 <header>
+  <img src="logo.jpeg" alt="Neurova P53" style="height:90px;">
   <h1>Neurova P53</h1>
   <nav>
-    <a href="#" onclick="showSection('inicio')">Inicio</a>
-    <a href="#" onclick="showSection('cursos')">Cursos</a>
-    <a href="#" onclick="showSection('material')">Material</a>
+    <a onclick="showSection('inicio')">Inicio</a>
+    <a onclick="showSection('cursos')">Cursos</a>
+    <a onclick="showSection('material')">Material</a>
   </nav>
 </header>
 
@@ -176,133 +46,73 @@
     <input type="text" id="user" placeholder="Usuario" />
     <input type="password" id="pass" placeholder="Contraseña" />
     <button onclick="login()">Entrar</button>
-    <div id="mis-cursos" class="hidden">
-    <section style="padding:40px;">
-  <h2 style="color:#003366;">Mis cursos</h2>
-
-  <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:20px; margin-top:20px;">
-
-    <div class="card">
-      <h3>Morfofisiología I</h3>
-      <p>Curso activo</p>
-      <button>Entrar</button>
-    </div>
-
-  </div>
-</section>
-</div>
-    
   </div>
 
-  <!-- CONTENIDO PRIVADO -->
-  <div id="contenido" class="card hidden">
-    <div id="inicio">
-      <h2>Bienvenido a Neurova P53</h2>
-      <p>Academia premium especializada en ciencias de la salud. Formación rigurosa, clara y progresiva, diseñada por ciclos académicos.</p>
-    </div>
-
-    <div id="cursos" class="hidden">
-<section style="padding:40px; background:#f4f9ff;">
-  <h2 style="text-align:center; color:#003366;">Cursos por ciclos</h2>
-
-  <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:20px; margin-top:30px;">
-
-    <div class="card">
-      <h3>Ciclo Básico</h3>
-      <p><strong>Biología Celular y Molecular</strong></p>
-      <p>Fundamentos celulares y moleculares de la vida.</p>
-      <button class="blocked">No matriculado 🔒</button>
-
-    </div>
-
-    <div class="card">
-      <h3>Ciclo Básico</h3>
-      <p><strong>Bioquímica</strong></p>
-      <p>Metabolismo, enzimas y bases bioquímicas.</p>
-      <button>Ver curso</button>
-    </div>
-
-    <div class="card">
-      <h3>Ciclo Intermedio</h3>
-      <p><strong>Morfofisiología I</strong></p>
-      <p>Integración de Fisiología e Histología.</p>
-      <button>Ver curso</button>
-    </div>
-
-    <div class="card">
-      <h3>Ciclo Intermedio</h3>
-      <p><strong>Anatomía</strong></p>
-      <p>Anatomía general con enfoque clínico.</p>
-      <button>Ver curso</button>
-    </div>
-
-    <div class="card">
-      <h3>Ciclo Avanzado</h3>
-      <p><strong>Morfofisiología II</strong></p>
-      <p>Anatomía, Fisiología e Histología integradas.</p>
-      <button>Ver curso</button>
-    </div>
-
-  </div>
-</section>
-      <h3>Ciclo Básico</h3>
-      <ul>
-        <li><strong>Biología Celular y Molecular</strong><br/>Fundamentos celulares, señalización, genética básica y bases moleculares de la vida.</li>
-        <li><strong>Bioquímica</strong><br/>Metabolismo, enzimas, proteínas, carbohidratos y lípidos aplicados a la salud.</li>
-      </ul>
-
-      <h3>Ciclo Intermedio</h3>
-      <ul>
-        <li><strong>Morfofisiología I</strong><br/>Integración de Fisiología e Histología para la comprensión funcional de los tejidos.</li>
-        <li><strong>Anatomía</strong><br/>Anatomía general y topográfica con enfoque clínico.</li>
-      </ul>
-
-      <h3>Ciclo Avanzado</h3>
-      <ul>
-        <li><strong>Morfofisiología II</strong><br/>Anatomía, Fisiología e Histología integradas a nivel sistémico.</li>
-      </ul>
-    </div>
-
-    <div id="material" class="hidden">
-      <h2>Material académico exclusivo</h2>
-      <p>Disponible según curso y ciclo:</p>
-      <ul>
-        <li>📄 PDFs descargables</li>
-        <li>🎥 Videos grabados</li>
-        <li>☁️ Enlaces a Google Drive</li>
-        <li>🎥 Clases en vivo (Zoom)</li>
-      </ul>
-      <p><em>El acceso se habilita automáticamente al confirmar el pago.</em></p>
-    </div>
-
-    <div id="progreso" class="hidden">
-      <h2>Progreso del alumno</h2>
-      <p>Morfofisiología I: 60%</p>
-      <p>Biología Celular y Molecular: 40%</p>
-    </div>
-
-    <div id="certificados" class="hidden">
-      <h2>Certificados</h2>
-      <p>Cuando completes un curso podrás descargar tu certificado digital oficial de Neurova P53.</p>
-      <button>Descargar certificado</button>
+  <!-- PANEL ALUMNO -->
+  <div id="alumno-panel" class="hidden">
+    <h2>Mis cursos</h2>
+    <div class="cards-container">
+      <div class="card">
+        <h3>Morfofisiología I</h3>
+        <p>Curso activo</p>
+        <button onclick="openCourse('morfo1')">Entrar al curso</button>
+      </div>
+      <div class="card">
+        <h3>Morfofisiología II</h3>
+        <p>Curso activo</p>
+        <button onclick="openCourse('morfo2')">Entrar al curso</button>
+      </div>
     </div>
   </div>
 
-    <div id="cursos" class="hidden">
-      <h2>Cursos</h2>
-      <ul>
-        <li><strong>Morfofisiología I</strong><br/>Fisiología e Histología</li>
-        <li><strong>Morfofisiología II</strong><br/>Anatomía, Fisiología e Histología</li>
-        <li><strong>Biología Celular y Molecular</strong></li>
-        <li><strong>Anatomía</strong></li>
-        <li><strong>Bioquímica</strong></li>
-      </ul>
+  <!-- PANEL ADMIN -->
+  <div id="admin-panel" class="hidden">
+    <h2>Panel del administrador</h2>
+    <p>Rol: Admin</p>
+    <p>Estado: Activo</p>
+    <div class="cards-container">
+      <div class="card">
+        <h3>Morfofisiología I</h3>
+        <p>Acceso: Todos los alumnos</p>
+        <button>Gestionar curso</button>
+      </div>
+      <div class="card">
+        <h3>Morfofisiología II</h3>
+        <p>Acceso: Todos los alumnos</p>
+        <button>Gestionar curso</button>
+      </div>
     </div>
+  </div>
 
-    <div id="material" class="hidden">
-      <h2>Material académico</h2>
-      <p>Apuntes, resúmenes, PPTs, exámenes, banqueos y material exclusivo por ciclos.</p>
-    </div>
+  <!-- CURSO DETALLADO POR SEMANA -->
+  <div id="course-detail" class="hidden card">
+    <h2 id="course-title"></h2>
+    <div id="course-weeks"></div>
+    <button onclick="backToPanel()">Volver a mis cursos</button>
+  </div>
+
+  <!-- SECCIONES ESTÁTICAS -->
+  <div id="inicio" class="card hidden">
+    <h2>Bienvenido a Neurova P53</h2>
+    <p>Academia premium especializada en ciencias de la salud. Formación rigurosa, clara y progresiva, diseñada por ciclos académicos.</p>
+  </div>
+
+  <div id="cursos" class="card hidden">
+    <h2>Cursos disponibles</h2>
+    <ul>
+      <li><strong>Morfofisiología I</strong></li>
+      <li><strong>Morfofisiología II</strong></li>
+    </ul>
+  </div>
+
+  <div id="material" class="card hidden">
+    <h2>Material académico</h2>
+    <ul>
+      <li>📄 PDFs descargables</li>
+      <li>🎥 Videos grabados</li>
+      <li>📝 Banco de preguntas "Apliquemos lo aprendido"</li>
+    </ul>
+    <p><em>El acceso se habilita automáticamente al confirmar el pago.</em></p>
   </div>
 
 </div>
@@ -312,62 +122,100 @@
 </footer>
 
 <script>
-  function login() {
-    const u = document.getElementById('user').value;
-    const p = document.getElementById('pass').value;
+const users = {
+  alumno:{role:'alumno', cursos:['morfo1','morfo2']},
+  admin:{role:'admin', cursos:['morfo1','morfo2']}
+};
 
-    if (u && p) {
-      document.getElementById('login').classList.add('hidden');
-      document.getElementById('contenido').classList.remove('hidden');
+// Contenido de Morfofisiología I
+const morfo1Weeks = [
+  {sem:'1', fisiologia:"Membrana celular, receptores, canales, transporte y potenciales de membrana/acción. Regularización y señalización celular.", histologia:"Procesamiento histológico, membrana celular, organelas y núcleo. Desarrollo embrionario del esqueleto y tejido cartilaginoso.", pdf:"docs/morfo1_sem1.pdf", video:"videos/morfo1_sem1.mp4", banco:"preguntas/morfo1_sem1.html"},
+  {sem:'2', fisiologia:"Transmisión de señales celulares. Composición y regulación del medio interno, ósmosis y líquidos corporales.", histologia:"Tejido óseo y osificación. Origen embrionario del sistema muscular y Tejido muscular I.", pdf:"docs/morfo1_sem2.pdf", video:"videos/morfo1_sem2.mp4", banco:"preguntas/morfo1_sem2.html"},
+  {sem:'3', fisiologia:"Neurotransmisores, receptores y sinapsis. Contracción y excitación muscular.", histologia:"Tejido muscular II. Neurohistogénesis y tejido nervioso.", pdf:"docs/morfo1_sem3.pdf", video:"videos/morfo1_sem3.mp4", banco:"preguntas/morfo1_sem3.html"},
+  {sem:'4', fisiologia:"Metabolismo óseo. Evaluación Parcial.", histologia:"Introducción al sistema vascular. Evaluación Parcial.", pdf:"docs/morfo1_sem4.pdf", video:"videos/morfo1_sem4.mp4", banco:"preguntas/morfo1_sem4.html"},
+  {sem:'5', fisiologia:"Sangre y sus propiedades, hematopoyesis, eritropoyesis y hemograma. Fisiología eritrocitaria I (membrana, metabolismo y hemoglobina).", histologia:"Tejido epitelial de revestimiento. Tejido epitelial glandular.", pdf:"docs/morfo1_sem5.pdf", video:"videos/morfo1_sem5.mp4", banco:"preguntas/morfo1_sem5.html"},
+  {sem:'6', fisiologia:"Fisiología eritrocitaria II (hierro, Vit B12 y B9). Fisiología plaquetaria, hemostasia y fibrinólisis.", histologia:"Matriz extracelular, tejido conectivo y tejido adiposo. Tejido sanguíneo y hematopoyesis.", pdf:"docs/morfo1_sem6.pdf", video:"videos/morfo1_sem6.mp4", banco:"preguntas/morfo1_sem6.html"},
+  {sem:'7', fisiologia:"Generalidades del sistema inmunológico, respuesta innata y fagocitosis. Inmunidad adquirida, linfocitos T y B, y grupos sanguíneos.", histologia:"Tejido linfoide y MALT. Órganos linfoides.", pdf:"docs/morfo1_sem7.pdf", video:"videos/morfo1_sem7.mp4", banco:"preguntas/morfo1_sem7.html"},
+  {sem:'8', fisiologia:"Respuesta inflamatoria, tolerancia e hipersensibilidad. Evaluación Final.", histologia:"Sistema tegumentario y sus anexos. Evaluación Final.", pdf:"docs/morfo1_sem8.pdf", video:"videos/morfo1_sem8.mp4", banco:"preguntas/morfo1_sem8.html"},
+];
+
+// Contenido de Morfofisiología II
+const morfo2Weeks = [
+  {sem:'1', anatomia:"Pared torácica, región mamaria y radioanatomía de tórax.", fisiologia:"Hemodinamia y electrofisiología cardiaca.", histologia:"Embriología cardiovascular e histología del corazón y válvulas.", pdf:"docs/morfo2_sem1.pdf", video:"videos/morfo2_sem1.mp4", banco:"preguntas/morfo2_sem1.html"},
+  {sem:'2', anatomia:"Mediastino superior, anterior y medio (pericardio y morfología externa).", fisiologia:"Electrocardiograma I, contracción y ciclo cardiaco.", histologia:"Histología vascular (arterias, capilares, venas y linfáticos).", pdf:"docs/morfo2_sem2.pdf", video:"videos/morfo2_sem2.mp4", banco:"preguntas/morfo2_sem2.html"},
+  {sem:'3', anatomia:"Mediastino medio II (morfología interna y conducción) y radioanatomía cardiaca.", fisiologia:"Presión arterial, gasto cardiaco, retorno venoso y circulaciones especiales.", histologia:"Integración de embriología e histología cardíaca.", pdf:"docs/morfo2_sem3.pdf", video:"videos/morfo2_sem3.mp4", banco:"preguntas/morfo2_sem3.html"},
+  {sem:'4', anatomia:"Mediastino posterior y radioanatomía del mediastino posterior. Examen Parcial.", fisiologia:"Mecánica respiratoria, volúmenes y capacidades. Examen Parcial.", histologia:"Integración de histología vascular. Examen Parcial.", pdf:"docs/morfo2_sem4.pdf", video:"videos/morfo2_sem4.mp4", banco:"preguntas/morfo2_sem4.html"},
+  {sem:'5', anatomia:"Pulmones (segmentación e inervación) y radioanatomía pulmonar.", fisiologia:"Intercambio de gases, transporte de O₂/CO₂, control respiratorio y circulación pulmonar.", histologia:"Embriología e histología del aparato respiratorio (I y II).", pdf:"docs/morfo2_sem5.pdf", video:"videos/morfo2_sem5.mp4", banco:"preguntas/morfo2_sem5.html"},
+  {sem:'6', anatomia:"Columna vertebral dorsal y músculos paravertebrales.", fisiologia:"Estructura renal, aclaramiento, filtración glomerular, reabsorción y secreción renal.", histologia:"Embriología urinaria e histología del riñón y la pelvis renal.", pdf:"docs/morfo2_sem6.pdf", video:"videos/morfo2_sem6.mp4", banco:"preguntas/morfo2_sem6.html"},
+  {sem:'7', anatomia:"Radioanatomía de columna torácica, anatomía del riñón y vías urinarias.", fisiologia:"Regulación de electrolitos, volumen, equilibrio ácido-base y diuréticos.", histologia:"Histología de uréter, vejiga y uretra; malformaciones congénitas renales.", pdf:"docs/morfo2_sem7.pdf", video:"videos/morfo2_sem7.mp4", banco:"preguntas/morfo2_sem7.html"},
+  {sem:'8', anatomia:"Radioanatomía del riñón y vías urinarias. Examen Final.", fisiologia:"Fisiología de la aviación, grandes alturas y buceo profundo. Examen Final.", histologia:"Histopatología renal y de las vías urinarias. Examen Final.", pdf:"docs/morfo2_sem8.pdf", video:"videos/morfo2_sem8.mp4", banco:"preguntas/morfo2_sem8.html"},
+];
+
+function login(){
+  const u=document.getElementById('user').value;
+  const p=document.getElementById('pass').value;
+  if(users[u]&&p){
+    sessionStorage.setItem('user',u);
+    document.getElementById('login').classList.add('hidden');
+    loadPanel();
+  }else alert('Credenciales inválidas');
+}
+
+function loadPanel(){
+  const u=sessionStorage.getItem('user');
+  if(!u) return;
+  const role=users[u].role;
+  if(role==='admin') document.getElementById('admin-panel').classList.remove('hidden');
+  else document.getElementById('alumno-panel').classList.remove('hidden');
+}
+
+function showSection(id){
+  const sections=['inicio','cursos','material'];
+  sections.forEach(s=>document.getElementById(s).classList.add('hidden'));
+  document.getElementById(id).classList.remove('hidden');
+}
+
+function openCourse(courseId){
+  const u=sessionStorage.getItem('user');
+  if(!users[u].cursos.includes(courseId)){ alert('Curso bloqueado 🔒'); return; }
+  document.getElementById('alumno-panel').classList.add('hidden');
+  const detail=document.getElementById('course-detail');
+  detail.classList.remove('hidden');
+  document.getElementById('course-title').innerText=(courseId==='morfo1')?'Morfofisiología I':'Morfofisiología II';
+  const weeksDiv=document.getElementById('course-weeks');
+  weeksDiv.innerHTML='';
+
+  const weeks=(courseId==='morfo1')?morfo1Weeks:morfo2Weeks;
+  weeks.forEach(w=>{
+    const card=document.createElement('div');
+    card.classList.add('card');
+
+    const title=document.createElement('h3');
+    title.innerText='Semana '+w.sem;
+    card.appendChild(title);
+
+    if(courseId==='morfo1'){
+      const fisi=document.createElement('p'); fisi.innerHTML='<strong>Fisiología:</strong> '+w.fisiologia; card.appendChild(fisi);
+      const hist=document.createElement('p'); hist.innerHTML='<strong>Histología:</strong> '+w.histologia; card.appendChild(hist);
     } else {
-      alert('Ingresa usuario y contraseña');
+      const anat=document.createElement('p'); anat.innerHTML='<strong>Anatomía y Radioanatomía:</strong> '+w.anatomia; card.appendChild(anat);
+      const fis=document.createElement('p'); fis.innerHTML='<strong>Fisiología:</strong> '+w.fisiologia; card.appendChild(fis);
+      const his=document.createElement('p'); his.innerHTML='<strong>Histología y Embriología:</strong> '+w.histologia; card.appendChild(his);
     }
-  }
 
-  function showSection(id) {
-    const sections = ['inicio', 'cursos', 'material'];
-    sections.forEach(s => document.getElementById(s).classList.add('hidden'));
-    document.getElementById(id).classList.remove('hidden');
-  }
-  // --- SISTEMA SIMULADO DE USUARIOS ---
-  const users = {
-    alumno: { role: 'alumno', ciclos: ['basico', 'intermedio'] },
-    admin: { role: 'admin', ciclos: ['basico', 'intermedio', 'avanzado'] }
-  };
+    const pdfBtn=document.createElement('button'); pdfBtn.innerText='Ver PDF 📄'; pdfBtn.onclick=()=>window.open(w.pdf,'_blank'); pdfBtn.style.marginRight='10px'; card.appendChild(pdfBtn);
+    const vidBtn=document.createElement('button'); vidBtn.innerText='Ver Video 🎥'; vidBtn.onclick=()=>window.open(w.video,'_blank'); card.appendChild(vidBtn);
+    const bancoBtn=document.createElement('button'); bancoBtn.innerText='Apliquemos lo aprendido 📝'; bancoBtn.onclick=()=>window.open(w.banco,'_blank'); bancoBtn.style.marginLeft='10px'; card.appendChild(bancoBtn);
 
-  function login() {
-    const u = document.getElementById('user').value;
-    const p = document.getElementById('pass').value;
+    weeksDiv.appendChild(card);
+  });
+}
 
-    if (users[u] && p) {
-      sessionStorage.setItem('user', u);
-      document.getElementById('login').classList.add('hidden');
-      document.getElementById('contenido').classList.remove('hidden');
-      loadPanel();
-    } else {
-      alert('Credenciales inválidas');
-    }
-  }
-
-  function loadPanel() {
-    const u = sessionStorage.getItem('user');
-    if (!u) return;
-
-    const panel = document.createElement('div');
-    panel.innerHTML = `
-      <h2>Panel del ${users[u].role}</h2>
-      <p>Ciclos habilitados: ${users[u].ciclos.join(', ')}</p>
-      <p>Estado de pago: <strong>Activo</strong></p>
-    `;
-    document.getElementById('inicio').appendChild(panel);
-  }
+function backToPanel(){
+  document.getElementById('course-detail').classList.add('hidden');
+  document.getElementById('alumno-panel').classList.remove('hidden');
+}
 </script>
 
 </body>
 </html>
-
-
-
-
-
-
