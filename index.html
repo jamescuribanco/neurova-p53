@@ -5,25 +5,24 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Neurova P53</title>
 <style>
-  body { margin:0; font-family:'Segoe UI', Arial, sans-serif; background:#f8fbff; color:#1f2937; }
-  header { background: linear-gradient(90deg,#e0f2fe,#bae6fd,#93c5fd); padding:20px 40px; display:flex; align-items:center; justify-content:space-between; }
-  header h1 { margin:0; color:#0f172a; font-size:28px; letter-spacing:1px; }
-  nav a { margin-left:20px; text-decoration:none; color:#0f172a; font-weight:500; cursor:pointer; }
-  .container { max-width:1100px; margin:60px auto; padding:0 20px; }
-  .card { background:white; padding:20px; border-radius:14px; box-shadow:0 4px 12px rgba(0,0,0,0.08); text-align:center; margin-bottom:20px; }
-  .card h3 { color:#0077cc; }
-  .card button { margin-top:15px; padding:10px 18px; border:none; border-radius:20px; background:#0077cc; color:white; cursor:pointer; }
-  .card button:hover { background:#005ea3; }
-  .hidden { display:none; }
-  .blocked { background:#ccc; color:#555; cursor:not-allowed; }
-  h2 { color:#1e3a8a; margin-bottom:20px; }
-  input { width:100%; padding:12px; margin-bottom:16px; border-radius:10px; border:1px solid #cbd5f5; font-size:15px; }
-  button { background:#2563eb; color:white; border:none; padding:12px 24px; border-radius:12px; font-size:15px; cursor:pointer; }
-  button:hover { background:#1d4ed8; }
-  footer { text-align:center; padding:30px; color:#64748b; }
-
-  #course-weeks .card button { background:#10b981; color:white; margin-top:10px; }
-  #course-weeks .card button:hover { background:#059669; }
+body { margin:0; font-family:'Segoe UI', Arial, sans-serif; background:#f8fbff; color:#1f2937; }
+header { background: linear-gradient(90deg,#e0f2fe,#bae6fd,#93c5fd); padding:20px 40px; display:flex; align-items:center; justify-content:space-between; }
+header h1 { margin:0; color:#0f172a; font-size:28px; letter-spacing:1px; }
+nav a { margin-left:20px; text-decoration:none; color:#0f172a; font-weight:500; cursor:pointer; }
+.container { max-width:1100px; margin:60px auto; padding:0 20px; }
+.card { background:white; padding:20px; border-radius:14px; box-shadow:0 4px 12px rgba(0,0,0,0.08); text-align:center; margin-bottom:20px; }
+.card h3 { color:#0077cc; }
+.card button { margin-top:15px; padding:10px 18px; border:none; border-radius:20px; background:#0077cc; color:white; cursor:pointer; }
+.card button:hover { background:#005ea3; }
+.hidden { display:none; }
+.blocked { background:#ccc; color:#555; cursor:not-allowed; }
+h2 { color:#1e3a8a; margin-bottom:20px; }
+input { width:100%; padding:12px; margin-bottom:16px; border-radius:10px; border:1px solid #cbd5f5; font-size:15px; }
+button { background:#2563eb; color:white; border:none; padding:12px 24px; border-radius:12px; font-size:15px; cursor:pointer; }
+button:hover { background:#1d4ed8; }
+footer { text-align:center; padding:30px; color:#64748b; }
+#course-weeks .card button { background:#10b981; color:white; margin-top:10px; }
+#course-weeks .card button:hover { background:#059669; }
 </style>
 </head>
 <body>
@@ -122,12 +121,13 @@
 </footer>
 
 <script>
+// Usuarios simulados
 const users = {
   alumno:{role:'alumno', cursos:['morfo1','morfo2']},
   admin:{role:'admin', cursos:['morfo1','morfo2']}
 };
 
-// Contenido Morfofisiología I
+// Morfofisiología I
 const morfo1Weeks = [
   {sem:'1', fisiologia:"Membrana celular, receptores, canales, transporte y potenciales de membrana/acción. Regularización y señalización celular.", histologia:"Procesamiento histológico, membrana celular, organelas y núcleo. Desarrollo embrionario del esqueleto y tejido cartilaginoso.", pdf:"docs/morfo1_sem1.pdf", video:"videos/morfo1_sem1.mp4", banco:"preguntas/morfo1_sem1.html"},
   {sem:'2', fisiologia:"Transmisión de señales celulares. Composición y regulación del medio interno, ósmosis y líquidos corporales.", histologia:"Tejido óseo y osificación. Origen embrionario del sistema muscular y Tejido muscular I.", pdf:"docs/morfo1_sem2.pdf", video:"videos/morfo1_sem2.mp4", banco:"preguntas/morfo1_sem2.html"},
@@ -139,7 +139,7 @@ const morfo1Weeks = [
   {sem:'8', fisiologia:"Respuesta inflamatoria, tolerancia e hipersensibilidad. Evaluación Final.", histologia:"Sistema tegumentario y sus anexos. Evaluación Final.", pdf:"docs/morfo1_sem8.pdf", video:"videos/morfo1_sem8.mp4", banco:"preguntas/morfo1_sem8.html"}
 ];
 
-// Contenido Morfofisiología II
+// Morfofisiología II
 const morfo2Weeks = [
   {sem:'1', anatomia:"Pared torácica, región mamaria y radioanatomía de tórax.", fisiologia:"Hemodinamia y electrofisiología cardiaca.", histologia:"Embriología cardiovascular e histología del corazón y válvulas.", pdf:"docs/morfo2_sem1.pdf", video:"videos/morfo2_sem1.mp4", banco:"preguntas/morfo2_sem1.html"},
   {sem:'2', anatomia:"Mediastino superior, anterior y medio (pericardio y morfología externa).", fisiologia:"Electrocardiograma I, contracción y ciclo cardiaco.", histologia:"Histología vascular (arterias, capilares, venas y linfáticos).", pdf:"docs/morfo2_sem2.pdf", video:"videos/morfo2_sem2.mp4", banco:"preguntas/morfo2_sem2.html"},
@@ -151,6 +151,7 @@ const morfo2Weeks = [
   {sem:'8', anatomia:"Radioanatomía del riñón y vías urinarias. Examen Final.", fisiologia:"Fisiología de la aviación, grandes alturas y buceo profundo. Examen Final.", histologia:"Histopatología renal y de las vías urinarias. Examen Final.", pdf:"docs/morfo2_sem8.pdf", video:"videos/morfo2_sem8.mp4", banco:"preguntas/morfo2_sem8.html"}
 ];
 
+// Funciones
 function login(){
   const u=document.getElementById('user').value;
   const p=document.getElementById('pass').value;
@@ -170,9 +171,16 @@ function loadPanel(){
 }
 
 function showSection(id){
-  const sections=['inicio','cursos','material'];
-  sections.forEach(s=>document.getElementById(s).classList.add('hidden'));
+  ['inicio','cursos','material'].forEach(s=>document.getElementById(s).classList.add('hidden'));
+  document.getElementById('course-detail').classList.add('hidden');
+  document.getElementById('alumno-panel').classList.add('hidden');
+  document.getElementById('admin-panel').classList.add('hidden');
   document.getElementById(id).classList.remove('hidden');
+  const u=sessionStorage.getItem('user');
+  if(u){
+    if(id==='inicio' && users[u].role==='alumno') document.getElementById('alumno-panel').classList.remove('hidden');
+    if(id==='inicio' && users[u].role==='admin') document.getElementById('admin-panel').classList.remove('hidden');
+  }
 }
 
 function openCourse(courseId){
@@ -221,4 +229,4 @@ function backToPanel(){
 </script>
 
 </body>
-</html>
+</html
