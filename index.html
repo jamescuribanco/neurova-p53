@@ -1,361 +1,302 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Neurova P53</title>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
   <style>
-    body {
-      margin:0;
-      font-family:'Segoe UI', Arial, sans-serif;
-      background:#f8fbff;
-      color:#1f2937;
-    }
-    header {
-      background: linear-gradient(90deg,#e0f2fe,#bae6fd,#93c5fd);
-      padding:20px 40px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      flex-wrap:wrap;
-    }
-    header h1 {
-      margin:0;
-      color:#0f172a;
-      font-size:28px;
-      letter-spacing:1px;
-    }
-    nav a {
-      margin-left:20px;
-      text-decoration:none;
-      color:#0f172a;
-      font-weight:500;
-      cursor:pointer;
-    }
-    .container {
-      max-width:1100px;
-      margin:40px auto;
-      padding:0 20px;
-    }
-    .card {
-      background:white;
-      border-radius:16px;
-      box-shadow:0 10px 30px rgba(0,0,0,0.08);
-      padding:30px;
-      margin-bottom:20px;
-      text-align:center;
-      transition:transform 0.2s;
-    }
-    .card:hover {transform:translateY(-5px);}
-    .card button {
-      margin-top:15px;
-      padding:10px 20px;
-      border:none;
-      border-radius:20px;
-      background:#0077cc;
-      color:white;
-      cursor:pointer;
-      font-weight:500;
-    }
-    .card button:hover {background:#005fa3;}
-    .hidden {display:none;}
-    h2 {color:#1e3a8a; margin-bottom:20px;}
-    footer {text-align:center; padding:30px; color:#64748b;}
-    button.subcourse-btn {
-      margin:5px;
-      padding:10px 15px;
-      border:none;
-      border-radius:12px;
-      background:#2563eb;
-      color:white;
-      cursor:pointer;
-      font-weight:500;
-    }
-    button.subcourse-btn:hover {background:#1d4ed8;}
-    a.link-btn {
-      text-decoration:none;
-      color:#0077cc;
-      font-weight:500;
-      margin-right:10px;
-    }
-    .back-btn {
-      margin-bottom:20px;
-      display:inline-block;
-      background:#f97316;
-      color:white;
-      padding:10px 18px;
-      border-radius:12px;
-      cursor:pointer;
-    }
-    .back-btn:hover {background:#c2410c;}
+    body { margin:0; font-family: 'Segoe UI', sans-serif; background:#f8fbff; color:#1f2937; }
+    header { background: linear-gradient(90deg,#e0f2fe,#bae6fd,#93c5fd); padding:20px 40px; display:flex; justify-content:space-between; align-items:center;}
+    header h1 { margin:0; color:#0f172a; font-size:28px; letter-spacing:1px;}
+    nav a { margin-left:20px; text-decoration:none; color:#0f172a; font-weight:500; cursor:pointer;}
+    .container { max-width:1100px; margin:40px auto; padding:0 20px;}
+    .card { background:white; border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,0.08); padding:20px; margin-bottom:20px;}
+    .card h3 { color:#0077cc;}
+    .card button { margin-top:10px; padding:10px 18px; border:none; border-radius:20px; background:#0077cc; color:white; cursor:pointer;}
+    .card button.blocked { background:#ccc; color:#555; cursor:not-allowed;}
+    .hidden { display:none; }
+    table { width:100%; border-collapse:collapse; margin-top:10px;}
+    th, td { border:1px solid #cbd5f5; padding:8px; text-align:left;}
+    th { background:#2563eb; color:white;}
+    footer { text-align:center; padding:30px; color:#64748b;}
   </style>
 </head>
+
 <body>
 
-<header>
-  <h1>Neurova P53</h1>
-  <nav>
-    <a onclick="showPanel()">Inicio</a>
-  </nav>
-</header>
+  <!-- HEADER -->
+  <header>
+    <h1>Neurova P53</h1>
+    <nav>
+      <a onclick="showSection('inicio')">Inicio</a>
+      <a onclick="showSection('cursos')">Cursos</a>
+      <a onclick="showSection('horario')">Horario</a>
+    </nav>
+  </header>
 
-<div class="container">
+  <div class="container">
 
-  <!-- LOGIN -->
-  <div id="login" class="card">
-    <h2>Iniciar sesión</h2>
-    <input type="text" id="user" placeholder="Usuario" />
-    <button onclick="login()">Entrar</button>
-    <p style="margin-top:10px; font-size:14px; color:#555;">Usuarios de prueba: alumno / admin</p>
+    <!-- LOGIN -->
+    <div id="login" class="card">
+      <h2>Iniciar sesión con Google</h2>
+      <button id="google-login">Entrar con Google</button>
+    </div>
+
+    <!-- PANEL ALUMNO -->
+    <div id="alumno-panel" class="hidden">
+      <h2>Bienvenido <span id="alumno-nombre"></span></h2>
+      <div id="horario-alumno"></div>
+      <div id="cursos-alumno"></div>
+    </div>
+
+    <!-- PANEL ADMIN -->
+    <div id="admin-panel" class="hidden">
+      <h2>Panel del Administrador</h2>
+      <div id="horario-todos"></div>
+      <div id="cursos-admin"></div>
+    </div>
+
   </div>
 
-  <!-- PANEL ALUMNO -->
-  <div id="alumno-panel" class="hidden">
-    <h2>Mis cursos</h2>
-    <div class="card">
-      <h3>Biología Celular y Molecular</h3>
-      <button onclick="openCourse('biocel')">Entrar al curso</button>
-    </div>
-    <div class="card">
-      <h3>Bioquímica</h3>
-      <button onclick="openCourse('bioquim')">Entrar al curso</button>
-    </div>
-    <div class="card">
-      <h3>Morfofisiología I</h3>
-      <button onclick="openCourse('morfo1')">Entrar al curso</button>
-    </div>
-    <div class="card">
-      <h3>Morfofisiología II</h3>
-      <button onclick="openCourse('morfo2')">Entrar al curso</button>
-    </div>
-    <div class="card">
-      <h3>Anatomía General</h3>
-      <button onclick="openCourse('anatomia')">Entrar al curso</button>
-    </div>
-  </div>
-
-  <!-- SUBCURSOS (para cursos que tienen secciones) -->
-  <div id="subcourse-detail" class="hidden">
-    <span class="back-btn" onclick="backToPanel()">← Volver a mis cursos</span>
-    <h2 id="subcourse-title"></h2>
-    <div id="subcourse-buttons"></div>
-  </div>
-
-  <!-- CONTENIDO DEL CURSO -->
-  <div id="course-detail" class="hidden">
-    <span class="back-btn" onclick="backToPanel()">← Volver a mis cursos</span>
-    <h2 id="course-title"></h2>
-    <div id="course-weeks"></div>
-  </div>
-
-</div>
-
-<footer>
-  © 2026 Neurova P53 · Educación con base científica
-</footer>
+  <footer>
+    © 2026 Neurova P53 · Educación con base científica
+  </footer>
 
 <script>
-let currentCourse = '';
-let currentSubcourse = '';
+  // ------------------- FIREBASE CONFIG -------------------
+  const firebaseConfig = {
+    apiKey: "TU_API_KEY",
+    authDomain: "TU_AUTH_DOMAIN",
+    projectId: "TU_PROJECT_ID",
+    storageBucket: "TU_STORAGE_BUCKET",
+    messagingSenderId: "TU_MESSAGING_SENDER_ID",
+    appId: "TU_APP_ID"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
 
-// --- CURSOS ---
-const biocel = {
-  subcourses:['Teoría','Laboratorio'],
-  semanas:{
-    'Teoría':[
-      {sem:'1', tema:'Niveles de organización, Bioelementos, Enlaces químicos y Agua. Glúcidos y Lípidos.', pdf:'#', video:'#', banco:'#'},
-      {sem:'2', tema:'Aminoácidos, Proteínas y Enzimas. Dogma Central: Estructura del ADN y ARN.', pdf:'#', video:'#', banco:'#'},
-      {sem:'3', tema:'La Célula: Evolución (Proca vs. Euca) y Membrana Celular. Transporte de membrana (Pasivo/Activo).', pdf:'#', video:'#', banco:'#'},
-      {sem:'4', tema:'Citoesqueleto, Matriz Extracelular y Uniones celulares. Evaluación Parcial.', pdf:'#', video:'#', banco:'#'},
-      {sem:'5', tema:'Sistema de Endomembranas (RER, REL, Golgi) y Digestión Celular. Mitocondrias y Bioenergética.', pdf:'#', video:'#', banco:'#'},
-      {sem:'6', tema:'Núcleo Celular, Cromatina y Replicación del ADN. Transcripción y Procesamiento de ARN.', pdf:'#', video:'#', banco:'#'},
-      {sem:'7', tema:'Traducción (Síntesis de Proteínas). Ciclo Celular, Mitosis, Meiosis y Apoptosis.', pdf:'#', video:'#', banco:'#'},
-      {sem:'8', tema:'Señalización celular, Introducción al Cáncer y Genética Molecular. Evaluación Final.', pdf:'#', video:'#', banco:'#'}
-    ],
-    'Laboratorio':[
-      {sem:'1', tema:'Normas de Bioseguridad y Manejo del Microscopio. Identificación de Glúcidos y Lípidos.', pdf:'#', video:'#', banco:'#'},
-      {sem:'2', tema:'Identificación de Proteínas y Enzimas. Extracción de ADN.', pdf:'#', video:'#', banco:'#'},
-      {sem:'3', tema:'Célula Procariota y Eucariota. Permeabilidad de la Membrana Celular (Diálisis).', pdf:'#', video:'#', banco:'#'},
-      {sem:'4', tema:'Diversidad Celular y Diferenciación. Evaluación Parcial.', pdf:'#', video:'#', banco:'#'},
-      {sem:'5', tema:'Fraccionamiento Celular. Respiración Celular (Fermentación).', pdf:'#', video:'#', banco:'#'},
-      {sem:'6', tema:'Observación de Núcleo y Corpúsculo de Barr. Soluciones y Diluciones.', pdf:'#', video:'#', banco:'#'},
-      {sem:'7', tema:'Síntesis de Proteínas (Simulación). Mitosis y Meiosis (Células vegetales/animales).', pdf:'#', video:'#', banco:'#'},
-      {sem:'8', tema:'Tecnología del ADN Recombinante (Simulación). Evaluación Final.', pdf:'#', video:'#', banco:'#'}
-    ]
-  }
-};
-
-const bioquim = {
-  subcourses:['Teoría','Laboratorio'],
-  semanas:{
-    'Teoría':[
-      {sem:'1', tema:'Bioelementos y Biomoléculas: Agua, pH, soluciones buffer, bioelementos y vitaminas. Estructuras supramoleculares.', pdf:'#', video:'#', banco:'#'},
-      {sem:'2', tema:'Aminoácidos y Proteínas: Estructura, clasificación y propiedades. Plegamiento y desnaturalización.', pdf:'#', video:'#', banco:'#'},
-      {sem:'3', tema:'Enzimas y Cinética: Energía de activación y factores que afectan la actividad enzimática. Evaluación Continua 1.', pdf:'#', video:'#', banco:'#'},
-      {sem:'4', tema:'Metabolismo de Carbohidratos: Glicólisis, ciclo de la urea y degradación de aminoácidos. Evaluación Parcial.', pdf:'#', video:'#', banco:'#'},
-      {sem:'5', tema:'Glucógeno y Bioenergética: Síntesis/degradación de glucógeno, ciclo de Krebs y fosforilación oxidativa.', pdf:'#', video:'#', banco:'#'},
-      {sem:'6', tema:'Metabolismo de Lípidos: Lipogénesis, beta-oxidación y síntesis de triglicéridos. Evaluación Continua 2.', pdf:'#', video:'#', banco:'#'},
-      {sem:'7', tema:'Colesterol y Ácidos Nucleicos: Síntesis de colesterol, estructura de ADN/ARN y replicación.', pdf:'#', video:'#', banco:'#'},
-      {sem:'8', tema:'Síntesis de Proteínas: Transcripción y traducción. Presentación de situación clínica. Evaluación Final.', pdf:'#', video:'#', banco:'#'}
-    ],
-    'Laboratorio':[
-      {sem:'1', tema:'Espectrofotometría: Principios de bioseguridad y determinación de concentración de compuestos.', pdf:'#', video:'#', banco:'#'},
-      {sem:'2', tema:'Proteínas totales: Determinación de proteínas totales, albúmina y globulinas en suero.', pdf:'#', video:'#', banco:'#'},
-      {sem:'3', tema:'Degradación de proteínas y factores que afectan la actividad enzimática.', pdf:'#', video:'#', banco:'#'},
-      {sem:'4', tema:'Concentración de urea: Determinación en suero e identificación de biomoléculas. Evaluación Parcial.', pdf:'#', video:'#', banco:'#'},
-      {sem:'5', tema:'Metabolismo en ayuno/postprandial: Evaluación de rutas metabólicas en condiciones de alimentación.', pdf:'#', video:'#', banco:'#'},
-      {sem:'6', tema:'Digestión y Hidrólisis: Digestión enzimática del almidón e hidrólisis de lípidos.', pdf:'#', video:'#', banco:'#'},
-      {sem:'7', tema:'Perfil Lipídico: Determinación de triglicéridos, colesterol y lipoproteínas en suero.', pdf:'#', video:'#', banco:'#'},
-      {sem:'8', tema:'Ácido Úrico y ADN: Extracción de ADN y determinación de ácido úrico en suero. Evaluación Final.', pdf:'#', video:'#', banco:'#'}
-    ]
-  }
-};
-
-const morfo1 = {
-  subcourses:[],
-  semanas:[
-    {sem:'1', tema:'Membrana celular, receptores, canales, transporte y potenciales de membrana/acción. Regularización y señalización celular.', pdf:'#', video:'#', banco:'#'},
-    {sem:'2', tema:'Transmisión de señales celulares. Composición y regulación del medio interno, ósmosis y líquidos corporales.', pdf:'#', video:'#', banco:'#'},
-    {sem:'3', tema:'Neurotransmisores, receptores y sinapsis. Contracción y excitación muscular.', pdf:'#', video:'#', banco:'#'},
-    {sem:'4', tema:'Metabolismo óseo. Evaluación Parcial.', pdf:'#', video:'#', banco:'#'},
-    {sem:'5', tema:'Sangre y sus propiedades, hematopoyesis, eritropoyesis y hemograma. Fisiología eritrocitaria I.', pdf:'#', video:'#', banco:'#'},
-    {sem:'6', tema:'Fisiología eritrocitaria II (hierro, Vit B12 y B9). Fisiología plaquetaria, hemostasia y fibrinólisis.', pdf:'#', video:'#', banco:'#'},
-    {sem:'7', tema:'Generalidades del sistema inmunológico, respuesta innata y fagocitosis. Inmunidad adquirida, linfocitos T y B, y grupos sanguíneos.', pdf:'#', video:'#', banco:'#'},
-    {sem:'8', tema:'Respuesta inflamatoria, tolerancia e hipersensibilidad. Evaluación Final.', pdf:'#', video:'#', banco:'#'}
-  ]
-};
-
-const morfo2 = {
-  subcourses:['Morfo II - Semana','Fisiología','Histología y Embriología'],
-  semanas:{
-    'Morfo II - Semana':[
-      {sem:'1', tema:'Pared torácica, región mamaria y radioanatomía de tórax.', pdf:'#', video:'#', banco:'#'},
-      {sem:'2', tema:'Mediastino superior, anterior y medio (pericardio y morfología externa).', pdf:'#', video:'#', banco:'#'},
-      {sem:'3', tema:'Mediastino medio II (morfología interna y conducción) y radioanatomía cardiaca.', pdf:'#', video:'#', banco:'#'},
-      {sem:'4', tema:'Mediastino posterior y radioanatomía del mediastino posterior. Examen Parcial.', pdf:'#', video:'#', banco:'#'},
-      {sem:'5', tema:'Pulmones (segmentación e inervación) y radioanatomía pulmonar.', pdf:'#', video:'#', banco:'#'},
-      {sem:'6', tema:'Columna vertebral dorsal y músculos paravertebrales.', pdf:'#', video:'#', banco:'#'},
-      {sem:'7', tema:'Radioanatomía de columna torácica, anatomía del riñón y vías urinarias.', pdf:'#', video:'#', banco:'#'},
-      {sem:'8', tema:'Radioanatomía del riñón y vías urinarias. Examen Final.', pdf:'#', video:'#', banco:'#'}
-    ],
-    'Fisiología':[
-      {sem:'1', tema:'Hemodinamia y electrofisiología cardiaca.', pdf:'#', video:'#', banco:'#'},
-      {sem:'2', tema:'Electrocardiograma I, contracción y ciclo cardiaco.', pdf:'#', video:'#', banco:'#'},
-      {sem:'3', tema:'Presión arterial, gasto cardiaco, retorno venoso y circulaciones especiales.', pdf:'#', video:'#', banco:'#'},
-      {sem:'4', tema:'Mecánica respiratoria, volúmenes y capacidades. Examen Parcial.', pdf:'#', video:'#', banco:'#'},
-      {sem:'5', tema:'Intercambio de gases, transporte de O₂/CO₂, control respiratorio y circulación pulmonar.', pdf:'#', video:'#', banco:'#'},
-      {sem:'6', tema:'Estructura renal, aclaramiento, filtración glomerular, reabsorción y secreción renal.', pdf:'#', video:'#', banco:'#'},
-      {sem:'7', tema:'Regulación de electrolitos, volumen, equilibrio ácido-base y diuréticos.', pdf:'#', video:'#', banco:'#'},
-      {sem:'8', tema:'Fisiología de la aviación, grandes alturas y buceo profundo. Examen Final.', pdf:'#', video:'#', banco:'#'}
-    ],
-    'Histología y Embriología':[
-      {sem:'1', tema:'Embriología cardiovascular e histología del corazón y válvulas.', pdf:'#', video:'#', banco:'#'},
-      {sem:'2', tema:'Histología vascular (arterias, capilares, venas y linfáticos).', pdf:'#', video:'#', banco:'#'},
-      {sem:'3', tema:'Integración de embriología e histología cardíaca.', pdf:'#', video:'#', banco:'#'},
-      {sem:'4', tema:'Integración de histología vascular. Examen Parcial.', pdf:'#', video:'#', banco:'#'},
-      {sem:'5', tema:'Embriología e histología del aparato respiratorio (I y II).', pdf:'#', video:'#', banco:'#'},
-      {sem:'6', tema:'Embriología urinaria e histología del riñón y la pelvis renal.', pdf:'#', video:'#', banco:'#'},
-      {sem:'7', tema:'Histología de uréter, vejiga y uretra; malformaciones congénitas renales.', pdf:'#', video:'#', banco:'#'},
-      {sem:'8', tema:'Histopatología renal y de las vías urinarias. Examen Final.', pdf:'#', video:'#', banco:'#'}
-    ]
-  }
-};
-
-const anatomia = {
-  subcourses:[],
-  semanas:[
-    {sem:'1', tema:'Hombro, Axila, Brazo y Codo.', pdf:'#', video:'#', banco:'#'},
-    {sem:'2', tema:'Antebrazo, Muñeca y Mano.', pdf:'#', video:'#', banco:'#'},
-    {sem:'3', tema:'Región Glútea, Cadera, Muslo y Rodilla.', pdf:'#', video:'#', banco:'#'},
-    {sem:'4', tema:'Pierna, Región Poplítea, Tobillo y Pie.', pdf:'#', video:'#', banco:'#'},
-    {sem:'5', tema:'Vértebras cervicales, regiones y triángulos del cuello.', pdf:'#', video:'#', banco:'#'},
-    {sem:'6', tema:'Vísceras del cuello, Cabeza ósea (Neuro/Viscerocráneo).', pdf:'#', video:'#', banco:'#'},
-    {sem:'7', tema:'Músculos mímica/masticación y Regiones profundas de la cara.', pdf:'#', video:'#', banco:'#'},
-    {sem:'8', tema:'Cavidad oral, fosas nasales y paredes de tronco.', pdf:'#', video:'#', banco:'#'}
-  ]
-};
-
-// --- OBJETO CON TODOS LOS CURSOS ---
-const allCourses = {biocel,bioquim,morfo1,morfo2,anatomia};
-
-// --- FUNCIONES ---
-function login() {
-  const u = document.getElementById('user').value.trim();
-  if(u) {
-    document.getElementById('login').classList.add('hidden');
-    document.getElementById('alumno-panel').classList.remove('hidden');
-  } else {
-    alert('Ingresa tu usuario');
-  }
-}
-
-function showPanel(){
-  document.getElementById('alumno-panel').classList.remove('hidden');
-  document.getElementById('subcourse-detail').classList.add('hidden');
-  document.getElementById('course-detail').classList.add('hidden');
-}
-
-function backToPanel(){showPanel();}
-
-function openCourse(c){
-  currentCourse = c;
-  const course = allCourses[c];
-
-  if(course.subcourses.length>0){
-    // Mostrar subcursos
-    document.getElementById('alumno-panel').classList.add('hidden');
-    document.getElementById('subcourse-detail').classList.remove('hidden');
-    document.getElementById('course-detail').classList.add('hidden');
-    document.getElementById('subcourse-title').innerText='Seleccione sección del curso';
-    const btnsDiv = document.getElementById('subcourse-buttons');
-    btnsDiv.innerHTML='';
-    course.subcourses.forEach(s=>{
-      const btn = document.createElement('button');
-      btn.innerText=s;
-      btn.className='subcourse-btn';
-      btn.onclick=()=>openSubcourse(s);
-      btnsDiv.appendChild(btn);
-    });
-  } else {
-    // Curso simple
-    showCourseWeeks(course);
-  }
-}
-
-function openSubcourse(s){
-  currentSubcourse=s;
-  const course = allCourses[currentCourse];
-  showCourseWeeks(course,s);
-}
-
-function showCourseWeeks(course,sub=''){
-  document.getElementById('alumno-panel').classList.add('hidden');
-  document.getElementById('subcourse-detail').classList.add('hidden');
-  document.getElementById('course-detail').classList.remove('hidden');
-  document.getElementById('course-title').innerText=currentCourse;
-
-  const div = document.getElementById('course-weeks');
-  div.innerHTML='';
-
-  let semanasList = sub?course.semanas[sub]:course.semanas;
-
-  if(!Array.isArray(semanasList)){semanasList = course.semanas;} // para cursos simples
-  semanasList.forEach(w=>{
-    const weekDiv = document.createElement('div');
-    weekDiv.className='card';
-    weekDiv.innerHTML=`
-      <h3>Semana ${w.sem}</h3>
-      <p>${w.tema}</p>
-      <p>
-        <a href="${w.video}" class="link-btn">🎥 Video</a>
-        <a href="${w.pdf}" class="link-btn">📄 PDF</a>
-        <a href="${w.banco}" class="link-btn">📝 Apliquemos lo aprendido</a>
-      </p>
-    `;
-    div.appendChild(weekDiv);
+  // ------------------- LOGIN GOOGLE -------------------
+  document.getElementById('google-login').addEventListener('click', ()=>{
+    const provider = new firebase.auth.GoogleAuthProvider();
+    auth.signInWithPopup(provider)
+      .then(result=>{
+        const user = result.user;
+        // Crear documento si no existe
+        const userDoc = db.collection('usuarios').doc(user.uid);
+        userDoc.get().then(doc=>{
+          if(!doc.exists){
+            userDoc.set({
+              nombre: user.displayName,
+              role: 'alumno',
+              horario: {}
+            });
+          }
+          const role = doc.exists ? doc.data().role : 'alumno';
+          setupPanel(user.displayName, role, user.uid);
+        });
+      }).catch(err=>{
+        console.error(err);
+        alert('Error al iniciar sesión');
+      });
   });
-}
-</script>
 
+  // ------------------- PANEL SEGUN ROL -------------------
+  function setupPanel(nombre, role, uid){
+    document.getElementById('login').classList.add('hidden');
+    if(role==='admin'){
+      document.getElementById('admin-panel').classList.remove('hidden');
+      loadAdmin(uid);
+    } else {
+      document.getElementById('alumno-nombre').innerText = nombre;
+      document.getElementById('alumno-panel').classList.remove('hidden');
+      loadAlumno(uid);
+    }
+  }
+
+  // ------------------- ALUMNO -------------------
+  const cursos = [
+    {
+      nombre: "Morfofisiología I",
+      semanas:[
+        {sem:1, fisiologia:"Membrana celular, receptores, canales...", histologia:"Procesamiento histológico, membrana, organelas..."},
+        {sem:2, fisiologia:"Transmisión de señales...", histologia:"Tejido óseo y muscular..."},
+        {sem:3, fisiologia:"Neurotransmisores y sinapsis...", histologia:"Tejido muscular II y nervioso..."},
+        {sem:4, fisiologia:"Metabolismo óseo. Parcial", histologia:"Sistema vascular. Parcial"},
+        {sem:5, fisiologia:"Sangre y sus propiedades...", histologia:"Tejido epitelial y glandular"},
+        {sem:6, fisiologia:"Fisiología eritrocitaria II, hemostasia", histologia:"Matriz extracelular, tejido conectivo..."},
+        {sem:7, fisiologia:"Sistema inmune, fagocitosis...", histologia:"Tejido linfoide, órganos linfoides"},
+        {sem:8, fisiologia:"Respuesta inflamatoria, evaluación final", histologia:"Sistema tegumentario. Final"}
+      ]
+    },
+    {
+      nombre: "Morfofisiología II",
+      semanas:[
+        {sem:1, anatomia:"Pared torácica, región mamaria...", fisiologia:"Hemodinamia y electrofisiología", histologia:"Embriología cardiovascular"},
+        {sem:2, anatomia:"Mediastino superior, anterior y medio", fisiologia:"Electrocardiograma I...", histologia:"Histología vascular"},
+        {sem:3, anatomia:"Mediastino medio II...", fisiologia:"Presión arterial, gasto cardiaco...", histologia:"Integración embriología e histología cardíaca"},
+        {sem:4, anatomia:"Mediastino posterior, examen parcial", fisiologia:"Mecánica respiratoria. Parcial", histologia:"Integración histología vascular. Parcial"},
+        {sem:5, anatomia:"Pulmones, radioanatomía pulmonar", fisiologia:"Intercambio de gases, transporte O2/CO2", histologia:"Embriología e histología respiratorio"},
+        {sem:6, anatomia:"Columna vertebral dorsal", fisiologia:"Filtración y función renal", histologia:"Embriología urinaria e histología riñón"},
+        {sem:7, anatomia:"Columna torácica y riñón", fisiologia:"Electrolitos, equilibrio ácido-base", histologia:"Histología uréter, vejiga, uretra"},
+        {sem:8, anatomia:"Riñón y vías urinarias. Examen final", fisiologia:"Fisiología aviación/buceo", histologia:"Histopatología renal"}
+      ]
+    },
+    {
+      nombre: "Anatomía General",
+      semanas:[
+        {sem:1, tema:"Hombro, Axila, Brazo y Codo"},
+        {sem:2, tema:"Antebrazo, Muñeca y Mano"},
+        {sem:3, tema:"Región Glútea, Cadera, Muslo y Rodilla"},
+        {sem:4, tema:"Pierna, Tobillo y Pie"},
+        {sem:5, tema:"Vértebras cervicales y cuello"},
+        {sem:6, tema:"Cabeza y vísceras del cuello"},
+        {sem:7, tema:"Músculos de la cara y región profunda"},
+        {sem:8, tema:"Cavidad oral, fosas nasales, tronco"}
+      ]
+    },
+    {
+      nombre: "Biología Celular y Molecular",
+      semanas:[
+        {sem:1, teoria:"Niveles de organización, Bioelementos...", laboratorio:"Normas de bioseguridad, microscopio"},
+        {sem:2, teoria:"Aminoácidos, proteínas y enzimas...", laboratorio:"Extracción de ADN, identificación proteínas"},
+        {sem:3, teoria:"La célula y membrana", laboratorio:"Permeabilidad membrana"},
+        {sem:4, teoria:"Citoesqueleto, matriz extracelular...", laboratorio:"Diversidad celular, evaluación parcial"},
+        {sem:5, teoria:"Endomembranas y digestión celular", laboratorio:"Fraccionamiento celular"},
+        {sem:6, teoria:"Núcleo y replicación ADN", laboratorio:"Observación núcleo y corpúsculo de Barr"},
+        {sem:7, teoria:"Traducción y ciclo celular", laboratorio:"Síntesis proteínas, mitosis y meiosis"},
+        {sem:8, teoria:"Señalización celular, genética molecular", laboratorio:"ADN recombinante, evaluación final"}
+      ]
+    },
+    {
+      nombre: "Bioquímica",
+      semanas:[
+        {sem:1, teoria:"Bioelementos y biomoléculas...", laboratorio:"Espectrofotometría y concentración de compuestos"},
+        {sem:2, teoria:"Aminoácidos y proteínas", laboratorio:"Determinación proteínas totales"},
+        {sem:3, teoria:"Enzimas y cinética", laboratorio:"Degradación de proteínas"},
+        {sem:4, teoria:"Metabolismo carbohidratos", laboratorio:"Concentración urea y biomoléculas"},
+        {sem:5, teoria:"Glucógeno y bioenergética", laboratorio:"Metabolismo ayuno/postprandial"},
+        {sem:6, teoria:"Metabolismo lípidos", laboratorio:"Digestión e hidrólisis de lípidos"},
+        {sem:7, teoria:"Colesterol y ácidos nucleicos", laboratorio:"Perfil lipídico"},
+        {sem:8, teoria:"Síntesis de proteínas", laboratorio:"Ácido úrico y ADN, evaluación final"}
+      ]
+    }
+  ];
+
+  function loadAlumno(uid){
+    const div = document.getElementById('cursos-alumno');
+    div.innerHTML = '';
+    cursos.forEach(curso=>{
+      const card = document.createElement('div'); card.className='card';
+      const title = document.createElement('h3'); title.innerText=curso.nombre; card.appendChild(title);
+      const btn = document.createElement('button'); btn.innerText='Entrar al curso'; card.appendChild(btn);
+      btn.onclick=()=>{ showCursoAlumno(curso); }
+      div.appendChild(card);
+    });
+    // Horario ejemplo
+    db.collection('usuarios').doc(uid).get().then(doc=>{
+      const data = doc.data();
+      if(data.horario){
+        let html = `<h3>Horario semanal</h3><table><tr><th>Día</th><th>Cursos</th></tr>`;
+        for(const dia in data.horario){
+          html+=`<tr><td>${dia}</td><td>${data.horario[dia].join(', ')}</td></tr>`;
+        }
+        html+='</table>';
+        document.getElementById('horario-alumno').innerHTML = html;
+      }
+    });
+  }
+
+  function showCursoAlumno(curso){
+    const div = document.getElementById('cursos-alumno');
+    div.innerHTML='';
+    const back = document.createElement('button'); back.innerText='← Volver'; back.onclick=()=>{ loadAlumno(auth.currentUser.uid);}; div.appendChild(back);
+    curso.semanas.forEach(s=>{
+      const card = document.createElement('div'); card.className='card';
+      let contenido='';
+      if(s.tema) contenido=`Semana ${s.sem}: ${s.tema}`;
+      else if(s.fisiologia && s.histologia) contenido=`Semana ${s.sem}:\nFisiología: ${s.fisiologia}\nHistología: ${s.histologia}`;
+      else if(s.teoria && s.laboratorio) contenido=`Semana ${s.sem}:\nTeoría: ${s.teoria}\nLaboratorio: ${s.laboratorio}`;
+      else if(s.anatomia) contenido=`Semana ${s.sem}:\nAnatomía: ${s.anatomia}\nFisiología: ${s.fisiologia}\nHistología: ${s.histologia}`;
+      const p = document.createElement('p'); p.innerText=contenido; card.appendChild(p);
+      const pdf = document.createElement('button'); pdf.innerText='📄 PDF'; card.appendChild(pdf);
+      const video = document.createElement('button'); video.innerText='🎥 Video'; card.appendChild(video);
+      const banco = document.createElement('button'); banco.innerText='📝 Apliquemos lo aprendido'; card.appendChild(banco);
+      div.appendChild(card);
+    });
+  }
+
+  // ------------------- ADMIN -------------------
+  function loadAdmin(uid){
+    const divCursos = document.getElementById('cursos-admin');
+    divCursos.innerHTML='<h3>Cursos (solo visualización)</h3>';
+    cursos.forEach(curso=>{
+      const card = document.createElement('div'); card.className='card';
+      card.innerHTML=`<h3>${curso.nombre}</h3>`;
+      divCursos.appendChild(card);
+    });
+
+    // Mostrar horarios de todos los alumnos
+    const divHorarios = document.getElementById('horario-todos');
+    divHorarios.innerHTML='<h3>Horarios de todos los alumnos</h3>';
+    db.collection('usuarios').get().then(snapshot=>{
+      snapshot.forEach(doc=>{
+        const data = doc.data();
+        const card = document.createElement('div'); card.className='card';
+        let html = `<h4>${data.nombre} (${data.role})</h4>`;
+        if(data.horario){
+          html+=`<table><tr><th>Día</th><th>Cursos</th></tr>`;
+          for(const dia in data.horario){
+            html+=`<tr><td>${dia}</td><td>${data.horario[dia].join(', ')}</td></tr>`;
+          }
+          html+='</table>';
+        }
+        card.innerHTML = html;
+        divHorarios.appendChild(card);
+      });
+    });
+  }
+
+  // ------------------- NAVEGACIÓN -------------------
+  function showSection(id){
+    document.getElementById('alumno-panel').classList.add('hidden');
+    document.getElementById('admin-panel').classList.add('hidden');
+    if(id==='inicio'){
+      if(auth.currentUser){
+        const uid=auth.currentUser.uid;
+        db.collection('usuarios').doc(uid).get().then(doc=>{
+          if(doc.exists){
+            if(doc.data().role==='admin') document.getElementById('admin-panel').classList.remove('hidden');
+            else document.getElementById('alumno-panel').classList.remove('hidden');
+          }
+        });
+      }
+    } else if(id==='cursos'){
+      if(auth.currentUser){
+        const uid=auth.currentUser.uid;
+        db.collection('usuarios').doc(uid).get().then(doc=>{
+          if(doc.exists){
+            if(doc.data().role==='admin') document.getElementById('cursos-admin').scrollIntoView();
+            else document.getElementById('cursos-alumno').scrollIntoView();
+          }
+        });
+      }
+    } else if(id==='horario'){
+      if(auth.currentUser){
+        const uid=auth.currentUser.uid;
+        db.collection('usuarios').doc(uid).get().then(doc=>{
+          if(doc.exists){
+            if(doc.data().role==='admin') document.getElementById('horario-todos').scrollIntoView();
+            else document.getElementById('horario-alumno').scrollIntoView();
+          }
+        });
+      }
+    }
+  }
+</script>
 </body>
 </html>
