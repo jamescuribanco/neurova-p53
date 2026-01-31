@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Neurova P53</title>
 <style>
 body { margin:0; font-family:'Segoe UI', Arial, sans-serif; background:#f8fbff; color:#1f2937; }
@@ -24,7 +24,7 @@ footer { text-align:center; padding:30px; color:#64748b; }
 #course-weeks .card button { background:#10b981; color:white; margin-top:10px; }
 #course-weeks .card button:hover { background:#059669; }
 .subcourse-card { display:flex; justify-content:space-around; flex-wrap:wrap; margin-bottom:20px; }
-.subcourse-card .card { width:45%; }
+.subcourse-card .card { width:45%; margin-bottom:20px; }
 </style>
 </head>
 <body>
@@ -41,132 +41,260 @@ footer { text-align:center; padding:30px; color:#64748b; }
 
 <div class="container">
 
-  <!-- LOGIN -->
-  <div id="login" class="card">
-    <h2>Iniciar sesión</h2>
-    <input type="text" id="user" placeholder="Usuario" />
-    <input type="password" id="pass" placeholder="Contraseña" />
-    <button onclick="login()">Entrar</button>
-  </div>
+<!-- LOGIN -->
+<div id="login" class="card">
+  <h2>Iniciar sesión</h2>
+  <input type="text" id="user" placeholder="Usuario" />
+  <input type="password" id="pass" placeholder="Contraseña" />
+  <button onclick="login()">Entrar</button>
+</div>
 
-  <!-- PANEL ALUMNO -->
-  <div id="alumno-panel" class="hidden">
-    <h2>Mis cursos</h2>
-    <div class="cards-container">
-      <div class="card"><h3>Biología Celular y Molecular</h3><p>Curso activo</p><button onclick="openCourse('biocel')">Entrar al curso</button></div>
-      <div class="card"><h3>Bioquímica</h3><p>Curso activo</p><button onclick="openCourse('bioquim')">Entrar al curso</button></div>
-      <div class="card"><h3>Morfofisiología I</h3><p>Curso activo</p><button onclick="openCourse('morfo1')">Entrar al curso</button></div>
-      <div class="card"><h3>Morfofisiología II</h3><p>Curso activo</p><button onclick="openCourse('morfo2')">Entrar al curso</button></div>
-      <div class="card"><h3>Anatomía General</h3><p>Curso activo</p><button onclick="openCourse('anatomia')">Entrar al curso</button></div>
-    </div>
+<!-- PANEL ALUMNO -->
+<div id="alumno-panel" class="hidden">
+  <h2>Mis cursos</h2>
+  <div class="cards-container">
+    <div class="card"><h3>Biología Celular y Molecular</h3><p>Curso activo</p><button onclick="openCourse('biocel')">Entrar al curso</button></div>
+    <div class="card"><h3>Bioquímica</h3><p>Curso activo</p><button onclick="openCourse('bioquim')">Entrar al curso</button></div>
+    <div class="card"><h3>Morfofisiología I</h3><p>Curso activo</p><button onclick="openCourse('morfo1')">Entrar al curso</button></div>
+    <div class="card"><h3>Morfofisiología II</h3><p>Curso activo</p><button onclick="openCourse('morfo2')">Entrar al curso</button></div>
+    <div class="card"><h3>Anatomía General</h3><p>Curso activo</p><button onclick="openCourse('anatomia')">Entrar al curso</button></div>
   </div>
+</div>
 
-  <!-- PANEL ADMIN -->
-  <div id="admin-panel" class="hidden">
-    <h2>Panel del administrador</h2>
-    <p>Rol: Admin</p>
-    <p>Estado: Activo</p>
-    <div class="cards-container">
-      <div class="card"><h3>Biología Celular y Molecular</h3><p>Acceso: TODOS los alumnos</p><button onclick="openCourseAdmin('biocel')">Gestionar curso</button></div>
-      <div class="card"><h3>Bioquímica</h3><p>Acceso: TODOS los alumnos</p><button onclick="openCourseAdmin('bioquim')">Gestionar curso</button></div>
-      <div class="card"><h3>Morfofisiología I</h3><p>Acceso: TODOS los alumnos</p><button onclick="openCourseAdmin('morfo1')">Gestionar curso</button></div>
-      <div class="card"><h3>Morfofisiología II</h3><p>Acceso: TODOS los alumnos</p><button onclick="openCourseAdmin('morfo2')">Gestionar curso</button></div>
-      <div class="card"><h3>Anatomía General</h3><p>Acceso: TODOS los alumnos</p><button onclick="openCourseAdmin('anatomia')">Gestionar curso</button></div>
-    </div>
+<!-- PANEL ADMIN -->
+<div id="admin-panel" class="hidden">
+  <h2>Panel del administrador</h2>
+  <p>Rol: Admin</p>
+  <p>Estado: Activo</p>
+  <div class="cards-container">
+    <div class="card"><h3>Biología Celular y Molecular</h3><p>Acceso: TODOS los alumnos</p><button onclick="openCourseAdmin('biocel')">Gestionar curso</button></div>
+    <div class="card"><h3>Bioquímica</h3><p>Acceso: TODOS los alumnos</p><button onclick="openCourseAdmin('bioquim')">Gestionar curso</button></div>
+    <div class="card"><h3>Morfofisiología I</h3><p>Acceso: TODOS los alumnos</p><button onclick="openCourseAdmin('morfo1')">Gestionar curso</button></div>
+    <div class="card"><h3>Morfofisiología II</h3><p>Acceso: TODOS los alumnos</p><button onclick="openCourseAdmin('morfo2')">Gestionar curso</button></div>
+    <div class="card"><h3>Anatomía General</h3><p>Acceso: TODOS los alumnos</p><button onclick="openCourseAdmin('anatomia')">Gestionar curso</button></div>
   </div>
+</div>
 
-  <!-- SUBCURSOS -->
-  <div id="subcourse-detail" class="hidden card">
-    <h2 id="subcourse-title"></h2>
-    <div class="subcourse-card" id="subcourse-buttons"></div>
-    <button onclick="backToPanel()">Volver a mis cursos</button>
-  </div>
+<!-- SUBCURSOS -->
+<div id="subcourse-detail" class="hidden card">
+  <h2 id="subcourse-title"></h2>
+  <div class="subcourse-card" id="subcourse-buttons"></div>
+  <button onclick="backToPanel()">Volver a mis cursos</button>
+</div>
 
-  <!-- CURSO DETALLADO POR SEMANA -->
-  <div id="course-detail" class="hidden card">
-    <h2 id="course-title"></h2>
-    <div id="course-weeks"></div>
-    <button onclick="backToSubcourse()">Volver a subcurso</button>
-  </div>
+<!-- CURSO DETALLADO POR SEMANA -->
+<div id="course-detail" class="hidden card">
+  <h2 id="course-title"></h2>
+  <div id="course-weeks"></div>
+  <button onclick="backToSubcourse()">Volver a subcurso</button>
+</div>
 
-  <!-- SECCIONES ESTÁTICAS -->
-  <div id="inicio" class="card hidden"><h2>Bienvenido a Neurova P53</h2><p>Academia premium especializada en ciencias de la salud.</p></div>
-  <div id="cursos" class="card hidden"><h2>Cursos disponibles</h2></div>
-  <div id="material" class="card hidden"><h2>Material académico</h2></div>
+<!-- SECCIONES ESTÁTICAS -->
+<div id="inicio" class="card hidden"><h2>Bienvenido a Neurova P53</h2><p>Academia premium especializada en ciencias de la salud.</p></div>
+<div id="cursos" class="card hidden"><h2>Cursos disponibles</h2></div>
+<div id="material" class="card hidden"><h2>Material académico</h2></div>
 
 </div>
 
 <footer>© 2026 Neurova P53 · Educación con base científica</footer>
 
 <script>
-// USUARIOS
+// USUARIOS SIMULADOS
 const users={alumno:{role:'alumno'},admin:{role:'admin'}};
+let currentCourse='', currentSubcourse='';
 
-// CURSOS: Biología Celular, Bioquímica, Morfofisiología 1 y 2
-// --- Datos resumidos: solo te muestro estructura de ejemplo para todas las semanas y subcursos
-// Biología Celular y Molecular
-const biocelWeeks={ teoria:[...], laboratorio:[...] }; // ya incluimos anteriormente
-
-// Bioquímica
-const bioquimWeeks={ teoria:[...], laboratorio:[...] }; // ya incluimos anteriormente
-
-// Morfofisiología I
-const morfo1Weeks={ fisiologia:[
-  {sem:'1', tema:'Membrana celular, receptores, canales, transporte y potenciales de membrana/acción. Regularización y señalización celular.'},
-  {sem:'2', tema:'Transmisión de señales celulares. Composición y regulación del medio interno, ósmosis y líquidos corporales.'},
-  {sem:'3', tema:'Neurotransmisores, receptores y sinapsis. Contracción y excitación muscular.'},
-  {sem:'4', tema:'Metabolismo óseo. Evaluación Parcial.'},
-  {sem:'5', tema:'Sangre y sus propiedades, hematopoyesis, eritropoyesis y hemograma. Fisiología eritrocitaria I (membrana, metabolismo y hemoglobina).'},
-  {sem:'6', tema:'Fisiología eritrocitaria II (hierro, Vit B12 y B9). Fisiología plaquetaria, hemostasia y fibrinólisis.'},
-  {sem:'7', tema:'Generalidades del sistema inmunológico, respuesta innata y fagocitosis. Inmunidad adquirida, linfocitos T y B, y grupos sanguíneos.'},
-  {sem:'8', tema:'Respuesta inflamatoria, tolerancia e hipersensibilidad. Evaluación Final.'}
-], histologia:[
-  {sem:'1', tema:'Procesamiento histológico, membrana celular, organelas y núcleo. Desarrollo embrionario del esqueleto y tejido cartilaginoso.'},
-  {sem:'2', tema:'Tejido óseo y osificación. Origen embrionario del sistema muscular y Tejido muscular I.'},
-  {sem:'3', tema:'Tejido muscular II. Neurohistogénesis y tejido nervioso.'},
-  {sem:'4', tema:'Introducción al sistema vascular. Evaluación Parcial.'},
-  {sem:'5', tema:'Tejido epitelial de revestimiento. Tejido epitelial glandular.'},
-  {sem:'6', tema:'Matriz extracelular, tejido conectivo y tejido adiposo. Tejido sanguíneo y hematopoyesis.'},
-  {sem:'7', tema:'Tejido linfoide y MALT. Órganos linfoides.'},
-  {sem:'8', tema:'Sistema tegumentario y sus anexos. Evaluación Final.'}
-]};
-
-// Morfofisiología II
-const morfo2Weeks={
-  anatomia:[
-    {sem:'1', tema:'Pared torácica, región mamaria y radioanatomía de tórax.'},
-    {sem:'2', tema:'Mediastino superior, anterior y medio (pericardio y morfología externa).'},
-    {sem:'3', tema:'Mediastino medio II (morfología interna y conducción) y radioanatomía cardiaca.'},
-    {sem:'4', tema:'Mediastino posterior y radioanatomía del mediastino posterior. Examen Parcial.'},
-    {sem:'5', tema:'Pulmones (segmentación e inervación) y radioanatomía pulmonar.'},
-    {sem:'6', tema:'Columna vertebral dorsal y músculos paravertebrales.'},
-    {sem:'7', tema:'Radioanatomía de columna torácica, anatomía del riñón y vías urinarias.'},
-    {sem:'8', tema:'Radioanatomía del riñón y vías urinarias. Examen Final.'}
-  ],
-  fisiologia:[
-    {sem:'1', tema:'Hemodinamia y electrofisiología cardiaca.'},
-    {sem:'2', tema:'Electrocardiograma I, contracción y ciclo cardiaco.'},
-    {sem:'3', tema:'Presión arterial, gasto cardiaco, retorno venoso y circulaciones especiales.'},
-    {sem:'4', tema:'Mecánica respiratoria, volúmenes y capacidades. Examen Parcial.'},
-    {sem:'5', tema:'Intercambio de gases, transporte de O₂/CO₂, control respiratorio y circulación pulmonar.'},
-    {sem:'6', tema:'Estructura renal, aclaramiento, filtración glomerular, reabsorción y secreción renal.'},
-    {sem:'7', tema:'Regulación de electrolitos, volumen, equilibrio ácido-base y diuréticos.'},
-    {sem:'8', tema:'Fisiología de la aviación, grandes alturas y buceo profundo. Examen Final.'}
-  ],
-  histologia:[
-    {sem:'1', tema:'Embriología cardiovascular e histología del corazón y válvulas.'},
-    {sem:'2', tema:'Histología vascular (arterias, capilares, venas y linfáticos).'},
-    {sem:'3', tema:'Integración de embriología e histología cardíaca.'},
-    {sem:'4', tema:'Integración de histología vascular. Examen Parcial.'},
-    {sem:'5', tema:'Embriología e histología del aparato respiratorio (I y II).'},
-    {sem:'6', tema:'Embriología urinaria e histología del riñón y la pelvis renal.'},
-    {sem:'7', tema:'Histología de uréter, vejiga y uretra; malformaciones congénitas renales.'},
-    {sem:'8', tema:'Histopatología renal y de las vías urinarias. Examen Final.'}
+// DATOS DE CURSOS COMPLETOS POR SEMANA
+// -- Biología Celular y Molecular --
+const biocel = {
+  subcourses: ['Teoría','Laboratorio'],
+  semanas:{
+    "Teoría":[
+      {sem:'1', tema:'Niveles de organización, Bioelementos, Enlaces químicos y Agua. Glúcidos y Lípidos.', pdf:'#', video:'#', banco:'#'},
+      {sem:'2', tema:'Aminoácidos, Proteínas y Enzimas. Dogma Central: ADN y ARN.', pdf:'#', video:'#', banco:'#'},
+      {sem:'3', tema:'La Célula: Evolución y Membrana Celular. Transporte de membrana.', pdf:'#', video:'#', banco:'#'},
+      {sem:'4', tema:'Citoesqueleto, Matriz Extracelular y Uniones celulares. Evaluación Parcial.', pdf:'#', video:'#', banco:'#'},
+      {sem:'5', tema:'Sistema de Endomembranas (RER, REL, Golgi) y Digestión Celular. Mitocondrias y Bioenergética.', pdf:'#', video:'#', banco:'#'},
+      {sem:'6', tema:'Núcleo Celular, Cromatina y Replicación del ADN. Transcripción y Procesamiento de ARN.', pdf:'#', video:'#', banco:'#'},
+      {sem:'7', tema:'Traducción (Síntesis de Proteínas). Ciclo Celular, Mitosis, Meiosis y Apoptosis.', pdf:'#', video:'#', banco:'#'},
+      {sem:'8', tema:'Señalización celular, Introducción al Cáncer y Genética Molecular. Evaluación Final.', pdf:'#', video:'#', banco:'#'}
+    ],
+    "Laboratorio":[
+      {sem:'1', tema:'Normas de Bioseguridad y Manejo del Microscopio. Identificación de Glúcidos y Lípidos.', pdf:'#', video:'#', banco:'#'},
+      {sem:'2', tema:'Identificación de Proteínas y Enzimas. Extracción de ADN.', pdf:'#', video:'#', banco:'#'},
+      {sem:'3', tema:'Célula Procariota y Eucariota. Permeabilidad de la Membrana Celular (Diálisis).', pdf:'#', video:'#', banco:'#'},
+      {sem:'4', tema:'Diversidad Celular y Diferenciación. Evaluación Parcial.', pdf:'#', video:'#', banco:'#'},
+      {sem:'5', tema:'Fraccionamiento Celular. Respiración Celular (Fermentación).', pdf:'#', video:'#', banco:'#'},
+      {sem:'6', tema:'Observación de Núcleo y Corpúsculo de Barr. Soluciones y Diluciones.', pdf:'#', video:'#', banco:'#'},
+      {sem:'7', tema:'Síntesis de Proteínas (Simulación). Mitosis y Meiosis.', pdf:'#', video:'#', banco:'#'},
+      {sem:'8', tema:'Tecnología del ADN Recombinante (Simulación). Evaluación Final.', pdf:'#', video:'#', banco:'#'}
+    ]
+  }
 };
 
-// Aquí seguirías la lógica de openCourse, openCourseAdmin, renderSubcourse
-// Similar a la versión que te envié antes, adaptando morfo1 y morfo2
+// --- Bioquímica ---
+const bioquim = {
+  subcourses: ['Teoría','Laboratorio'],
+  semanas:{
+    "Teoría":[
+      {sem:'1', tema:'Bioelementos y Biomoléculas: Agua, pH, soluciones buffer, bioelementos y vitaminas.', pdf:'#', video:'#', banco:'#'},
+      {sem:'2', tema:'Aminoácidos y Proteínas: Estructura, clasificación y propiedades.', pdf:'#', video:'#', banco:'#'},
+      {sem:'3', tema:'Enzimas y Cinética: Energía de activación y factores que afectan la actividad enzimática.', pdf:'#', video:'#', banco:'#'},
+      {sem:'4', tema:'Metabolismo de Carbohidratos: Glicólisis, ciclo de la urea y degradación de aminoácidos. Evaluación Parcial.', pdf:'#', video:'#', banco:'#'},
+      {sem:'5', tema:'Glucógeno y Bioenergética: Síntesis/degradación de glucógeno, ciclo de Krebs y fosforilación oxidativa.', pdf:'#', video:'#', banco:'#'},
+      {sem:'6', tema:'Metabolismo de Lípidos: Lipogénesis, beta-oxidación y síntesis de triglicéridos. Evaluación Continua 2.', pdf:'#', video:'#', banco:'#'},
+      {sem:'7', tema:'Colesterol y Ácidos Nucleicos: Síntesis de colesterol, estructura de ADN/ARN y replicación.', pdf:'#', video:'#', banco:'#'},
+      {sem:'8', tema:'Síntesis de Proteínas: Transcripción y traducción. Evaluación Final.', pdf:'#', video:'#', banco:'#'}
+    ],
+    "Laboratorio":[
+      {sem:'1', tema:'Espectrofotometría: Principios de bioseguridad y determinación de concentración de compuestos.', pdf:'#', video:'#', banco:'#'},
+      {sem:'2', tema:'Proteínas totales: Determinación de proteínas totales, albúmina y globulinas en suero.', pdf:'#', video:'#', banco:'#'},
+      {sem:'3', tema:'Degradación de proteínas y factores que afectan la actividad enzimática.', pdf:'#', video:'#', banco:'#'},
+      {sem:'4', tema:'Concentración de urea: Determinación en suero e identificación de biomoléculas. Evaluación Parcial.', pdf:'#', video:'#', banco:'#'},
+      {sem:'5', tema:'Metabolismo en ayuno/postprandial: Evaluación de rutas metabólicas en condiciones de alimentación.', pdf:'#', video:'#', banco:'#'},
+      {sem:'6', tema:'Digestión y Hidrólisis: Digestión enzimática del almidón e hidrólisis de lípidos.', pdf:'#', video:'#', banco:'#'},
+      {sem:'7', tema:'Perfil Lipídico: Determinación de triglicéridos, colesterol y lipoproteínas en suero.', pdf:'#', video:'#', banco:'#'},
+      {sem:'8', tema:'Ácido Úrico y ADN: Extracción de ADN y determinación de ácido úrico en suero. Evaluación Final.', pdf:'#', video:'#', banco:'#'}
+    ]
+  }
+};
 
+// --- Morfofisiología I ---
+const morfo1 = {
+  subcourses: ['Fisiología','Histología'],
+  semanas:{
+    "Fisiología":[
+      {sem:'1', tema:'Membrana celular, receptores, canales, transporte y potenciales de membrana/acción. Regularización y señalización celular.', pdf:'#', video:'#', banco:'#'},
+      {sem:'2', tema:'Transmisión de señales celulares. Composición y regulación del medio interno, ósmosis y líquidos corporales.', pdf:'#', video:'#', banco:'#'},
+      {sem:'3', tema:'Neurotransmisores, receptores y sinapsis. Contracción y excitación muscular.', pdf:'#', video:'#', banco:'#'},
+      {sem:'4', tema:'Metabolismo óseo. Evaluación Parcial.', pdf:'#', video:'#', banco:'#'},
+      {sem:'5', tema:'Sangre y sus propiedades, hematopoyesis, eritropoyesis y hemograma. Fisiología eritrocitaria I.', pdf:'#', video:'#', banco:'#'},
+      {sem:'6', tema:'Fisiología eritrocitaria II (hierro, Vit B12 y B9). Fisiología plaquetaria, hemostasia y fibrinólisis.', pdf:'#', video:'#', banco:'#'},
+      {sem:'7', tema:'Generalidades del sistema inmunológico, respuesta innata y fagocitosis. Inmunidad adquirida.', pdf:'#', video:'#', banco:'#'},
+      {sem:'8', tema:'Respuesta inflamatoria, tolerancia e hipersensibilidad. Evaluación Final.', pdf:'#', video:'#', banco:'#'}
+    ],
+    "Histología":[
+      {sem:'1', tema:'Procesamiento histológico, membrana celular, organelas y núcleo. Desarrollo embrionario del esqueleto y tejido cartilaginoso.', pdf:'#', video:'#', banco:'#'},
+      {sem:'2', tema:'Tejido óseo y osificación. Origen embrionario del sistema muscular y Tejido muscular I.', pdf:'#', video:'#', banco:'#'},
+      {sem:'3', tema:'Tejido muscular II. Neurohistogénesis y tejido nervioso.', pdf:'#', video:'#', banco:'#'},
+      {sem:'4', tema:'Introducción al sistema vascular. Evaluación Parcial.', pdf:'#', video:'#', banco:'#'},
+      {sem:'5', tema:'Tejido epitelial de revestimiento. Tejido epitelial glandular.', pdf:'#', video:'#', banco:'#'},
+      {sem:'6', tema:'Matriz extracelular, tejido conectivo y tejido adiposo. Tejido sanguíneo y hematopoyesis.', pdf:'#', video:'#', banco:'#'},
+      {sem:'7', tema:'Tejido linfoide y MALT. Órganos linfoides.', pdf:'#', video:'#', banco:'#'},
+      {sem:'8', tema:'Sistema tegumentario y sus anexos. Evaluación Final.', pdf:'#', video:'#', banco:'#'}
+    ]
+};
+
+// --- Morfofisiología II ---
+const morfo2 = {
+  subcourses: ['Anatomía y Radioanatomía','Fisiología','Histología y Embriología'],
+  semanas:{
+    "Anatomía y Radioanatomía":[
+      {sem:'1', tema:'Pared torácica, región mamaria y radioanatomía de tórax.', pdf:'#', video:'#', banco:'#'},
+      {sem:'2', tema:'Mediastino superior, anterior y medio (pericardio y morfología externa).', pdf:'#', video:'#', banco:'#'},
+      {sem:'3', tema:'Mediastino medio II (morfología interna y conducción) y radioanatomía cardiaca.', pdf:'#', video:'#', banco:'#'},
+      {sem:'4', tema:'Mediastino posterior y radioanatomía del mediastino posterior. Examen Parcial.', pdf:'#', video:'#', banco:'#'},
+      {sem:'5', tema:'Pulmones (segmentación e inervación) y radioanatomía pulmonar.', pdf:'#', video:'#', banco:'#'},
+      {sem:'6', tema:'Columna vertebral dorsal y músculos paravertebrales.', pdf:'#', video:'#', banco:'#'},
+      {sem:'7', tema:'Radioanatomía de columna torácica, anatomía del riñón y vías urinarias.', pdf:'#', video:'#', banco:'#'},
+      {sem:'8', tema:'Radioanatomía del riñón y vías urinarias. Examen Final.', pdf:'#', video:'#', banco:'#'}
+    ],
+    "Fisiología":[
+      {sem:'1', tema:'Hemodinamia y electrofisiología cardiaca.', pdf:'#', video:'#', banco:'#'},
+      {sem:'2', tema:'Electrocardiograma I, contracción y ciclo cardiaco.', pdf:'#', video:'#', banco:'#'},
+      {sem:'3', tema:'Presión arterial, gasto cardiaco, retorno venoso y circulaciones especiales.', pdf:'#', video:'#', banco:'#'},
+      {sem:'4', tema:'Mecánica respiratoria, volúmenes y capacidades. Examen Parcial.', pdf:'#', video:'#', banco:'#'},
+      {sem:'5', tema:'Intercambio de gases, transporte de O₂/CO₂, control respiratorio y circulación pulmonar.', pdf:'#', video:'#', banco:'#'},
+      {sem:'6', tema:'Estructura renal, aclaramiento, filtración glomerular, reabsorción y secreción renal.', pdf:'#', video:'#', banco:'#'},
+      {sem:'7', tema:'Regulación de electrolitos, volumen, equilibrio ácido-base y diuréticos.', pdf:'#', video:'#', banco:'#'},
+      {sem:'8', tema:'Fisiología de la aviación, grandes alturas y buceo profundo. Examen Final.', pdf:'#', video:'#', banco:'#'}
+    ],
+    "Histología y Embriología":[
+      {sem:'1', tema:'Embriología cardiovascular e histología del corazón y válvulas.', pdf:'#', video:'#', banco:'#'},
+      {sem:'2', tema:'Histología vascular (arterias, capilares, venas y linfáticos).', pdf:'#', video:'#', banco:'#'},
+      {sem:'3', tema:'Integración de embriología e histología cardíaca.', pdf:'#', video:'#', banco:'#'},
+      {sem:'4', tema:'Integración de histología vascular. Examen Parcial.', pdf:'#', video:'#', banco:'#'},
+      {sem:'5', tema:'Embriología e histología del aparato respiratorio (I y II).', pdf:'#', video:'#', banco:'#'},
+      {sem:'6', tema:'Embriología urinaria e histología del riñón y la pelvis renal.', pdf:'#', video:'#', banco:'#'},
+      {sem:'7', tema:'Histología de uréter, vejiga y uretra; malformaciones congénitas renales.', pdf:'#', video:'#', banco:'#'},
+      {sem:'8', tema:'Histopatología renal y de las vías urinarias. Examen Final.', pdf:'#', video:'#', banco:'#'}
+    ]
+};
+
+// --- Anatomía General ---
+const anatomia = {
+  subcourses: ['Anatomía','Fisiología','Histología y Embriología'],
+  semanas:{
+    "Anatomía":[
+      {sem:'1', tema:'Hombro, Axila, Brazo y Codo.', pdf:'#', video:'#', banco:'#'},
+      {sem:'2', tema:'Antebrazo, Muñeca y Mano.', pdf:'#', video:'#', banco:'#'},
+      {sem:'3', tema:'Región Glútea, Cadera, Muslo y Rodilla.', pdf:'#', video:'#', banco:'#'},
+      {sem:'4', tema:'Pierna, Región Poplítea, Tobillo y Pie.', pdf:'#', video:'#', banco:'#'},
+      {sem:'5', tema:'Vértebras cervicales, regiones y triángulos del cuello.', pdf:'#', video:'#', banco:'#'},
+      {sem:'6', tema:'Vísceras del cuello, Cabeza ósea (Neuro/Viscerocráneo).', pdf:'#', video:'#', banco:'#'},
+      {sem:'7', tema:'Músculos mímica/masticación y Regiones profundas de la cara.', pdf:'#', video:'#', banco:'#'},
+      {sem:'8', tema:'Cavidad oral, fosas nasales y paredes de tronco.', pdf:'#', video:'#', banco:'#'}
+   ]
+};
+
+const allCourses = {biocel,bioquim,morfo1,morfo2,anatomia};
+
+// FUNCIONES DE NAVEGACIÓN
+function showSection(section){
+  document.querySelectorAll('.card').forEach(c=>c.classList.add('hidden'));
+  if(section==='inicio') document.getElementById('inicio').classList.remove('hidden');
+  if(section==='cursos') document.getElementById('alumno-panel').classList.remove('hidden');
+  if(section==='material') document.getElementById('material').classList.remove('hidden');
+}
+
+function login(){
+  const user=document.getElementById('user').value;
+  if(users[user]){
+    document.getElementById('login').classList.add('hidden');
+    if(users[user].role==='alumno') document.getElementById('alumno-panel').classList.remove('hidden');
+    else document.getElementById('admin-panel').classList.remove('hidden');
+  }else alert('Usuario incorrecto');
+}
+
+function openCourse(course){
+  currentCourse = course;
+  const c=allCourses[course];
+  if(c.subcourses.length>1){
+    document.getElementById('alumno-panel').classList.add('hidden');
+    document.getElementById('subcourse-detail').classList.remove('hidden');
+    document.getElementById('subcourse-title').innerText = c.subcourses.length>1?`${course.toUpperCase()}`:`${course.toUpperCase()} Curso`;
+    const buttonsHTML = c.subcourses.map(s=>`<div class="card"><h3>${s}</h3><button onclick="openWeek('${s}')">Ver contenido</button></div>`).join('');
+    document.getElementById('subcourse-buttons').innerHTML = buttonsHTML;
+  }else openWeek(c.subcourses[0]);
+}
+
+function backToPanel(){
+  document.getElementById('subcourse-detail').classList.add('hidden');
+  document.getElementById('alumno-panel').classList.remove('hidden');
+}
+
+function openWeek(subcourse){
+  currentSubcourse = subcourse;
+  const semanas = allCourses[currentCourse].semanas[subcourse];
+  let html='';
+  semanas.forEach(w=>{
+    html+=`<div class="card">
+      <h3>Semana ${w.sem}</h3>
+      <p>${w.tema}</p>
+      <button onclick="alert('PDF: ${w.pdf}')">Ver PDF</button>
+      <button onclick="alert('Video: ${w.video}')">Ver Grabación</button>
+      <button onclick="alert('Banco de preguntas: ${w.banco}')">Apliquemos lo aprendido</button>
+    </div>`;
+  });
+  document.getElementById('course-weeks').innerHTML = html;
+  document.getElementById('subcourse-detail').classList.add('hidden');
+  document.getElementById('course-detail').classList.remove('hidden');
+}
+
+function backToSubcourse(){
+  document.getElementById('course-detail').classList.add('hidden');
+  document.getElementById('subcourse-detail').classList.remove('hidden');
+}
 </script>
+
 </body>
 </html>
