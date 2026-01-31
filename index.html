@@ -1,302 +1,275 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Neurova P53</title>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
-    body { margin:0; font-family: 'Segoe UI', sans-serif; background:#f8fbff; color:#1f2937; }
-    header { background: linear-gradient(90deg,#e0f2fe,#bae6fd,#93c5fd); padding:20px 40px; display:flex; justify-content:space-between; align-items:center;}
-    header h1 { margin:0; color:#0f172a; font-size:28px; letter-spacing:1px;}
-    nav a { margin-left:20px; text-decoration:none; color:#0f172a; font-weight:500; cursor:pointer;}
-    .container { max-width:1100px; margin:40px auto; padding:0 20px;}
-    .card { background:white; border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,0.08); padding:20px; margin-bottom:20px;}
-    .card h3 { color:#0077cc;}
-    .card button { margin-top:10px; padding:10px 18px; border:none; border-radius:20px; background:#0077cc; color:white; cursor:pointer;}
-    .card button.blocked { background:#ccc; color:#555; cursor:not-allowed;}
-    .hidden { display:none; }
-    table { width:100%; border-collapse:collapse; margin-top:10px;}
-    th, td { border:1px solid #cbd5f5; padding:8px; text-align:left;}
-    th { background:#2563eb; color:white;}
-    footer { text-align:center; padding:30px; color:#64748b;}
+    body {
+      margin: 0;
+      font-family: 'Roboto', sans-serif;
+      background: #f8fbff;
+      color: #1f2937;
+    }
+    header {
+      background: linear-gradient(90deg, #e0f2fe, #bae6fd, #93c5fd);
+      padding: 20px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 28px;
+      color: #0f172a;
+    }
+    nav a {
+      margin-left: 20px;
+      text-decoration: none;
+      color: #0f172a;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+    nav a:hover {
+      color: #2563eb;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    .card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      padding: 20px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .card h3 {
+      color: #0077cc;
+      margin-bottom: 10px;
+    }
+    .card button {
+      margin-top: 10px;
+      padding: 10px 18px;
+      border: none;
+      border-radius: 20px;
+      background: #0077cc;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .card button:hover {
+      background: #005fa3;
+    }
+    .hidden { display: none; }
+    .blocked {
+      background: #ccc !important;
+      color: #555 !important;
+      cursor: not-allowed;
+    }
+    footer {
+      text-align: center;
+      padding: 30px;
+      color: #64748b;
+      background: #f0f4f8;
+      margin-top: 40px;
+    }
+    /* Tabla de semanas */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      padding: 12px;
+      border: 1px solid #cbd5f5;
+      text-align: left;
+    }
+    th {
+      background: #2563eb;
+      color: white;
+    }
+    td button {
+      padding: 6px 12px;
+      font-size: 14px;
+      border-radius: 12px;
+    }
+    /* Login creativo */
+    #login-card {
+      max-width: 400px;
+      margin: 80px auto;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      background: linear-gradient(135deg, #e0f7fa, #e1bee7);
+      text-align: center;
+    }
+    #login-card h2 { margin-bottom: 20px; }
+    #login-card input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 16px;
+      border-radius: 10px;
+      border: 1px solid #cbd5f5;
+      font-size: 15px;
+    }
+    #google-login {
+      background: #db4437;
+      margin-top: 10px;
+    }
+    #google-login:hover {
+      background: #c1351d;
+    }
+    .sub-section { margin-top: 15px; }
   </style>
+  <!-- Firebase -->
+  <script type="module">
+    // Import Firebase
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
+
+    // Config Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyDAmEVU8J-uk2Yg6bL5n28xbP1771cHGME",
+      authDomain: "neurovap53-cdbcf.firebaseapp.com",
+      projectId: "neurovap53-cdbcf",
+      storageBucket: "neurovap53-cdbcf.firebasestorage.app",
+      messagingSenderId: "558340314022",
+      appId: "1:558340314022:web:2027622d3b86af54ddb567",
+      measurementId: "G-70R7JRGVKG"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const provider = new GoogleAuthProvider();
+
+    // LOGIN GOOGLE
+    async function loginGoogle() {
+      try {
+        const result = await signInWithPopup(auth, provider);
+        const user = result.user;
+        // Crear documento de usuario si no existe
+        const userDoc = await getDoc(doc(db, "usuarios", user.uid));
+        if (!userDoc.exists()) {
+          await setDoc(doc(db, "usuarios", user.uid), {
+            nombre: user.displayName,
+            email: user.email,
+            role: "alumno",
+            cursos: []
+          });
+        }
+      } catch (err) {
+        alert("Error: " + err.message);
+        console.error(err);
+      }
+    }
+
+    function logout() {
+      signOut(auth);
+    }
+
+    // Detecta si hay usuario logueado
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        document.getElementById("login-card").classList.add("hidden");
+        document.getElementById("main-content").classList.remove("hidden");
+        document.getElementById("user-name").innerText = user.displayName;
+        loadAlumnoPanel(user.uid);
+      } else {
+        document.getElementById("login-card").classList.remove("hidden");
+        document.getElementById("main-content").classList.add("hidden");
+      }
+    });
+
+    // Cargar panel alumno
+    async function loadAlumnoPanel(uid) {
+      const docRef = doc(db, "usuarios", uid);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        const panel = document.getElementById("panel-alumno");
+        panel.innerHTML = `<h2>Bienvenido, ${data.nombre}</h2>`;
+        panel.innerHTML += `<p>Rol: ${data.role}</p>`;
+        panel.innerHTML += `<h3>Mis cursos</h3>`;
+        panel.innerHTML += `
+          <div class="card">
+            <h3>Morfofisiología I</h3>
+            <button onclick="openCourse('morf1')">Entrar al curso</button>
+          </div>
+          <div class="card">
+            <h3>Morfofisiología II</h3>
+            <button onclick="openCourse('morf2')">Entrar al curso</button>
+          </div>
+          <div class="card">
+            <h3>Biología Celular y Molecular</h3>
+            <button onclick="openCourse('bio-cel')">Entrar al curso</button>
+          </div>
+          <div class="card">
+            <h3>Bioquímica</h3>
+            <button onclick="openCourse('bioq')">Entrar al curso</button>
+          </div>
+          <div class="card">
+            <h3>Anatomía General</h3>
+            <button onclick="openCourse('anat-gen')">Entrar al curso</button>
+          </div>
+        `;
+      }
+    }
+
+    // Abrir curso
+    function openCourse(courseId) {
+      const main = document.getElementById("course-content");
+      document.getElementById("main-courses").classList.add("hidden");
+      main.classList.remove("hidden");
+
+      let contentHTML = `<h2>Curso seleccionado</h2>`;
+      // TODO: Añadir contenido real por semanas aquí
+      contentHTML += `<p>Contenido organizado por semanas (PDF, Video, Apliquemos lo aprendido)</p>`;
+      contentHTML += `<button onclick="backToCourses()">Volver a mis cursos</button>`;
+
+      main.innerHTML = contentHTML;
+    }
+
+    function backToCourses() {
+      document.getElementById("course-content").classList.add("hidden");
+      document.getElementById("main-courses").classList.remove("hidden");
+    }
+  </script>
 </head>
-
 <body>
-
-  <!-- HEADER -->
   <header>
     <h1>Neurova P53</h1>
     <nav>
-      <a onclick="showSection('inicio')">Inicio</a>
-      <a onclick="showSection('cursos')">Cursos</a>
-      <a onclick="showSection('horario')">Horario</a>
+      <span id="user-name" style="margin-right: 20px;"></span>
+      <a href="#" onclick="logout()">Cerrar sesión</a>
     </nav>
   </header>
 
-  <div class="container">
+  <!-- LOGIN -->
+  <div id="login-card">
+    <h2>Inicia sesión con Google</h2>
+    <button id="google-login" onclick="loginGoogle()">Login con Google</button>
+  </div>
 
-    <!-- LOGIN -->
-    <div id="login" class="card">
-      <h2>Iniciar sesión con Google</h2>
-      <button id="google-login">Entrar con Google</button>
+  <!-- CONTENIDO PRINCIPAL -->
+  <div id="main-content" class="container hidden">
+    <div id="main-courses">
+      <div id="panel-alumno"></div>
     </div>
-
-    <!-- PANEL ALUMNO -->
-    <div id="alumno-panel" class="hidden">
-      <h2>Bienvenido <span id="alumno-nombre"></span></h2>
-      <div id="horario-alumno"></div>
-      <div id="cursos-alumno"></div>
-    </div>
-
-    <!-- PANEL ADMIN -->
-    <div id="admin-panel" class="hidden">
-      <h2>Panel del Administrador</h2>
-      <div id="horario-todos"></div>
-      <div id="cursos-admin"></div>
-    </div>
-
+    <div id="course-content" class="hidden"></div>
   </div>
 
   <footer>
     © 2026 Neurova P53 · Educación con base científica
   </footer>
-
-<script>
-  // ------------------- FIREBASE CONFIG -------------------
-  const firebaseConfig = {
-    apiKey: "TU_API_KEY",
-    authDomain: "TU_AUTH_DOMAIN",
-    projectId: "TU_PROJECT_ID",
-    storageBucket: "TU_STORAGE_BUCKET",
-    messagingSenderId: "TU_MESSAGING_SENDER_ID",
-    appId: "TU_APP_ID"
-  };
-  firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
-  const db = firebase.firestore();
-
-  // ------------------- LOGIN GOOGLE -------------------
-  document.getElementById('google-login').addEventListener('click', ()=>{
-    const provider = new firebase.auth.GoogleAuthProvider();
-    auth.signInWithPopup(provider)
-      .then(result=>{
-        const user = result.user;
-        // Crear documento si no existe
-        const userDoc = db.collection('usuarios').doc(user.uid);
-        userDoc.get().then(doc=>{
-          if(!doc.exists){
-            userDoc.set({
-              nombre: user.displayName,
-              role: 'alumno',
-              horario: {}
-            });
-          }
-          const role = doc.exists ? doc.data().role : 'alumno';
-          setupPanel(user.displayName, role, user.uid);
-        });
-      }).catch(err=>{
-        console.error(err);
-        alert('Error al iniciar sesión');
-      });
-  });
-
-  // ------------------- PANEL SEGUN ROL -------------------
-  function setupPanel(nombre, role, uid){
-    document.getElementById('login').classList.add('hidden');
-    if(role==='admin'){
-      document.getElementById('admin-panel').classList.remove('hidden');
-      loadAdmin(uid);
-    } else {
-      document.getElementById('alumno-nombre').innerText = nombre;
-      document.getElementById('alumno-panel').classList.remove('hidden');
-      loadAlumno(uid);
-    }
-  }
-
-  // ------------------- ALUMNO -------------------
-  const cursos = [
-    {
-      nombre: "Morfofisiología I",
-      semanas:[
-        {sem:1, fisiologia:"Membrana celular, receptores, canales...", histologia:"Procesamiento histológico, membrana, organelas..."},
-        {sem:2, fisiologia:"Transmisión de señales...", histologia:"Tejido óseo y muscular..."},
-        {sem:3, fisiologia:"Neurotransmisores y sinapsis...", histologia:"Tejido muscular II y nervioso..."},
-        {sem:4, fisiologia:"Metabolismo óseo. Parcial", histologia:"Sistema vascular. Parcial"},
-        {sem:5, fisiologia:"Sangre y sus propiedades...", histologia:"Tejido epitelial y glandular"},
-        {sem:6, fisiologia:"Fisiología eritrocitaria II, hemostasia", histologia:"Matriz extracelular, tejido conectivo..."},
-        {sem:7, fisiologia:"Sistema inmune, fagocitosis...", histologia:"Tejido linfoide, órganos linfoides"},
-        {sem:8, fisiologia:"Respuesta inflamatoria, evaluación final", histologia:"Sistema tegumentario. Final"}
-      ]
-    },
-    {
-      nombre: "Morfofisiología II",
-      semanas:[
-        {sem:1, anatomia:"Pared torácica, región mamaria...", fisiologia:"Hemodinamia y electrofisiología", histologia:"Embriología cardiovascular"},
-        {sem:2, anatomia:"Mediastino superior, anterior y medio", fisiologia:"Electrocardiograma I...", histologia:"Histología vascular"},
-        {sem:3, anatomia:"Mediastino medio II...", fisiologia:"Presión arterial, gasto cardiaco...", histologia:"Integración embriología e histología cardíaca"},
-        {sem:4, anatomia:"Mediastino posterior, examen parcial", fisiologia:"Mecánica respiratoria. Parcial", histologia:"Integración histología vascular. Parcial"},
-        {sem:5, anatomia:"Pulmones, radioanatomía pulmonar", fisiologia:"Intercambio de gases, transporte O2/CO2", histologia:"Embriología e histología respiratorio"},
-        {sem:6, anatomia:"Columna vertebral dorsal", fisiologia:"Filtración y función renal", histologia:"Embriología urinaria e histología riñón"},
-        {sem:7, anatomia:"Columna torácica y riñón", fisiologia:"Electrolitos, equilibrio ácido-base", histologia:"Histología uréter, vejiga, uretra"},
-        {sem:8, anatomia:"Riñón y vías urinarias. Examen final", fisiologia:"Fisiología aviación/buceo", histologia:"Histopatología renal"}
-      ]
-    },
-    {
-      nombre: "Anatomía General",
-      semanas:[
-        {sem:1, tema:"Hombro, Axila, Brazo y Codo"},
-        {sem:2, tema:"Antebrazo, Muñeca y Mano"},
-        {sem:3, tema:"Región Glútea, Cadera, Muslo y Rodilla"},
-        {sem:4, tema:"Pierna, Tobillo y Pie"},
-        {sem:5, tema:"Vértebras cervicales y cuello"},
-        {sem:6, tema:"Cabeza y vísceras del cuello"},
-        {sem:7, tema:"Músculos de la cara y región profunda"},
-        {sem:8, tema:"Cavidad oral, fosas nasales, tronco"}
-      ]
-    },
-    {
-      nombre: "Biología Celular y Molecular",
-      semanas:[
-        {sem:1, teoria:"Niveles de organización, Bioelementos...", laboratorio:"Normas de bioseguridad, microscopio"},
-        {sem:2, teoria:"Aminoácidos, proteínas y enzimas...", laboratorio:"Extracción de ADN, identificación proteínas"},
-        {sem:3, teoria:"La célula y membrana", laboratorio:"Permeabilidad membrana"},
-        {sem:4, teoria:"Citoesqueleto, matriz extracelular...", laboratorio:"Diversidad celular, evaluación parcial"},
-        {sem:5, teoria:"Endomembranas y digestión celular", laboratorio:"Fraccionamiento celular"},
-        {sem:6, teoria:"Núcleo y replicación ADN", laboratorio:"Observación núcleo y corpúsculo de Barr"},
-        {sem:7, teoria:"Traducción y ciclo celular", laboratorio:"Síntesis proteínas, mitosis y meiosis"},
-        {sem:8, teoria:"Señalización celular, genética molecular", laboratorio:"ADN recombinante, evaluación final"}
-      ]
-    },
-    {
-      nombre: "Bioquímica",
-      semanas:[
-        {sem:1, teoria:"Bioelementos y biomoléculas...", laboratorio:"Espectrofotometría y concentración de compuestos"},
-        {sem:2, teoria:"Aminoácidos y proteínas", laboratorio:"Determinación proteínas totales"},
-        {sem:3, teoria:"Enzimas y cinética", laboratorio:"Degradación de proteínas"},
-        {sem:4, teoria:"Metabolismo carbohidratos", laboratorio:"Concentración urea y biomoléculas"},
-        {sem:5, teoria:"Glucógeno y bioenergética", laboratorio:"Metabolismo ayuno/postprandial"},
-        {sem:6, teoria:"Metabolismo lípidos", laboratorio:"Digestión e hidrólisis de lípidos"},
-        {sem:7, teoria:"Colesterol y ácidos nucleicos", laboratorio:"Perfil lipídico"},
-        {sem:8, teoria:"Síntesis de proteínas", laboratorio:"Ácido úrico y ADN, evaluación final"}
-      ]
-    }
-  ];
-
-  function loadAlumno(uid){
-    const div = document.getElementById('cursos-alumno');
-    div.innerHTML = '';
-    cursos.forEach(curso=>{
-      const card = document.createElement('div'); card.className='card';
-      const title = document.createElement('h3'); title.innerText=curso.nombre; card.appendChild(title);
-      const btn = document.createElement('button'); btn.innerText='Entrar al curso'; card.appendChild(btn);
-      btn.onclick=()=>{ showCursoAlumno(curso); }
-      div.appendChild(card);
-    });
-    // Horario ejemplo
-    db.collection('usuarios').doc(uid).get().then(doc=>{
-      const data = doc.data();
-      if(data.horario){
-        let html = `<h3>Horario semanal</h3><table><tr><th>Día</th><th>Cursos</th></tr>`;
-        for(const dia in data.horario){
-          html+=`<tr><td>${dia}</td><td>${data.horario[dia].join(', ')}</td></tr>`;
-        }
-        html+='</table>';
-        document.getElementById('horario-alumno').innerHTML = html;
-      }
-    });
-  }
-
-  function showCursoAlumno(curso){
-    const div = document.getElementById('cursos-alumno');
-    div.innerHTML='';
-    const back = document.createElement('button'); back.innerText='← Volver'; back.onclick=()=>{ loadAlumno(auth.currentUser.uid);}; div.appendChild(back);
-    curso.semanas.forEach(s=>{
-      const card = document.createElement('div'); card.className='card';
-      let contenido='';
-      if(s.tema) contenido=`Semana ${s.sem}: ${s.tema}`;
-      else if(s.fisiologia && s.histologia) contenido=`Semana ${s.sem}:\nFisiología: ${s.fisiologia}\nHistología: ${s.histologia}`;
-      else if(s.teoria && s.laboratorio) contenido=`Semana ${s.sem}:\nTeoría: ${s.teoria}\nLaboratorio: ${s.laboratorio}`;
-      else if(s.anatomia) contenido=`Semana ${s.sem}:\nAnatomía: ${s.anatomia}\nFisiología: ${s.fisiologia}\nHistología: ${s.histologia}`;
-      const p = document.createElement('p'); p.innerText=contenido; card.appendChild(p);
-      const pdf = document.createElement('button'); pdf.innerText='📄 PDF'; card.appendChild(pdf);
-      const video = document.createElement('button'); video.innerText='🎥 Video'; card.appendChild(video);
-      const banco = document.createElement('button'); banco.innerText='📝 Apliquemos lo aprendido'; card.appendChild(banco);
-      div.appendChild(card);
-    });
-  }
-
-  // ------------------- ADMIN -------------------
-  function loadAdmin(uid){
-    const divCursos = document.getElementById('cursos-admin');
-    divCursos.innerHTML='<h3>Cursos (solo visualización)</h3>';
-    cursos.forEach(curso=>{
-      const card = document.createElement('div'); card.className='card';
-      card.innerHTML=`<h3>${curso.nombre}</h3>`;
-      divCursos.appendChild(card);
-    });
-
-    // Mostrar horarios de todos los alumnos
-    const divHorarios = document.getElementById('horario-todos');
-    divHorarios.innerHTML='<h3>Horarios de todos los alumnos</h3>';
-    db.collection('usuarios').get().then(snapshot=>{
-      snapshot.forEach(doc=>{
-        const data = doc.data();
-        const card = document.createElement('div'); card.className='card';
-        let html = `<h4>${data.nombre} (${data.role})</h4>`;
-        if(data.horario){
-          html+=`<table><tr><th>Día</th><th>Cursos</th></tr>`;
-          for(const dia in data.horario){
-            html+=`<tr><td>${dia}</td><td>${data.horario[dia].join(', ')}</td></tr>`;
-          }
-          html+='</table>';
-        }
-        card.innerHTML = html;
-        divHorarios.appendChild(card);
-      });
-    });
-  }
-
-  // ------------------- NAVEGACIÓN -------------------
-  function showSection(id){
-    document.getElementById('alumno-panel').classList.add('hidden');
-    document.getElementById('admin-panel').classList.add('hidden');
-    if(id==='inicio'){
-      if(auth.currentUser){
-        const uid=auth.currentUser.uid;
-        db.collection('usuarios').doc(uid).get().then(doc=>{
-          if(doc.exists){
-            if(doc.data().role==='admin') document.getElementById('admin-panel').classList.remove('hidden');
-            else document.getElementById('alumno-panel').classList.remove('hidden');
-          }
-        });
-      }
-    } else if(id==='cursos'){
-      if(auth.currentUser){
-        const uid=auth.currentUser.uid;
-        db.collection('usuarios').doc(uid).get().then(doc=>{
-          if(doc.exists){
-            if(doc.data().role==='admin') document.getElementById('cursos-admin').scrollIntoView();
-            else document.getElementById('cursos-alumno').scrollIntoView();
-          }
-        });
-      }
-    } else if(id==='horario'){
-      if(auth.currentUser){
-        const uid=auth.currentUser.uid;
-        db.collection('usuarios').doc(uid).get().then(doc=>{
-          if(doc.exists){
-            if(doc.data().role==='admin') document.getElementById('horario-todos').scrollIntoView();
-            else document.getElementById('horario-alumno').scrollIntoView();
-          }
-        });
-      }
-    }
-  }
-</script>
 </body>
 </html>
