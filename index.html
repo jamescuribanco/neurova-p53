@@ -4,249 +4,168 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Neurova P53</title>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-body {margin:0;font-family:'Roboto',sans-serif;background:#f8fbff;color:#1f2937;}
-header {background:linear-gradient(90deg,#e0f2fe,#bae6fd,#93c5fd);padding:20px 40px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 4px 10px rgba(0,0,0,0.1);position:sticky;top:0;z-index:100;}
-header h1 {margin:0;font-size:28px;color:#0f172a;}
-nav a {margin-left:20px;text-decoration:none;color:#0f172a;font-weight:500;transition:color 0.3s;}
-nav a:hover {color:#2563eb;}
-.container {max-width:1200px;margin:40px auto;padding:0 20px;}
-.card {background:white;border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,0.08);padding:20px;margin-bottom:20px;text-align:center;}
-.card h3 {color:#0077cc;margin-bottom:10px;}
-.card button {margin-top:10px;padding:10px 18px;border:none;border-radius:20px;background:#0077cc;color:white;cursor:pointer;transition:background 0.3s;}
-.card button:hover {background:#005fa3;}
-.hidden {display:none;}
-.blocked {background:#ccc !important;color:#555 !important;cursor:not-allowed;}
-footer {text-align:center;padding:30px;color:#64748b;background:#f0f4f8;margin-top:40px;}
-table {width:100%;border-collapse:collapse;margin-top:20px;}
-th, td {padding:12px;border:1px solid #cbd5f5;text-align:left;}
-th {background:#2563eb;color:white;}
-td button {padding:6px 12px;font-size:14px;border-radius:12px;}
-#login-card {max-width:400px;margin:80px auto;padding:40px;border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,0.1);background:linear-gradient(135deg,#e0f7fa,#e1bee7);text-align:center;}
-#login-card h2 {margin-bottom:20px;}
-#login-card button {width:100%;padding:12px;margin-top:10px;border:none;border-radius:12px;color:white;font-size:16px;cursor:pointer;}
-#google-login {background:#db4437;}
-#google-login:hover {background:#c1351d;}
-.sub-section {margin-top:15px;}
-.back-btn {margin-top:15px;padding:8px 16px;border-radius:12px;background:#2563eb;color:white;cursor:pointer;border:none;}
-.back-btn:hover {background:#1d4ed8;}
+body {
+  margin:0; font-family:'Segoe UI', Arial, sans-serif; background:#f8fbff; color:#1f2937;
+}
+header {
+  background: linear-gradient(90deg,#e0f2fe,#bae6fd,#93c5fd);
+  padding:20px 40px; display:flex; justify-content:space-between; align-items:center;
+}
+header h1 { margin:0; color:#0f172a; font-size:28px; letter-spacing:1px; }
+nav a { margin-left:20px; text-decoration:none; color:#0f172a; font-weight:500; }
+.container { max-width:1100px; margin:40px auto; padding:0 20px; }
+.card {
+  background:white; border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,0.08); padding:20px;
+  margin-bottom:20px;
+}
+button {
+  background:#2563eb; color:white; border:none; padding:10px 18px; border-radius:12px; cursor:pointer;
+}
+button:hover { background:#1d4ed8; }
+.hidden { display:none; }
+table { width:100%; border-collapse:collapse; margin-top:15px; }
+th,td { border:1px solid #ccc; padding:10px; text-align:left; }
+th { background:#e0f2fe; }
+.sub-section { margin-top:20px; }
+footer { text-align:center; padding:30px; color:#64748b; }
 </style>
 
 <!-- Firebase -->
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
-import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
+  // Import Firebase
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-analytics.js";
+  import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyDAmEVU8J-uk2Yg6bL5n28xbP1771cHGME",
-  authDomain: "neurovap53-cdbcf.firebaseapp.com",
-  projectId: "neurovap53-cdbcf",
-  storageBucket: "neurovap53-cdbcf.firebasestorage.app",
-  messagingSenderId: "558340314022",
-  appId: "1:558340314022:web:2027622d3b86af54ddb567",
-  measurementId: "G-70R7JRGVKG"
-};
+  // Tu configuración Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyDAmEVU8J-uk2Yg6bL5n28xbP1771cHGME",
+    authDomain: "neurovap53-cdbcf.firebaseapp.com",
+    projectId: "neurovap53-cdbcf",
+    storageBucket: "neurovap53-cdbcf.firebasestorage.app",
+    messagingSenderId: "558340314022",
+    appId: "1:558340314022:web:2027622d3b86af54ddb567",
+    measurementId: "G-70R7JRGVKG"
+  };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-const provider = new GoogleAuthProvider();
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+  const auth = getAuth();
+  const provider = new GoogleAuthProvider();
 
-async function loginGoogle(){
-  try{
-    const result = await signInWithPopup(auth, provider);
-    const user = result.user;
-    const userDoc = await getDoc(doc(db,"usuarios",user.uid));
-    if(!userDoc.exists()){
-      await setDoc(doc(db,"usuarios",user.uid),{
-        nombre:user.displayName,
-        email:user.email,
-        role:"alumno",
-        cursos:[]
-      });
+  // LOGIN GOOGLE
+  function loginGoogle() {
+    signInWithPopup(auth, provider)
+    .then((result)=>{
+      const user = result.user;
+      document.getElementById('login-card').classList.add('hidden');
+      document.getElementById('main-content').classList.remove('hidden');
+      document.getElementById('user-name').innerText = user.displayName;
+      loadPanel(user);
+    }).catch((error)=>{
+      alert("Error al iniciar sesión: "+error.message);
+    });
+  }
+
+  // LOGOUT
+  function logout() {
+    signOut(auth).then(()=>{
+      document.getElementById('main-content').classList.add('hidden');
+      document.getElementById('login-card').classList.remove('hidden');
+    });
+  }
+
+  // BOTÓN LOGIN
+  window.addEventListener("DOMContentLoaded",()=>{
+    document.getElementById("google-login").addEventListener("click", loginGoogle);
+  });
+
+  // CARGAR PANEL
+  function loadPanel(user){
+    const panel = document.getElementById("panel-content");
+    panel.innerHTML = `
+      <h2>Bienvenido ${user.displayName}</h2>
+      <p>Rol: Alumno</p>
+      <p>Horarios y cursos:</p>
+      <div id="courses-panel"></div>
+    `;
+    loadCourses();
+  }
+
+  // ************ CURSOS ************
+  function loadCourses(){
+    const c = document.getElementById("courses-panel");
+    c.innerHTML = `
+      <div class="card"><h3>Morfofisiología I</h3><button onclick="showCourse('morfo1')">Entrar al curso</button></div>
+      <div class="card"><h3>Morfofisiología II</h3><button onclick="showCourse('morfo2')">Entrar al curso</button></div>
+      <div class="card"><h3>Biología Celular y Molecular</h3><button onclick="showCourse('bio')">Entrar al curso</button></div>
+      <div class="card"><h3>Bioquímica</h3><button onclick="showCourse('bioq')">Entrar al curso</button></div>
+      <div class="card"><h3>Anatomía General</h3><button onclick="showCourse('anat')">Entrar al curso</button></div>
+    `;
+  }
+
+  function showCourse(courseId){
+    const panel = document.getElementById("panel-content");
+    panel.innerHTML = `<button onclick="backToPanel()">← Volver a panel</button>`;
+    let html = "";
+    // AQUÍ VAN LOS CURSOS, con 8 semanas y botones Grabación/PDF/Apliquemos
+    if(courseId==="morfo1"){
+      html+=`<h2>Morfofisiología I</h2>
+      <table><tr><th>Semana</th><th>Fisiología</th><th>Histología</th><th>Acciones</th></tr>
+      <tr><td>1</td><td>Membrana celular, receptores...</td><td>Procesamiento histológico...</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
+      <!-- Semana 2 a 8 aquí igual... --> 
+      </table>`;
     }
-  }catch(err){alert("Error: "+err.message);console.error(err);}
-}
-
-function logout(){signOut(auth);}
-
-onAuthStateChanged(auth,user=>{
-  if(user){
-    document.getElementById("login-card").classList.add("hidden");
-    document.getElementById("main-content").classList.remove("hidden");
-    document.getElementById("user-name").innerText=user.displayName;
-    loadPanel(user.uid);
-  }else{
-    document.getElementById("login-card").classList.remove("hidden");
-    document.getElementById("main-content").classList.add("hidden");
-  }
-});
-
-async function loadPanel(uid){
-  const docRef = doc(db,"usuarios",uid);
-  const docSnap = await getDoc(docRef);
-  const panel=document.getElementById("panel-content");
-  if(docSnap.exists()){
-    const data=docSnap.data();
-    if(data.role==="admin"){
-      panel.innerHTML=`<h2>Bienvenido Admin: ${data.nombre}</h2>
-      <h3>Todos los cursos y horarios de los alumnos</h3>
-      <div class="card">[Aquí se cargarán horarios de todos los alumnos desde Firestore]</div>`;
-    }else{
-      panel.innerHTML=`<h2>Bienvenido ${data.nombre}</h2>
-      <h3>Mis cursos</h3>
-      <div class="card"><h3>Morfofisiología I</h3><button onclick="openCourse('morf1')">Entrar al curso</button></div>
-      <div class="card"><h3>Morfofisiología II</h3><button onclick="openCourse('morf2')">Entrar al curso</button></div>
-      <div class="card"><h3>Biología Celular y Molecular</h3><button onclick="openCourse('bio-cel')">Entrar al curso</button></div>
-      <div class="card"><h3>Bioquímica</h3><button onclick="openCourse('bioq')">Entrar al curso</button></div>
-      <div class="card"><h3>Anatomía General</h3><button onclick="openCourse('anat')">Entrar al curso</button></div>`;
+    else if(courseId==="morfo2"){
+      html+=`<h2>Morfofisiología II</h2>
+      <table><tr><th>Semana</th><th>Anatomía y Radioanatomía</th><th>Fisiología</th><th>Histología y Embriología</th><th>Acciones</th></tr>
+      <tr><td>1</td><td>Pared torácica...</td><td>Hemodinamia...</td><td>Embriología...</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
+      <!-- Semana 2 a 8 aquí igual... --> 
+      </table>`;
     }
-  }
-}
-
-function openCourse(courseId){
-  const main=document.getElementById("course-content");
-  document.getElementById("panel-content").classList.add("hidden");
-  main.classList.remove("hidden");
-
-  let html=`<button class="back-btn" onclick="backToPanel()">← Volver a mis cursos</button>`;
-
-  // ************* MORFOFISIOLOGÍA I *************
-  if(courseId==="morf1"){
-    html+=`<h2>Morfofisiología I</h2>
-    <table>
-    <tr><th>Semana</th><th>Temas de Fisiología</th><th>Temas de Histología</th><th>Acciones</th></tr>
-    <tr><td>1</td><td>Membrana celular, receptores, canales, transporte y potenciales de membrana/acción. Regularización y señalización celular.</td><td>Procesamiento histológico, membrana celular, organelas y núcleo. Desarrollo embrionario del esqueleto y tejido cartilaginoso.</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
-    <tr><td>2</td><td>Transmisión de señales celulares. Composición y regulación del medio interno, ósmosis y líquidos corporales.</td><td>Tejido óseo y osificación. Origen embrionario del sistema muscular y Tejido muscular I.</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
-    <tr><td>3</td><td>Neurotransmisores, receptores y sinapsis. Contracción y excitación muscular.</td><td>Tejido muscular II. Neurohistogénesis y tejido nervioso.</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
-    <tr><td>4</td><td>Metabolismo óseo. Evaluación Parcial.</td><td>Introducción al sistema vascular. Evaluación Parcial.</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
-    <tr><td>5</td><td>Sangre y sus propiedades, hematopoyesis, eritropoyesis y hemograma. Fisiología eritrocitaria I (membrana, metabolismo y hemoglobina).</td><td>Tejido epitelial de revestimiento. Tejido epitelial glandular.</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
-    <tr><td>6</td><td>Fisiología eritrocitaria II (hierro, Vit B12 y B9). Fisiología plaquetaria, hemostasia y fibrinólisis.</td><td>Matriz extracelular, tejido conectivo y tejido adiposo. Tejido sanguíneo y hematopoyesis.</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
-    <tr><td>7</td><td>Generalidades del sistema inmunológico, respuesta innata y fagocitosis. Inmunidad adquirida, linfocitos T y B, y grupos sanguíneos.</td><td>Tejido linfoide y MALT. Órganos linfoides.</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
-    <tr><td>8</td><td>Respuesta inflamatoria, tolerancia e hipersensibilidad. Evaluación Final.</td><td>Sistema tegumentario y sus anexos. Evaluación Final.</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
-    </table>`;
+    else if(courseId==="bio"){
+      html+=`<h2>Biología Celular</h2>
+      <div class="sub-section"><h3>Teoría</h3>Tabla con semanas...</div>
+      <div class="sub-section"><h3>Laboratorio</h3>Tabla con semanas...</div>`;
+    }
+    else if(courseId==="bioq"){
+      html+=`<h2>Bioquímica</h2>
+      <div class="sub-section"><h3>Teoría</h3>Tabla con semanas...</div>
+      <div class="sub-section"><h3>Laboratorio</h3>Tabla con semanas...</div>`;
+    }
+    else if(courseId==="anat"){
+      html+=`<h2>Anatomía General</h2>
+      <table><tr><th>Semana</th><th>Contenido</th><th>Acciones</th></tr>
+      <tr><td>1</td><td>Hombro, Axila...</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
+      <!-- Semana 2 a 8 aquí igual... --> 
+      </table>`;
+    }
+    panel.innerHTML+=html;
   }
 
-  // ************* MORFOFISIOLOGÍA II *************
-  else if(courseId==="morf2"){
-    html+=`<h2>Morfofisiología II</h2>
-    <table>
-    <tr><th>Semana</th><th>Anatomía y Radioanatomía</th><th>Fisiología</th><th>Histología y Embriología</th><th>Acciones</th></tr>
-    <tr><td>1</td><td>Pared torácica, región mamaria y radioanatomía de tórax.</td><td>Hemodinamia y electrofisiología cardiaca.</td><td>Embriología cardiovascular e histología del corazón y válvulas.</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
-    <tr><td>2</td><td>Mediastino superior, anterior y medio (pericardio y morfología externa).</td><td>Electrocardiograma I, contracción y ciclo cardiaco.</td><td>Histología vascular (arterias, capilares, venas y linfáticos).</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
-    <tr><td>3</td><td>Mediastino medio II (morfología interna y conducción) y radioanatomía cardiaca.</td><td>Presión arterial, gasto cardiaco, retorno venoso y circulaciones especiales.</td><td>Integración de embriología e histología cardíaca.</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
-    <tr><td>4</td><td>Mediastino posterior y radioanatomía del mediastino posterior. Examen Parcial.</td><td>Mecánica respiratoria, volúmenes y capacidades. Examen Parcial.</td><td>Integración de histología vascular. Examen Parcial.</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
-    <tr><td>5</td><td>Pulmones (segmentación e inervación) y radioanatomía pulmonar.</td><td>Intercambio de gases, transporte de O₂/CO₂, control respiratorio y circulación pulmonar.</td><td>Embriología e histología del aparato respiratorio (I y II).</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
-    <tr><td>6</td><td>Columna vertebral dorsal y músculos paravertebrales.</td><td>Estructura renal, aclaramiento, filtración glomerular, reabsorción y secreción renal.</td><td>Embriología urinaria e histología del riñón y la pelvis renal.</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
-    <tr><td>7</td><td>Radioanatomía de columna torácica, anatomía del riñón y vías urinarias.</td><td>Regulación de electrolitos, volumen, equilibrio ácido-base y diuréticos.</td><td>Histología de uréter, vejiga y uretra; malformaciones congénitas renales.</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
-    <tr><td>8</td><td>Radioanatomía del riñón y vías urinarias. Examen Final.</td><td>Fisiología de la aviación, grandes alturas y buceo profundo. Examen Final.</td><td>Histopatología renal y de las vías urinarias. Examen Final.</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
-    </table>`;
+  function backToPanel(){
+    loadPanel({displayName:"Alumno"}); // recarga panel
   }
 
-  // ************* BIOLOGÍA CELULAR *************
-  else if(courseId==="bio-cel"){
-    html+=`<h2>Biología Celular y Molecular</h2>
-    <div class="sub-section"><h3>Teoría</h3>
-    <table>
-    <tr><th>Semana</th><th>Conceptos Clave</th><th>Acciones</th></tr>
-    <tr><td>1</td><td>Niveles de organización, Bioelementos, Enlaces químicos y Agua. Glúcidos y Lípidos.</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
-    <tr><td>2</td><td>Aminoácidos, Proteínas y Enzimas. Dogma Central: Estructura del ADN y ARN.</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
-    <tr><td>3</td><td>La Célula: Evolución (Proca vs. Euca) y Membrana Celular. Transporte de membrana (Pasivo/Activo).</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
-    <tr><td>4</td><td>Citoesqueleto, Matriz Extracelular y Uniones celulares. Evaluación Parcial.</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
-    <tr><td>5</td><td>Sistema de Endomembranas (RER, REL, Golgi) y Digestión Celular (Lisosomas/Peroxisomas). Mitocondrias y Bioenergética.</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
-    <tr><td>6</td><td>Núcleo Celular, Cromatina y Replicación del ADN. Transcripción y Procesamiento de ARN.</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
-    <tr><td>7</td><td>Traducción (Síntesis de Proteínas). Ciclo Celular, Mitosis, Meiosis y Apoptosis.</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
-    <tr><td>8</td><td>Señalización celular, Introducción al Cáncer y Genética Molecular. Evaluación Final.</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
-    </table></div>
-    <div class="sub-section"><h3>Laboratorio</h3>
-    <table>
-    <tr><th>Semana</th><th>Práctica</th><th>Acciones</th></tr>
-    <tr><td>1</td><td>Normas de Bioseguridad y Manejo del Microscopio. Identificación de Glúcidos y Lípidos.</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
-    <tr><td>2</td><td>Identificación de Proteínas y Enzimas. Extracción de ADN.</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
-    <tr><td>3</td><td>Célula Procariota y Eucariota. Permeabilidad de la Membrana Celular (Diálisis).</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
-    <tr><td>4</td><td>Diversidad Celular y Diferenciación. Evaluación Parcial.</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
-    <tr><td>5</td><td>Fraccionamiento Celular. Respiración Celular (Fermentación).</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
-    <tr><td>6</td><td>Observación de Núcleo y Corpúsculo de Barr. Soluciones y Diluciones.</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
-    <tr><td>7</td><td>Síntesis de Proteínas (Simulación). Mitosis y Meiosis (Células vegetales/animales).</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
-    <tr><td>8</td><td>Tecnología del ADN Recombinante (Simulación). Evaluación Final.</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
-    </table></div>`;
-  }
-
-  // ************* BIOQUÍMICA *************
-  else if(courseId==="bioq"){
-    html+=`<h2>Bioquímica</h2>
-    <div class="sub-section"><h3>Teoría</h3>
-    <table>
-    <tr><th>Semana</th><th>Contenido</th><th>Acciones</th></tr>
-    <tr><td>1</td><td>Bioelementos y Biomoléculas: Agua, pH, soluciones buffer, bioelementos y vitaminas. Estructuras supramoleculares.</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
-    <tr><td>2</td><td>Aminoácidos y Proteínas: Estructura, clasificación y propiedades. Plegamiento y desnaturalización.</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
-    <tr><td>3</td><td>Enzimas y Cinética: Energía de activación y factores que afectan la actividad enzimática. Evaluación Continua 1.</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
-    <tr><td>4</td><td>Metabolismo de Carbohidratos: Glicólisis, ciclo de la urea y degradación de aminoácidos. Evaluación Parcial.</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
-    <tr><td>5</td><td>Glucógeno y Bioenergética: Síntesis/degradación de glucógeno, ciclo de Krebs y fosforilación oxidativa.</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
-    <tr><td>6</td><td>Metabolismo de Lípidos: Lipogénesis, beta-oxidación y síntesis de triglicéridos. Evaluación Continua 2.</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
-    <tr><td>7</td><td>Colesterol y Ácidos Nucleicos: Síntesis de colesterol, estructura de ADN/ARN y replicación.</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
-    <tr><td>8</td><td>Síntesis de Proteínas: Transcripción y traducción. Presentación de situación clínica. Evaluación Final.</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
-    </table></div>
-    <div class="sub-section"><h3>Laboratorio</h3>
-    <table>
-    <tr><th>Semana</th><th>Práctica</th><th>Acciones</th></tr>
-    <tr><td>1</td><td>Espectrofotometría: Principios de bioseguridad y determinación de concentración de compuestos.</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
-    <tr><td>2</td><td>Proteínas totales: Determinación de proteínas totales, albúmina y globulinas en suero.</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
-    <tr><td>3</td><td>Degradación de proteínas y factores que afectan la actividad enzimática.</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
-    <tr><td>4</td><td>Concentración de urea: Determinación en suero e identificación de biomoléculas. Evaluación Parcial.</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
-    <tr><td>5</td><td>Metabolismo en ayuno/postprandial: Evaluación de rutas metabólicas en condiciones de alimentación.</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
-    <tr><td>6</td><td>Digestión y Hidrólisis: Digestión enzimática del almidón e hidrólisis de lípidos.</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
-    <tr><td>7</td><td>Perfil Lipídico: Determinación de triglicéridos, colesterol y lipoproteínas en suero.</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
-    <tr><td>8</td><td>Ácido Úrico y ADN: Extracción de ADN y determinación de ácido úrico en suero. Evaluación Final.</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
-    </table></div>`;
-  }
-
-  // ************* ANATOMÍA GENERAL *************
-  else if(courseId==="anat"){
-    html+=`<h2>Anatomía General</h2>
-    <table>
-    <tr><th>Semana</th><th>Contenido</th><th>Acciones</th></tr>
-    <tr><td>1</td><td>Hombro, Axila, Brazo y Codo.</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
-    <tr><td>2</td><td>Antebrazo, Muñeca y Mano.</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
-    <tr><td>3</td><td>Región Glútea, Cadera, Muslo y Rodilla.</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
-    <tr><td>4</td><td>Pierna, Región Poplítea, Tobillo y Pie.</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
-    <tr><td>5</td><td>Vértebras cervicales, regiones y triángulos del cuello.</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
-    <tr><td>6</td><td>Vísceras del cuello, Cabeza ósea (Neuro/Viscerocráneo).</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
-    <tr><td>7</td><td>Músculos mímica/masticación y Regiones profundas de la cara.</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
-    <tr><td>8</td><td>Cavidad oral, fosas nasales y paredes de tronco.</td><td><button>Grabación</button> <button>PDF</button> <button>Apliquemos</button></td></tr>
-    </table>`;
-  }
-
-  main.innerHTML=html;
-}
-
-function backToPanel(){
-  document.getElementById("course-content").classList.add("hidden");
-  document.getElementById("panel-content").classList.remove("hidden");
-}
 </script>
 </head>
 <body>
 <header>
   <h1>Neurova P53</h1>
   <nav>
-    <span id="user-name" style="margin-right:20px;"></span>
+    <span id="user-name"></span>
     <a href="#" onclick="logout()">Cerrar sesión</a>
   </nav>
 </header>
 
-<!-- LOGIN -->
-<div id="login-card">
+<div id="login-card" class="container">
   <h2>Inicia sesión con Google</h2>
-  <button id="google-login" onclick="loginGoogle()">Login con Google</button>
+  <button id="google-login">Login con Google</button>
 </div>
 
-<!-- CONTENIDO PRINCIPAL -->
 <div id="main-content" class="container hidden">
   <div id="panel-content"></div>
-  <div id="course-content" class="hidden"></div>
 </div>
 
 <footer>
