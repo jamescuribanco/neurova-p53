@@ -98,3 +98,234 @@
       margin-bottom: 20px;
     }
   </style>
+<!-- ================== CURSOS, SUBCURSOS Y SEMANAS ================== -->
+<!-- Contenedor de Subcursos -->
+<div id="subcurso-container" class="container hidden">
+  <h2 id="subcurso-title"></h2>
+  <div id="subcurso-list" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:20px;"></div>
+  <button onclick="volverACursos()" style="margin-top:20px; padding:10px 20px; background:#2563eb; color:white; border:none; border-radius:10px; cursor:pointer;">Volver a Cursos</button>
+</div>
+
+<!-- Contenedor de Semanas -->
+<div id="semana-container" class="container hidden">
+  <h2 id="semana-title"></h2>
+  <div id="semana-list" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:20px;"></div>
+  <button onclick="volverASubcurso()" style="margin-top:20px; padding:10px 20px; background:#2563eb; color:white; border:none; border-radius:10px; cursor:pointer;">Volver a Subcursos</button>
+</div>
+
+<!-- Contenedor de Contenido Semana -->
+<div id="contenido-semana-container" class="container hidden">
+  <h2 id="contenido-title"></h2>
+  <div style="margin-top:20px;">
+    <button id="btn-grabacion" style="margin-right:10px; padding:10px 15px; background:#10b981; color:white; border:none; border-radius:8px; cursor:pointer;">📹 Grabación</button>
+    <button id="btn-pdf" style="margin-right:10px; padding:10px 15px; background:#3b82f6; color:white; border:none; border-radius:8px; cursor:pointer;">📄 PDF</button>
+    <button id="btn-formulario" style="padding:10px 15px; background:#f59e0b; color:white; border:none; border-radius:8px; cursor:pointer;">📝 Apliquemos lo aprendido</button>
+  </div>
+  <button onclick="volverASemanas()" style="margin-top:20px; padding:10px 20px; background:#2563eb; color:white; border:none; border-radius:10px; cursor:pointer;">Volver a Semanas</button>
+</div>
+
+<script>
+let cursoActual = '';
+let subcursoActual = '';
+
+const cursosData = {
+  "Morfofisiología 1": {
+    semanas: [
+      {sem:1, fisiologia:"Membrana celular, receptores, canales, transporte y potenciales de membrana/acción. Regularización y señalización celular.", histologia:"Procesamiento histológico, membrana celular, organelas y núcleo. Desarrollo embrionario del esqueleto y tejido cartilaginoso."},
+      {sem:2, fisiologia:"Transmisión de señales celulares. Composición y regulación del medio interno, ósmosis y líquidos corporales.", histologia:"Tejido óseo y osificación. Origen embrionario del sistema muscular y Tejido muscular I."},
+      {sem:3, fisiologia:"Neurotransmisores, receptores y sinapsis. Contracción y excitación muscular.", histologia:"Tejido muscular II. Neurohistogénesis y tejido nervioso."},
+      {sem:4, fisiologia:"Metabolismo óseo. Evaluación Parcial.", histologia:"Introducción al sistema vascular. Evaluación Parcial."},
+      {sem:5, fisiologia:"Sangre y sus propiedades, hematopoyesis, eritropoyesis y hemograma. Fisiología eritrocitaria I (membrana, metabolismo y hemoglobina).", histologia:"Tejido epitelial de revestimiento. Tejido epitelial glandular."},
+      {sem:6, fisiologia:"Fisiología eritrocitaria II (hierro, Vit B12 y B9). Fisiología plaquetaria, hemostasia y fibrinólisis.", histologia:"Matriz extracelular, tejido conectivo y tejido adiposo. Tejido sanguíneo y hematopoyesis."},
+      {sem:7, fisiologia:"Generalidades del sistema inmunológico, respuesta innata y fagocitosis. Inmunidad adquirida, linfocitos T y B, y grupos sanguíneos.", histologia:"Tejido linfoide y MALT. Órganos linfoides."},
+      {sem:8, fisiologia:"Respuesta inflamatoria, tolerancia e hipersensibilidad. Evaluación Final.", histologia:"Sistema tegumentario y sus anexos. Evaluación Final."}
+    ]
+  },
+  "Morfofisiología 2": {
+    subcursos:{
+      "Anatomía": [
+        {sem:1, tema:"Pared torácica, región mamaria y radioanatomía de tórax."},
+        {sem:2, tema:"Mediastino superior, anterior y medio (pericardio y morfología externa)."},
+        {sem:3, tema:"Mediastino medio II (morfología interna y conducción) y radioanatomía cardiaca."},
+        {sem:4, tema:"Mediastino posterior y radioanatomía del mediastino posterior. Examen Parcial."},
+        {sem:5, tema:"Pulmones (segmentación e inervación) y radioanatomía pulmonar."},
+        {sem:6, tema:"Columna vertebral dorsal y músculos paravertebrales."},
+        {sem:7, tema:"Radioanatomía de columna torácica, anatomía del riñón y vías urinarias."},
+        {sem:8, tema:"Radioanatomía del riñón y vías urinarias. Examen Final."}
+      ],
+      "Fisiología": [
+        {sem:1, tema:"Hemodinamia y electrofisiología cardiaca."},
+        {sem:2, tema:"Electrocardiograma I, contracción y ciclo cardiaco."},
+        {sem:3, tema:"Presión arterial, gasto cardiaco, retorno venoso y circulaciones especiales."},
+        {sem:4, tema:"Mecánica respiratoria, volúmenes y capacidades. Examen Parcial."},
+        {sem:5, tema:"Intercambio de gases, transporte de O₂/CO₂, control respiratorio y circulación pulmonar."},
+        {sem:6, tema:"Estructura renal, aclaramiento, filtración glomerular, reabsorción y secreción renal."},
+        {sem:7, tema:"Regulación de electrolitos, volumen, equilibrio ácido-base y diuréticos."},
+        {sem:8, tema:"Fisiología de la aviación, grandes alturas y buceo profundo. Examen Final."}
+      ],
+      "Histología": [
+        {sem:1, tema:"Embriología cardiovascular e histología del corazón y válvulas."},
+        {sem:2, tema:"Histología vascular (arterias, capilares, venas y linfáticos)."},
+        {sem:3, tema:"Integración de embriología e histología cardíaca."},
+        {sem:4, tema:"Integración de histología vascular. Examen Parcial."},
+        {sem:5, tema:"Embriología e histología del aparato respiratorio (I y II)."},
+        {sem:6, tema:"Embriología urinaria e histología del riñón y la pelvis renal."},
+        {sem:7, tema:"Histología de uréter, vejiga y uretra; malformaciones congénitas renales."},
+        {sem:8, tema:"Histopatología renal y de las vías urinarias. Examen Final."}
+      ]
+    }
+  },
+  "Anatomía General": {
+    semanas:[
+      {sem:1, tema:"Hombro, Axila, Brazo y Codo."},
+      {sem:2, tema:"Antebrazo, Muñeca y Mano."},
+      {sem:3, tema:"Región Glútea, Cadera, Muslo y Rodilla."},
+      {sem:4, tema:"Pierna, Región Poplítea, Tobillo y Pie."},
+      {sem:5, tema:"Vértebras cervicales, regiones y triángulos del cuello."},
+      {sem:6, tema:"Vísceras del cuello, Cabeza ósea (Neuro/Viscerocráneo)."},
+      {sem:7, tema:"Músculos mímica/masticación y Regiones profundas de la cara."},
+      {sem:8, tema:"Cavidad oral, fosas nasales y paredes de tronco."}
+    ]
+  },
+  "Biología Celular y Molecular": {
+    subcursos:{
+      "Teoría": [
+        {sem:1, tema:"Niveles de organización, Bioelementos, Enlaces químicos y Agua. Glúcidos y Lípidos."},
+        {sem:2, tema:"Aminoácidos, Proteínas y Enzimas. Dogma Central: Estructura del ADN y ARN."},
+        {sem:3, tema:"La Célula: Evolución (Proca vs. Euca) y Membrana Celular. Transporte de membrana (Pasivo/Activo)."},
+        {sem:4, tema:"Citoesqueleto, Matriz Extracelular y Uniones celulares. Evaluación Parcial."},
+        {sem:5, tema:"Sistema de Endomembranas (RER, REL, Golgi) y Digestión Celular (Lisosomas/Peroxisomas). Mitocondrias y Bioenergética."},
+        {sem:6, tema:"Núcleo Celular, Cromatina y Replicación del ADN. Transcripción y Procesamiento de ARN."},
+        {sem:7, tema:"Traducción (Síntesis de Proteínas). Ciclo Celular, Mitosis, Meiosis y Apoptosis."},
+        {sem:8, tema:"Señalización celular, Introducción al Cáncer y Genética Molecular. Evaluación Final."}
+      ],
+      "Laboratorio": [
+        {sem:1, tema:"Normas de Bioseguridad y Manejo del Microscopio. Identificación de Glúcidos y Lípidos."},
+        {sem:2, tema:"Identificación de Proteínas y Enzimas. Extracción de ADN."},
+        {sem:3, tema:"Célula Procariota y Eucariota. Permeabilidad de la Membrana Celular (Diálisis)."},
+        {sem:4, tema:"Diversidad Celular y Diferenciación. Evaluación Parcial."},
+        {sem:5, tema:"Fraccionamiento Celular. Respiración Celular (Fermentación)."},
+        {sem:6, tema:"Observación de Núcleo y Corpúsculo de Barr. Soluciones y Diluciones."},
+        {sem:7, tema:"Síntesis de Proteínas (Simulación). Mitosis y Meiosis (Células vegetales/animales)."},
+        {sem:8, tema:"Tecnología del ADN Recombinante (Simulación). Evaluación Final."}
+      ]
+    }
+  },
+  "Bioquímica": {
+    subcursos:{
+      "Teoría": [
+        {sem:1, tema:"Bioelementos y Biomoléculas: Agua, pH, soluciones buffer, bioelementos y vitaminas. Estructuras supramoleculares."},
+        {sem:2, tema:"Aminoácidos y Proteínas: Estructura, clasificación y propiedades. Plegamiento y desnaturalización."},
+        {sem:3, tema:"Enzimas y Cinética: Energía de activación y factores que afectan la actividad enzimática. Evaluación Continua 1."},
+        {sem:4, tema:"Metabolismo de Carbohidratos: Glicólisis, ciclo de la urea y degradación de aminoácidos. Evaluación Parcial."},
+        {sem:5, tema:"Glucógeno y Bioenergética: Síntesis/degradación de glucógeno, ciclo de Krebs y fosforilación oxidativa."},
+        {sem:6, tema:"Metabolismo de Lípidos: Lipogénesis, beta-oxidación y síntesis de triglicéridos. Evaluación Continua 2."},
+        {sem:7, tema:"Colesterol y Ácidos Nucleicos: Síntesis de colesterol, estructura de ADN/ARN y replicación."},
+        {sem:8, tema:"Síntesis de Proteínas: Transcripción y traducción. Presentación de situación clínica. Evaluación Final."}
+      ],
+      "Laboratorio": [
+        {sem:1, tema:"Espectrofotometría: Principios de bioseguridad y determinación de concentración de compuestos."},
+        {sem:2, tema:"Proteínas totales: Determinación de proteínas totales, albúmina y globulinas en suero."},
+        {sem:3, tema:"Degradación de proteínas y factores que afectan la actividad enzimática."},
+        {sem:4, tema:"Concentración de urea: Determinación en suero e identificación de biomoléculas. Evaluación Parcial."},
+        {sem:5, tema:"Metabolismo en ayuno/postprandial: Evaluación de rutas metabólicas en condiciones de alimentación."},
+        {sem:6, tema:"Digestión y Hidrólisis: Digestión enzimática del almidón e hidrólisis de lípidos."},
+        {sem:7, tema:"Perfil Lipídico: Determinación de triglicéridos, colesterol y lipoproteínas en suero."},
+        {sem:8, tema:"Ácido Úrico y ADN: Extracción de ADN y determinación de ácido úrico en suero. Evaluación Final."}
+      ]
+    }
+  }
+};
+
+// ================== FUNCIONES ==================
+function mostrarCursos() {
+  const cursosList = document.getElementById('cursos-list');
+  cursosList.innerHTML = '';
+  for (const curso in cursosData) {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `<h3>${curso}</h3>
+                      <button onclick="abrirCurso('${curso}')">Entrar al curso</button>`;
+    cursosList.appendChild(card);
+  }
+  document.getElementById('cursos-container').classList.remove('hidden');
+  document.getElementById('subcurso-container').classList.add('hidden');
+  document.getElementById('semana-container').classList.add('hidden');
+  document.getElementById('contenido-semana-container').classList.add('hidden');
+}
+
+function abrirCurso(curso) {
+  cursoActual = curso;
+  const tieneSubcursos = cursosData[curso].subcursos !== undefined;
+  document.getElementById('cursos-container').classList.add('hidden');
+  if (tieneSubcursos) {
+    mostrarSubcursos(curso);
+  } else {
+    mostrarSemanas(curso);
+  }
+}
+
+function mostrarSubcursos(curso) {
+  document.getElementById('subcurso-container').classList.remove('hidden');
+  document.getElementById('subcurso-title').innerText = `Subcursos de ${curso}`;
+  const subcursoList = document.getElementById('subcurso-list');
+  subcursoList.innerHTML = '';
+  const subcursos = Object.keys(cursosData[curso].subcursos);
+  subcursos.forEach(sc => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `<h3>${sc}</h3><button onclick="abrirSubcurso('${sc}')">Ver semanas</button>`;
+    subcursoList.appendChild(card);
+  });
+}
+
+function abrirSubcurso(subcurso) {
+  subcursoActual = subcurso;
+  document.getElementById('subcurso-container').classList.add('hidden');
+  mostrarSemanas(cursoActual, subcurso);
+}
+
+function mostrarSemanas(curso, subcurso=null) {
+  document.getElementById('semana-container').classList.remove('hidden');
+  let semanas;
+  if(subcurso) {
+    semanas = cursosData[curso].subcursos[subcurso];
+    document.getElementById('semana-title').innerText = `${curso} - ${subcurso} (Semanas)`;
+  } else {
+    semanas = cursosData[curso].semanas;
+    document.getElementById('semana-title').innerText = `${curso} (Semanas)`;
+  }
+
+  const semanaList = document.getElementById('semana-list');
+  semanaList.innerHTML = '';
+  semanas.forEach(s => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    const descripcion = s.fisiologia || s.histologia || s.tema;
+    card.innerHTML = `<h3>Semana ${s.sem}</h3><p>${descripcion}</p>
+                      <button onclick="abrirContenido('${curso}','${subcurso||''}',${s.sem})">Ver contenido</button>`;
+    semanaList.appendChild(card);
+  });
+}
+
+function abrirContenido(curso, subcurso, sem) {
+  document.getElementById('semana-container').classList.add('hidden');
+  document.getElementById('contenido-semana-container').classList.remove('hidden');
+
+  let semanaObj;
+  if(subcurso) semanaObj = cursosData[curso].subcursos[subcurso].find(s=>s.sem===sem);
+  else semanaObj = cursosData[curso].semanas.find(s=>s.sem===sem);
+
+  document.getElementById('contenido-title').innerText = `Semana ${sem}: ${semanaObj.fisiologia||semanaObj.histologia||semanaObj.tema}`;
+
+  document.getElementById('btn-grabacion').onclick = () => alert(`Reproducir grabación de ${semanaObj.fisiologia||semanaObj.histologia||semanaObj.tema}`);
+  document.getElementById('btn-pdf').onclick = () => alert(`Abrir PDF de ${semanaObj.fisiologia||semanaObj.histologia||semanaObj.tema}`);
+  document.getElementById('btn-formulario').onclick = () => alert(`Formulario de preguntas para ${semanaObj.fisiologia||semanaObj.histologia||semanaObj.tema}`);
+}
+
+function volverACursos(){ mostrarCursos(); }
+function volverASubcurso(){ document.getElementById('semana-container').classList.add('hidden'); mostrarSubcursos(cursoActual); }
+function volverASemanas(){ document.getElementById('contenido-semana-container').classList.add('hidden'); mostrarSemanas(cursoActual, subcursoActual||null); }
+
+</script>
+
