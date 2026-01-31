@@ -97,6 +97,45 @@
   </style>
 </head>
 <body>
+  <!-- ====== PANEL ADMIN ====== -->
+<div id="admin-panel" class="hidden">
+  <section style="padding:40px; background:#fff3e0;">
+    <h2 style="color:#8b0000;">Panel del administrador</h2>
+
+    <p><strong>Rol:</strong> Administrador</p>
+    <p><strong>Estado del sistema:</strong> Activo</p>
+
+    <div class="card">
+      <h3>Morfofisiología I</h3>
+      <p>Acceso: TODOS los alumnos</p>
+      <button>Gestionar curso</button>
+    </div>
+
+    <div class="card">
+      <h3>Bioquímica</h3>
+      <p>Acceso: Parcial</p>
+      <button>Gestionar curso</button>
+    </div>
+  </section>
+</div>
+  <!-- ====== VISTA ALUMNO ====== -->
+<div id="alumno-panel" class="hidden">
+  <section style="padding:40px;">
+    <h2 style="color:#003366;">Mis cursos</h2>
+
+    <div class="card">
+      <h3>Morfofisiología I</h3>
+      <p>Curso activo</p>
+      <button>Entrar al curso</button>
+    </div>
+
+    <div class="card">
+      <h3>Anatomía</h3>
+      <p>Curso no matriculado</p>
+      <button class="blocked">Bloqueado 🔒</button>
+    </div>
+  </section>
+</div>
 <header style="background:white; padding:20px; text-align:center;">
   <img src="logo.jpeg" alt="Neurova P53" style="height:90px;">
 </header>
@@ -117,6 +156,7 @@
     <input type="text" id="user" placeholder="Usuario" />
     <input type="password" id="pass" placeholder="Contraseña" />
     <button onclick="login()">Entrar</button>
+    <div id="mis-cursos" class="hidden">
     <section style="padding:40px;">
   <h2 style="color:#003366;">Mis cursos</h2>
 
@@ -130,7 +170,8 @@
 
   </div>
 </section>
-
+</div>
+    
   </div>
 
   <!-- CONTENIDO PRIVADO -->
@@ -304,6 +345,7 @@
 
 </body>
 </html>
+
 
 
 
