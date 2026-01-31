@@ -328,4 +328,484 @@ function volverASubcurso(){ document.getElementById('semana-container').classLis
 function volverASemanas(){ document.getElementById('contenido-semana-container').classList.add('hidden'); mostrarSemanas(cursoActual, subcursoActual||null); }
 
 </script>
+<!-- ================== PANEL ADMINISTRADOR ================== -->
+<div id="admin-container" class="container hidden">
+  <h2>Panel de Administrador</h2>
+
+  <!-- Selección de Curso -->
+  <div style="margin-bottom:20px;">
+    <label for="admin-curso">Selecciona un curso:</label>
+    <select id="admin-curso" style="margin-left:10px; padding:5px;">
+      <option value="">--Curso--</option>
+    </select>
+  </div>
+
+  <!-- Selección de Subcurso -->
+  <div style="margin-bottom:20px;">
+    <label for="admin-subcurso">Selecciona un subcurso:</label>
+    <select id="admin-subcurso" style="margin-left:10px; padding:5px;">
+      <option value="">--Subcurso--</option>
+    </select>
+  </div>
+
+  <!-- Selección de Semana -->
+  <div style="margin-bottom:20px;">
+    <label for="admin-semana">Selecciona una semana:</label>
+    <select id="admin-semana" style="margin-left:10px; padding:5px;">
+      <option value="">--Semana--</option>
+    </select>
+  </div>
+
+  <!-- Botones para agregar contenido -->
+  <div style="margin-bottom:20px;">
+    <button onclick="agregarGrabacion()" style="padding:8px 15px; background:#10b981; color:white; border:none; border-radius:8px; cursor:pointer; margin-right:10px;">📹 Añadir Grabación</button>
+    <button onclick="agregarPDF()" style="padding:8px 15px; background:#3b82f6; color:white; border:none; border-radius:8px; cursor:pointer; margin-right:10px;">📄 Añadir PDF</button>
+    <button onclick="crearFormulario()" style="padding:8px 15px; background:#f59e0b; color:white; border:none; border-radius:8px; cursor:pointer;">📝 Crear Formulario</button>
+  </div>
+
+  <hr style="margin:20px 0;">
+
+  <!-- Avance de Alumnos -->
+  <h3>Progreso de Alumnos</h3>
+  <div id="alumnos-list">
+    <p>No hay alumnos registrados aún.</p>
+  </div>
+
+  <button onclick="volverInicioAdmin()" style="margin-top:20px; padding:10px 20px; background:#2563eb; color:white; border:none; border-radius:10px; cursor:pointer;">Volver al inicio</button>
+</div>
+
+<script>
+// ================== ADMIN FUNCIONES ==================
+const adminCursoSelect = document.getElementById('admin-curso');
+const adminSubcursoSelect = document.getElementById('admin-subcurso');
+const adminSemanaSelect = document.getElementById('admin-semana');
+const alumnosList = document.getElementById('alumnos-list');
+
+// Inicializar cursos en panel admin
+function inicializarAdmin() {
+  adminCursoSelect.innerHTML = '<option value="">--Curso--</option>';
+  Object.keys(cursosData).forEach(curso => {
+    const opt = document.createElement('option');
+    opt.value = curso;
+    opt.innerText = curso;
+    adminCursoSelect.appendChild(opt);
+  });
+}
+
+adminCursoSelect.addEventListener('change', ()=>{
+  const curso = adminCursoSelect.value;
+  adminSubcursoSelect.innerHTML = '<option value="">--Subcurso--</option>';
+  adminSemanaSelect.innerHTML = '<option value="">--Semana--</option>';
+
+  if(curso && cursosData[curso].subcursos){
+    Object.keys(cursosData[curso].subcursos).forEach(sc=>{
+      const opt = document.createElement('option');
+      opt.value = sc;
+      opt.innerText = sc;
+      adminSubcursoSelect.appendChild(opt);
+    });
+  } else if(curso){
+    // Si no hay subcursos, llenar semanas directamente
+    cursosData[curso].semanas.forEach(s=>{
+      const opt = document.createElement('option');
+      opt.value = s.sem;
+      opt.innerText = `Semana ${s.sem}`;
+      adminSemanaSelect.appendChild(opt);
+    });
+  }
+});
+
+adminSubcursoSelect.addEventListener('change', ()=>{
+  const curso = adminCursoSelect.value;
+  const subcurso = adminSubcursoSelect.value;
+  adminSemanaSelect.innerHTML = '<option value="">--Semana--</option>';
+  if(curso && subcurso){
+    cursosData[curso].subcursos[subcurso].forEach(s=>{
+      const opt = document.createElement('option');
+      opt.value = s.sem;
+      opt.innerText = `Semana ${s.sem}`;
+      adminSemanaSelect.appendChild(opt);
+    });
+  }
+});
+
+// Funciones para agregar contenido
+function agregarGrabacion(){
+  const curso = adminCursoSelect.value;
+  const subcurso = adminSubcursoSelect.value;
+  const semana = adminSemanaSelect.value;
+  if(!curso || !semana) return alert("Selecciona curso y semana primero.");
+  const url = prompt("Ingrese URL de la grabación:");
+  if(url) alert(`Grabación añadida a ${curso} ${subcurso||''} Semana ${semana}: ${url}`);
+}
+
+function agregarPDF(){
+  const curso = adminCursoSelect.value;
+  const subcurso = adminSubcursoSelect.value;
+  const semana = adminSemanaSelect.value;
+  if(!curso || !semana) return alert("Selecciona curso y semana primero.");
+  const url = prompt("Ingrese URL del PDF:");
+  if(url) alert(`PDF añadido a ${curso} ${subcurso||''} Semana ${semana}: ${url}`);
+}
+
+function crearFormulario(){
+  const curso = adminCursoSelect.value;
+  const subcurso = adminSubcursoSelect.value;
+  const semana = adminSemanaSelect.value;
+  if(!curso || !semana) return alert("Selecciona curso y semana primero.");
+  const numPreguntas = prompt("¿Cuántas preguntas tendrá el formulario?");
+  if(numPreguntas){
+    let preguntas = [];
+    for(let i=1;i<=numPreguntas;i++){
+      const q = prompt(`Ingrese la pregunta ${i}:`);
+      const r = prompt(`Ingrese la respuesta correcta de la pregunta ${i}:`);
+      preguntas.push({pregunta:q,respuesta:r});
+    }
+    alert(`Formulario creado con ${numPreguntas} preguntas para ${curso} ${subcurso||''} Semana ${semana}`);
+    // Guardar formulario temporalmente (para ejemplo)
+    if(!cursosData[curso].formularios) cursosData[curso].formularios = {};
+    if(subcurso){
+      if(!cursosData[curso].formularios[subcurso]) cursosData[curso].formularios[subcurso]={};
+      cursosData[curso].formularios[subcurso][semana] = preguntas;
+    } else {
+      if(!cursosData[curso].formularios['general']) cursosData[curso].formularios['general']={};
+      cursosData[curso].formularios['general'][semana] = preguntas;
+    }
+  }
+}
+
+// Mostrar progreso de alumnos (simulado)
+function mostrarProgreso(alumnos){
+  alumnosList.innerHTML = '';
+  if(alumnos.length===0){
+    alumnosList.innerHTML='<p>No hay alumnos registrados aún.</p>';
+    return;
+  }
+  alumnos.forEach(a=>{
+    const div = document.createElement('div');
+    div.style.border='1px solid #ccc';
+    div.style.padding='10px';
+    div.style.marginBottom='10px';
+    div.innerHTML = `<strong>${a.nombre}</strong> - Curso: ${a.curso} - Semana: ${a.semana}<br>
+                     Avance: ${a.avance}%<br>
+                     Respuestas correctas: ${a.correctas}/${a.total}`;
+    alumnosList.appendChild(div);
+  });
+}
+
+// Volver al inicio de admin
+function volverInicioAdmin(){
+  document.getElementById('admin-container').classList.add('hidden');
+  mostrarCursos();
+}
+
+// Inicializamos
+inicializarAdmin();
+
+// Ejemplo de alumnos simulados
+const alumnosSimulados = [
+  {nombre:'Juan', curso:'Morfofisiología 1', semana:3, avance:50, correctas:3, total:5},
+  {nombre:'Maria', curso:'Bioquímica', semana:2, avance:80, correctas:4, total:5}
+];
+mostrarProgreso(alumnosSimulados);
+</script>
+<!-- ADMIN PANEL -->
+<div id="admin-panel" class="container card hidden" style="margin-top:40px;">
+  <h2>Panel de Administración</h2>
+
+  <div style="margin-bottom:20px;">
+    <label>Seleccionar Curso:</label>
+    <select id="admin-curso-select">
+      <option value="">--Seleccione Curso--</option>
+      <option value="Morfofisiología 1">Morfofisiología 1</option>
+      <option value="Morfofisiología 2">Morfofisiología 2</option>
+      <option value="Anatomía General">Anatomía General</option>
+      <option value="Biología Celular y Molecular">Biología Celular y Molecular</option>
+      <option value="Bioquímica">Bioquímica</option>
+    </select>
+  </div>
+
+  <div style="margin-bottom:20px;">
+    <label>Subcurso (si aplica):</label>
+    <select id="admin-subcurso-select">
+      <option value="">--Seleccione Subcurso--</option>
+    </select>
+  </div>
+
+  <div style="margin-bottom:20px;">
+    <label>Semana:</label>
+    <select id="admin-semana-select">
+      <option value="">--Seleccione Semana--</option>
+      <option value="1">Semana 1</option>
+      <option value="2">Semana 2</option>
+      <option value="3">Semana 3</option>
+      <option value="4">Semana 4</option>
+      <option value="5">Semana 5</option>
+      <option value="6">Semana 6</option>
+      <option value="7">Semana 7</option>
+      <option value="8">Semana 8</option>
+    </select>
+  </div>
+
+  <div style="margin-bottom:20px;">
+    <button onclick="agregarGrabacion()">Agregar Grabación</button>
+    <button onclick="agregarPDF()">Agregar PDF</button>
+    <button onclick="crearFormulario()">Crear Formulario</button>
+  </div>
+
+  <h3>Progreso de Alumnos</h3>
+  <div id="alumnos-list"></div>
+</div>
+
+<script>
+  const adminCursoSelect = document.getElementById('admin-curso-select');
+  const adminSubcursoSelect = document.getElementById('admin-subcurso-select');
+  const adminSemanaSelect = document.getElementById('admin-semana-select');
+  const alumnosList = document.getElementById('alumnos-list');
+
+  // Cargar subcursos dinámicamente
+  adminCursoSelect.addEventListener('change', ()=>{
+    const curso = adminCursoSelect.value;
+    adminSubcursoSelect.innerHTML = '<option value="">--Seleccione Subcurso--</option>';
+    if(cursosData[curso] && cursosData[curso].subcursos){
+      Object.keys(cursosData[curso].subcursos).forEach(sc=>{
+        const opt = document.createElement('option');
+        opt.value=sc;
+        opt.innerText=sc;
+        adminSubcursoSelect.appendChild(opt);
+      });
+    }
+  });
+</script>
+<!-- CURSOS ALUMNOS -->
+<div id="cursos-container" class="container hidden">
+  <h2>Cursos Disponibles</h2>
+  <div id="cursos-list" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:20px;"></div>
+</div>
+
+<div id="subcurso-container" class="container hidden">
+  <h2 id="subcurso-title"></h2>
+  <div id="subcurso-list" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:20px;"></div>
+  <button onclick="volverACursos()" style="margin-top:20px; padding:10px 20px; background:#2563eb; color:white; border:none; border-radius:10px; cursor:pointer;">Volver a Cursos</button>
+</div>
+
+<div id="semana-container" class="container hidden">
+  <h2 id="semana-title"></h2>
+  <div id="semana-list" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:20px;"></div>
+  <button onclick="volverASubcurso()" style="margin-top:20px; padding:10px 20px; background:#2563eb; color:white; border:none; border-radius:10px; cursor:pointer;">Volver a Subcursos</button>
+</div>
+
+<div id="contenido-semana-container" class="container hidden">
+  <h2 id="contenido-title"></h2>
+  <div id="material-buttons" style="margin-top:20px;"></div>
+  <button onclick="volverASemanas()" style="margin-top:20px; padding:10px 20px; background:#2563eb; color:white; border:none; border-radius:10px; cursor:pointer;">Volver a Semanas</button>
+</div>
+
+<script>
+  let cursoActual='', subcursoActual='';
+
+  function mostrarCursos(){
+    document.getElementById('cursos-container').classList.remove('hidden');
+    document.getElementById('subcurso-container').classList.add('hidden');
+    document.getElementById('semana-container').classList.add('hidden');
+    document.getElementById('contenido-semana-container').classList.add('hidden');
+
+    const cursosList = document.getElementById('cursos-list');
+    cursosList.innerHTML='';
+    Object.keys(cursosData).forEach(curso=>{
+      const card=document.createElement('div');
+      card.className='card';
+      card.innerHTML=`<h3>${curso}</h3>
+                      <button onclick="abrirCurso('${curso}')">Entrar al curso</button>`;
+      cursosList.appendChild(card);
+    });
+  }
+
+  function abrirCurso(curso){
+    cursoActual=curso;
+    const tieneSubcursos = cursosData[curso].subcursos!==undefined;
+    document.getElementById('cursos-container').classList.add('hidden');
+    if(tieneSubcursos) mostrarSubcursos(curso);
+    else mostrarSemanas(curso);
+  }
+
+  function mostrarSubcursos(curso){
+    document.getElementById('subcurso-container').classList.remove('hidden');
+    document.getElementById('subcurso-title').innerText=`Subcursos de ${curso}`;
+    const subcursoList=document.getElementById('subcurso-list');
+    subcursoList.innerHTML='';
+    Object.keys(cursosData[curso].subcursos).forEach(sc=>{
+      const card=document.createElement('div');
+      card.className='card';
+      card.innerHTML=`<h3>${sc}</h3>
+                      <button onclick="abrirSubcurso('${sc}')">Ver semanas</button>`;
+      subcursoList.appendChild(card);
+    });
+  }
+
+  function abrirSubcurso(subcurso){
+    subcursoActual=subcurso;
+    document.getElementById('subcurso-container').classList.add('hidden');
+    mostrarSemanas(cursoActual, subcurso);
+  }
+
+  function mostrarSemanas(curso, subcurso=null){
+    document.getElementById('semana-container').classList.remove('hidden');
+    let semanas;
+    if(subcurso){
+      semanas = cursosData[curso].subcursos[subcurso];
+      document.getElementById('semana-title').innerText=`${curso} - ${subcurso} (Semanas)`;
+    } else{
+      semanas = cursosData[curso].semanas;
+      document.getElementById('semana-title').innerText=`${curso} (Semanas)`;
+    }
+
+    const semanaList=document.getElementById('semana-list');
+    semanaList.innerHTML='';
+    semanas.forEach(s=>{
+      const card=document.createElement('div');
+      card.className='card';
+      card.innerHTML=`<h3>Semana ${s.sem}</h3>
+                      <p>${s.fisiologia||s.histologia||s.tema}</p>
+                      <button onclick="abrirContenido('${curso}','${subcurso||''}',${s.sem})">Ver contenido</button>`;
+      semanaList.appendChild(card);
+    });
+  }
+
+  function volverACursos(){ mostrarCursos(); }
+  function volverASubcurso(){
+    document.getElementById('semana-container').classList.add('hidden');
+    mostrarSubcursos(cursoActual);
+  }
+  function volverASemanas(){
+    document.getElementById('contenido-semana-container').classList.add('hidden');
+    mostrarSemanas(cursoActual, subcursoActual||null);
+  }
+
+  // Inicializar vista de cursos para alumnos
+  mostrarCursos();
+</script>
+<!-- ================== PARTE 6: CIERRE FINAL Y FUNCIONALIDAD ADMIN/ALUMNO ================== -->
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2026 Neurova P53. Todos los derechos reservados.</p>
+</footer>
+
+<!-- MODAL ADMIN PARA AGREGAR RECURSOS -->
+<div id="admin-modal" class="hidden" style="position:fixed; top:0; left:0; width:100%; height:100%; 
+    background:rgba(0,0,0,0.6); display:flex; justify-content:center; align-items:center; z-index:999;">
+  <div style="background:white; padding:30px; border-radius:16px; width:500px; max-width:90%;">
+    <h2>Agregar recurso</h2>
+    <label>Tipo de recurso:</label>
+    <select id="tipo-recurso">
+      <option value="grabacion">Grabación</option>
+      <option value="pdf">PDF</option>
+      <option value="formulario">Formulario</option>
+    </select>
+    <br><br>
+    <label>Título / Nombre:</label>
+    <input type="text" id="recurso-titulo" style="width:100%; padding:8px; margin-top:5px; border-radius:8px; border:1px solid #ccc;">
+    <br><br>
+    <label>URL / ID (si aplica):</label>
+    <input type="text" id="recurso-url" style="width:100%; padding:8px; margin-top:5px; border-radius:8px; border:1px solid #ccc;">
+    <br><br>
+    <button onclick="guardarRecursoAdmin()" style="background:#10b981;">Guardar</button>
+    <button onclick="cerrarModalAdmin()" style="background:#ef4444;">Cancelar</button>
+  </div>
+</div>
+
+<!-- SCRIPTS FINALES PARA ADMIN/ALUMNO -->
+<script>
+  // Variables globales
+  let recursos = {}; // {curso: {subcurso: {semana: [recurso1, recurso2]}}}
+  let formularios = {}; // {curso: {subcurso: {semana: [preguntas]}}}
+
+  // Funciones del modal admin
+  function abrirModalAdmin() {
+    document.getElementById('admin-modal').classList.remove('hidden');
+  }
+
+  function cerrarModalAdmin() {
+    document.getElementById('admin-modal').classList.add('hidden');
+  }
+
+  function guardarRecursoAdmin() {
+    const tipo = document.getElementById('tipo-recurso').value;
+    const titulo = document.getElementById('recurso-titulo').value;
+    const url = document.getElementById('recurso-url').value;
+    if(!cursoActual || !subcursoActual || !semanaActual) { alert("Selecciona curso, subcurso y semana"); return; }
+
+    if(!recursos[cursoActual]) recursos[cursoActual] = {};
+    if(!recursos[cursoActual][subcursoActual]) recursos[cursoActual][subcursoActual] = {};
+    if(!recursos[cursoActual][subcursoActual][semanaActual]) recursos[cursoActual][subcursoActual][semanaActual] = [];
+
+    recursos[cursoActual][subcursoActual][semanaActual].push({tipo, titulo, url});
+    alert("Recurso agregado correctamente!");
+    cerrarModalAdmin();
+    mostrarContenidoSemana(cursoActual, subcursoActual, semanaActual); // Refresca la vista
+  }
+
+  // Función para mostrar recursos en la vista de semana
+  function mostrarContenidoSemana(curso, subcurso, sem) {
+    semanaActual = sem;
+    document.getElementById('contenido-semana-container').classList.remove('hidden');
+
+    let html = `<h2>${curso} - ${subcurso} Semana ${sem}</h2>`;
+    html += `<div style="margin-top:15px;">`;
+
+    const listaRecursos = (recursos[curso] && recursos[curso][subcurso] && recursos[curso][subcurso][sem]) || [];
+    listaRecursos.forEach(r => {
+      if(r.tipo === "grabacion") html += `<button onclick="window.open('${r.url}','_blank')" style="margin:5px; background:#10b981;">📹 ${r.titulo}</button>`;
+      if(r.tipo === "pdf") html += `<button onclick="window.open('${r.url}','_blank')" style="margin:5px; background:#3b82f6;">📄 ${r.titulo}</button>`;
+      if(r.tipo === "formulario") html += `<button onclick="abrirFormulario('${curso}','${subcurso}',${sem})" style="margin:5px; background:#f59e0b;">📝 ${r.titulo}</button>`;
+    });
+
+    html += `</div>`;
+
+    // Si es admin, mostrar botón para agregar recursos
+    if(usuarioActual.rol === "admin") {
+      html += `<button onclick="abrirModalAdmin()" style="margin-top:20px; background:#2563eb;">Agregar Recurso/Formulario</button>`;
+    }
+
+    document.getElementById('contenido-semana-container').innerHTML = html;
+  }
+
+  // Formularios de "Apliquemos lo aprendido"
+  function abrirFormulario(curso, subcurso, sem) {
+    const preguntas = (formularios[curso] && formularios[curso][subcurso] && formularios[curso][subcurso][sem]) || [];
+    if(preguntas.length === 0) { alert("No hay preguntas disponibles"); return; }
+
+    let html = `<h2>${curso} - ${subcurso} Semana ${sem} - Formulario</h2>`;
+    preguntas.forEach((p,i) => {
+      html += `<p>${i+1}. ${p.pregunta}</p>`;
+      p.opciones.forEach((o,j) => {
+        html += `<input type="radio" name="pregunta${i}" value="${o}"> ${o}<br>`;
+      });
+    });
+    html += `<button onclick="enviarFormulario('${curso}','${subcurso}',${sem})" style="margin-top:15px; background:#10b981;">Enviar</button>`;
+    document.getElementById('contenido-semana-container').innerHTML = html;
+  }
+
+  function enviarFormulario(curso, subcurso, sem) {
+    const preguntas = formularios[curso][subcurso][sem];
+    let correctas = 0;
+    preguntas.forEach((p,i) => {
+      const respuesta = document.querySelector(`input[name="pregunta${i}"]:checked`);
+      if(respuesta && respuesta.value === p.correcta) correctas++;
+    });
+    alert(`Respuestas correctas: ${correctas} de ${preguntas.length}`);
+  }
+
+  // Ejemplo de usuario actual (reemplazar con Firebase real)
+  const usuarioActual = {nombre:"Admin Prueba", rol:"admin"};
+
+  // Inicializar la página mostrando cursos
+  mostrarCursos();
+
+</script>
+
+</body>
+</html>
+
 
