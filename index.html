@@ -5,6 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Neurova P53</title>
   <style>
+    .hidden {
+  display: none;
+}
+
+.blocked {
+  background: #ccc;
+  color: #555;
+  cursor: not-allowed;
+}
+
     body {
       margin: 0;
       font-family: 'Segoe UI', Arial, sans-serif;
@@ -96,6 +106,16 @@
     }
   </style>
 </head>
+  <script>
+  // CAMBIA AQUÍ EL ROL
+  const rol = "admin"; // "alumno" o "admin"
+
+  if (rol === "admin") {
+    document.getElementById("admin-panel").classList.remove("hidden");
+  } else {
+    document.getElementById("alumno-panel").classList.remove("hidden");
+  }
+</script>
 <body>
   <!-- ====== PANEL ADMIN ====== -->
 <div id="admin-panel" class="hidden">
@@ -345,6 +365,7 @@
 
 </body>
 </html>
+
 
 
 
