@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Neurova P53</title>
 
-  <!-- ====== ESTILOS ====== -->
+  <!-- Estilos generales -->
   <style>
     body {
       margin: 0;
@@ -34,12 +34,11 @@
       text-decoration: none;
       color: #0f172a;
       font-weight: 500;
-      cursor: pointer;
     }
 
     .container {
-      max-width: 1200px;
-      margin: 60px auto;
+      max-width: 1100px;
+      margin: 40px auto;
       padding: 0 20px;
     }
 
@@ -47,41 +46,37 @@
       background: white;
       border-radius: 16px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-      padding: 40px;
+      padding: 30px;
       margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .card h3 {
+      color: #0077cc;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 12px;
+      background: #0077cc;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #005fa3;
     }
 
     .hidden {
       display: none;
     }
 
-    h2 {
-      color: #1e3a8a;
-      margin-bottom: 20px;
-    }
-
-    input {
-      width: 100%;
-      padding: 12px;
-      margin-bottom: 16px;
-      border-radius: 10px;
-      border: 1px solid #cbd5f5;
-      font-size: 15px;
-    }
-
-    button {
-      background: #2563eb;
-      color: white;
-      border: none;
-      padding: 12px 24px;
-      border-radius: 12px;
-      font-size: 15px;
-      cursor: pointer;
-      margin: 5px 5px 0 0;
-    }
-
-    button:hover {
-      background: #1d4ed8;
+    .blocked {
+      background: #ccc;
+      color: #555;
+      cursor: not-allowed;
     }
 
     footer {
@@ -90,245 +85,141 @@
       color: #64748b;
     }
 
-    /* Bloqueado */
-    .blocked {
-      background: #ccc;
-      color: #555;
-      cursor: not-allowed;
+    .subcurso-btn {
+      background: #f97316;
     }
 
-    .week-content {
-      background: #f1f5f9;
-      padding: 15px;
-      border-radius: 12px;
-      margin-bottom: 10px;
+    .subcurso-btn:hover {
+      background: #ea580c;
     }
 
-    .submenu {
-      padding: 20px;
-      border-left: 3px solid #2563eb;
-      margin-top: 20px;
+    h2 {
+      color: #1e3a8a;
+      margin-bottom: 20px;
     }
   </style>
-
 </head>
 <body>
-<!-- LOGO Y TITULO -->
+<!-- HEADER CON LOGO Y NAVEGACIÓN -->
 <header>
-  <img src="logo.jpeg" alt="Neurova P53" style="height:80px;">
+  <img src="logo.jpeg" alt="Neurova P53" style="height:90px;">
   <h1>Neurova P53</h1>
   <nav>
-    <a onclick="showSection('inicio')">Inicio</a>
-    <a onclick="showSection('cursos')">Cursos</a>
-    <a onclick="showSection('material')">Material</a>
+    <a href="#" onclick="showSection('inicio')">Inicio</a>
+    <a href="#" onclick="showSection('cursos')">Cursos</a>
+    <a href="#" onclick="showSection('material')">Material</a>
   </nav>
 </header>
+
 <div class="container">
 
   <!-- LOGIN CON GOOGLE -->
   <div id="login" class="card">
     <h2>Iniciar sesión</h2>
-    <input type="email" id="email" placeholder="Correo electrónico" />
-    <input type="password" id="pass" placeholder="Contraseña" />
-    <button onclick="login()">Iniciar sesión</button>
-    <p style="margin-top:10px;">O iniciar con:</p>
-    <button onclick="loginWithGoogle()">Google</button>
+    <button id="login-google">Login con Google</button>
+  </div>
+<!-- CONTENEDOR DE CURSOS Y CONTENIDO -->
+<div id="contenido" class="hidden">
+
+  <!-- INICIO -->
+  <div id="inicio">
+    <h2>Bienvenido a Neurova P53</h2>
+    <p>Academia premium especializada en ciencias de la salud. Formación rigurosa, clara y progresiva, diseñada por ciclos académicos.</p>
   </div>
 
-  <!-- CONTENIDO PRIVADO -->
-  <div id="contenido" class="hidden">
+  <!-- CURSOS -->
+  <div id="lista-cursos" class="hidden">
+    <h2>Mis cursos</h2>
+    <!-- Aquí se van a generar los cursos dinámicamente con JS -->
+  </div>
 
-    <div id="inicio">
-      <h2>Bienvenido a Neurova P53</h2>
-      <p>Academia premium especializada en ciencias de la salud. Formación clara, progresiva y organizada por ciclos.</p>
-    </div>
-
-    <div id="cursos" class="hidden">
-      <h2>Cursos Disponibles</h2>
-      <!-- Aquí se agregarán los cursos dinámicamente -->
-      <div id="lista-cursos"></div>
-    </div>
-
-    <div id="material" class="hidden">
-      <h2>Material Académico</h2>
-      <p>Apuntes, PPTs, PDFs, videos, ejercicios y banco de preguntas.</p>
-    </div>
-
+  <!-- DETALLE DEL CURSO -->
+  <div id="detalle-curso" class="hidden">
+    <button onclick="volverACursos()">⬅ Volver a cursos</button>
+    <h2 id="curso-titulo"></h2>
+    <div id="subcursos" class="hidden"></div>
+    <div id="semanas" class="hidden"></div>
   </div>
 
 </div>
-<!-- Firebase SDK -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-  import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyDAmEVU8J-uk2Yg6bL5n28xbP1771cHGME",
-    authDomain: "neurovap53-cdbcf.firebaseapp.com",
-    projectId: "neurovap53-cdbcf",
-    storageBucket: "neurovap53-cdbcf.appspot.com",
-    messagingSenderId: "558340314022",
-    appId: "1:558340314022:web:2027622d3b86af54ddb567",
-    measurementId: "G-70R7JRGVKG"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth();
-
-  function loginWithGoogle() {
-    const provider = new GoogleAuthProvider();
-    signInWithPopup(auth, provider)
-      .then((result) => {
-        document.getElementById('login').classList.add('hidden');
-        document.getElementById('contenido').classList.remove('hidden');
-        loadCursos();
-      })
-      .catch((error) => {
-        alert("Error al iniciar sesión con Google: " + error.message);
-      });
-  }
-
-  function login() {
-    // Solo ejemplo, se recomienda Firebase Auth real
-    const email = document.getElementById('email').value;
-    const pass = document.getElementById('pass').value;
-    if(email && pass){
-      document.getElementById('login').classList.add('hidden');
-      document.getElementById('contenido').classList.remove('hidden');
-      loadCursos();
-    } else {
-      alert("Ingresa correo y contraseña");
-    }
-  }
-
-  function showSection(id){
-    const sections = ['inicio','cursos','material'];
-    sections.forEach(s => document.getElementById(s).classList.add('hidden'));
-    document.getElementById(id).classList.remove('hidden');
-  }
-
-  // Lista de cursos
-  const cursos = [
-    {id:'morfo1', nombre:'Morfofisiología I'},
-    {id:'morfo2', nombre:'Morfofisiología II'},
-    {id:'anat', nombre:'Anatomía General'},
-    {id:'bio', nombre:'Biología Celular'},
-    {id:'bioq', nombre:'Bioquímica'}
-  ];
-
-  function loadCursos(){
-    const lista = document.getElementById('lista-cursos');
-    lista.innerHTML = '';
-    cursos.forEach(c => {
-      const div = document.createElement('div');
-      div.classList.add('card');
-      div.innerHTML = `<h3>${c.nombre}</h3><button onclick="abrirCurso('${c.id}')">Entrar al curso</button>`;
-      lista.appendChild(div);
-    });
-  }
-
-  function abrirCurso(id){
-    alert("Aquí se abrirá el curso: "+id+" (en la siguiente parte se añadirá el contenido por semanas)");
-  }
-
-</script>
-</body>
-</html>
+<!-- CURSOS COMPLETOS -->
 <script>
-  // Contenido detallado de los cursos
-  const contenidoCursos = {
-    morfo1: {
-      nombre: "Morfofisiología I",
+  // DATOS DE CURSOS
+  const cursos = {
+    "Morfofisiología I": {
       semanas: [
-        {sem:1, fisiologia:"Membrana celular, receptores, canales, transporte y potenciales de membrana/acción. Regularización y señalización celular.",
-         histologia:"Procesamiento histológico, membrana celular, organelas y núcleo. Desarrollo embrionario del esqueleto y tejido cartilaginoso."},
-        {sem:2, fisiologia:"Transmisión de señales celulares. Composición y regulación del medio interno, ósmosis y líquidos corporales.",
-         histologia:"Tejido óseo y osificación. Origen embrionario del sistema muscular y Tejido muscular I."},
-        {sem:3, fisiologia:"Neurotransmisores, receptores y sinapsis. Contracción y excitación muscular.",
-         histologia:"Tejido muscular II. Neurohistogénesis y tejido nervioso."},
-        {sem:4, fisiologia:"Metabolismo óseo. Evaluación Parcial.",
-         histologia:"Introducción al sistema vascular. Evaluación Parcial."},
-        {sem:5, fisiologia:"Sangre y sus propiedades, hematopoyesis, eritropoyesis y hemograma. Fisiología eritrocitaria I (membrana, metabolismo y hemoglobina).",
-         histologia:"Tejido epitelial de revestimiento. Tejido epitelial glandular."},
-        {sem:6, fisiologia:"Fisiología eritrocitaria II (hierro, Vit B12 y B9). Fisiología plaquetaria, hemostasia y fibrinólisis.",
-         histologia:"Matriz extracelular, tejido conectivo y tejido adiposo. Tejido sanguíneo y hematopoyesis."},
-        {sem:7, fisiologia:"Generalidades del sistema inmunológico, respuesta innata y fagocitosis. Inmunidad adquirida, linfocitos T y B, y grupos sanguíneos.",
-         histologia:"Tejido linfoide y MALT. Órganos linfoides."},
-        {sem:8, fisiologia:"Respuesta inflamatoria, tolerancia e hipersensibilidad. Evaluación Final.",
-         histologia:"Sistema tegumentario y sus anexos. Evaluación Final."}
+        {sem:1, fisiologia:"Membrana celular, receptores, canales, transporte y potenciales de membrana/acción. Regularización y señalización celular.", histologia:"Procesamiento histológico, membrana celular, organelas y núcleo. Desarrollo embrionario del esqueleto y tejido cartilaginoso."},
+        {sem:2, fisiologia:"Transmisión de señales celulares. Composición y regulación del medio interno, ósmosis y líquidos corporales.", histologia:"Tejido óseo y osificación. Origen embrionario del sistema muscular y Tejido muscular I."},
+        {sem:3, fisiologia:"Neurotransmisores, receptores y sinapsis. Contracción y excitación muscular.", histologia:"Tejido muscular II. Neurohistogénesis y tejido nervioso."},
+        {sem:4, fisiologia:"Metabolismo óseo. Evaluación Parcial.", histologia:"Introducción al sistema vascular. Evaluación Parcial."},
+        {sem:5, fisiologia:"Sangre y sus propiedades, hematopoyesis, eritropoyesis y hemograma. Fisiología eritrocitaria I (membrana, metabolismo y hemoglobina).", histologia:"Tejido epitelial de revestimiento. Tejido epitelial glandular."},
+        {sem:6, fisiologia:"Fisiología eritrocitaria II (hierro, Vit B12 y B9). Fisiología plaquetaria, hemostasia y fibrinólisis.", histologia:"Matriz extracelular, tejido conectivo y tejido adiposo. Tejido sanguíneo y hematopoyesis."},
+        {sem:7, fisiologia:"Generalidades del sistema inmunológico, respuesta innata y fagocitosis. Inmunidad adquirida, linfocitos T y B, y grupos sanguíneos.", histologia:"Tejido linfoide y MALT. Órganos linfoides."},
+        {sem:8, fisiologia:"Respuesta inflamatoria, tolerancia e hipersensibilidad. Evaluación Final.", histologia:"Sistema tegumentario y sus anexos. Evaluación Final."}
       ]
     },
-    morfo2: {
-      nombre:"Morfofisiología II",
+
+    "Morfofisiología II": {
       subcursos: {
-        anatomia: {
-          nombre:"Anatomía",
-          semanas:[
-            {sem:1, tema:"Pared torácica, región mamaria y radioanatomía de tórax."},
-            {sem:2, tema:"Mediastino superior, anterior y medio (pericardio y morfología externa)."},
-            {sem:3, tema:"Mediastino medio II (morfología interna y conducción) y radioanatomía cardiaca."},
-            {sem:4, tema:"Mediastino posterior y radioanatomía del mediastino posterior. Examen Parcial."},
-            {sem:5, tema:"Pulmones (segmentación e inervación) y radioanatomía pulmonar."},
-            {sem:6, tema:"Columna vertebral dorsal y músculos paravertebrales."},
-            {sem:7, tema:"Radioanatomía de columna torácica, anatomía del riñón y vías urinarias."},
-            {sem:8, tema:"Radioanatomía del riñón y vías urinarias. Examen Final."}
-          ]
-        },
-        fisiologia: {
-          nombre:"Fisiología",
-          semanas:[
-            {sem:1, tema:"Hemodinamia y electrofisiología cardiaca."},
-            {sem:2, tema:"Electrocardiograma I, contracción y ciclo cardiaco."},
-            {sem:3, tema:"Presión arterial, gasto cardiaco, retorno venoso y circulaciones especiales."},
-            {sem:4, tema:"Mecánica respiratoria, volúmenes y capacidades. Examen Parcial."},
-            {sem:5, tema:"Intercambio de gases, transporte de O₂/CO₂, control respiratorio y circulación pulmonar."},
-            {sem:6, tema:"Estructura renal, aclaramiento, filtración glomerular, reabsorción y secreción renal."},
-            {sem:7, tema:"Regulación de electrolitos, volumen, equilibrio ácido-base y diuréticos."},
-            {sem:8, tema:"Fisiología de la aviación, grandes alturas y buceo profundo. Examen Final."}
-          ]
-        },
-        histologia: {
-          nombre:"Histología y Embriología",
-          semanas:[
-            {sem:1, tema:"Embriología cardiovascular e histología del corazón y válvulas."},
-            {sem:2, tema:"Histología vascular (arterias, capilares, venas y linfáticos)."},
-            {sem:3, tema:"Integración de embriología e histología cardíaca."},
-            {sem:4, tema:"Integración de histología vascular. Examen Parcial."},
-            {sem:5, tema:"Embriología e histología del aparato respiratorio (I y II)."},
-            {sem:6, tema:"Embriología urinaria e histología del riñón y la pelvis renal."},
-            {sem:7, tema:"Histología de uréter, vejiga y uretra; malformaciones congénitas renales."},
-            {sem:8, tema:"Histopatología renal y de las vías urinarias. Examen Final."}
-          ]
-        }
+        "Anatomía": [
+          {sem:1, tema:"Pared torácica, región mamaria y radioanatomía de tórax."},
+          {sem:2, tema:"Mediastino superior, anterior y medio (pericardio y morfología externa)."},
+          {sem:3, tema:"Mediastino medio II (morfología interna y conducción) y radioanatomía cardiaca."},
+          {sem:4, tema:"Mediastino posterior y radioanatomía del mediastino posterior. Examen Parcial."},
+          {sem:5, tema:"Pulmones (segmentación e inervación) y radioanatomía pulmonar."},
+          {sem:6, tema:"Columna vertebral dorsal y músculos paravertebrales."},
+          {sem:7, tema:"Radioanatomía de columna torácica, anatomía del riñón y vías urinarias."},
+          {sem:8, tema:"Radioanatomía del riñón y vías urinarias. Examen Final."}
+        ],
+        "Fisiología": [
+          {sem:1, tema:"Hemodinamia y electrofisiología cardiaca."},
+          {sem:2, tema:"Electrocardiograma I, contracción y ciclo cardiaco."},
+          {sem:3, tema:"Presión arterial, gasto cardiaco, retorno venoso y circulaciones especiales."},
+          {sem:4, tema:"Mecánica respiratoria, volúmenes y capacidades. Examen Parcial."},
+          {sem:5, tema:"Intercambio de gases, transporte de O₂/CO₂, control respiratorio y circulación pulmonar."},
+          {sem:6, tema:"Estructura renal, aclaramiento, filtración glomerular, reabsorción y secreción renal."},
+          {sem:7, tema:"Regulación de electrolitos, volumen, equilibrio ácido-base y diuréticos."},
+          {sem:8, tema:"Fisiología de la aviación, grandes alturas y buceo profundo. Examen Final."}
+        ],
+        "Histología": [
+          {sem:1, tema:"Embriología cardiovascular e histología del corazón y válvulas."},
+          {sem:2, tema:"Histología vascular (arterias, capilares, venas y linfáticos)."},
+          {sem:3, tema:"Integración de embriología e histología cardíaca."},
+          {sem:4, tema:"Integración de histología vascular. Examen Parcial."},
+          {sem:5, tema:"Embriología e histología del aparato respiratorio (I y II)."},
+          {sem:6, tema:"Embriología urinaria e histología del riñón y la pelvis renal."},
+          {sem:7, tema:"Histología de uréter, vejiga y uretra; malformaciones congénitas renales."},
+          {sem:8, tema:"Histopatología renal y de las vías urinarias. Examen Final."}
+        ]
       }
     },
-    anat: {
-      nombre:"Anatomía General",
-      semanas:[
+
+    "Anatomía General": {
+      semanas: [
         {sem:1, tema:"Hombro, Axila, Brazo y Codo."},
         {sem:2, tema:"Antebrazo, Muñeca y Mano."},
         {sem:3, tema:"Región Glútea, Cadera, Muslo y Rodilla."},
-        {sem:4, tema:"Pierna, Región Poplítea, Tobillo y Pie. Parcial"},
+        {sem:4, tema:"Pierna, Región Poplítea, Tobillo y Pie."},
         {sem:5, tema:"Vértebras cervicales, regiones y triángulos del cuello."},
         {sem:6, tema:"Vísceras del cuello, Cabeza ósea (Neuro/Viscerocráneo)."},
         {sem:7, tema:"Músculos mímica/masticación y Regiones profundas de la cara."},
-        {sem:8, tema:"Cavidad oral, fosas nasales y paredes de tronco. Final"}
+        {sem:8, tema:"Cavidad oral, fosas nasales y paredes de tronco."}
       ]
     },
-    bio: {
-      nombre:"Biología Celular",
-      secciones:{
-        teoria:[
+
+    "Biología Celular y Molecular": {
+      subcursos: {
+        "Teoría": [
           {sem:1, tema:"Niveles de organización, Bioelementos, Enlaces químicos y Agua. Glúcidos y Lípidos."},
-          {sem:2, tema:"Aminoácidos, Proteínas y Enzimas. Dogma Central: ADN y ARN."},
-          {sem:3, tema:"La Célula: Evolución (Proca vs. Euca) y Membrana Celular. Transporte de membrana."},
+          {sem:2, tema:"Aminoácidos, Proteínas y Enzimas. Dogma Central: Estructura del ADN y ARN."},
+          {sem:3, tema:"La Célula: Evolución (Proca vs. Euca) y Membrana Celular. Transporte de membrana (Pasivo/Activo)."},
           {sem:4, tema:"Citoesqueleto, Matriz Extracelular y Uniones celulares. Evaluación Parcial."},
-          {sem:5, tema:"Sistema de Endomembranas (RER, REL, Golgi) y Digestión Celular. Mitocondrias y Bioenergética."},
+          {sem:5, tema:"Sistema de Endomembranas (RER, REL, Golgi) y Digestión Celular (Lisosomas/Peroxisomas). Mitocondrias y Bioenergética."},
           {sem:6, tema:"Núcleo Celular, Cromatina y Replicación del ADN. Transcripción y Procesamiento de ARN."},
           {sem:7, tema:"Traducción (Síntesis de Proteínas). Ciclo Celular, Mitosis, Meiosis y Apoptosis."},
           {sem:8, tema:"Señalización celular, Introducción al Cáncer y Genética Molecular. Evaluación Final."}
         ],
-        laboratorio:[
+        "Laboratorio": [
           {sem:1, tema:"Normas de Bioseguridad y Manejo del Microscopio. Identificación de Glúcidos y Lípidos."},
           {sem:2, tema:"Identificación de Proteínas y Enzimas. Extracción de ADN."},
           {sem:3, tema:"Célula Procariota y Eucariota. Permeabilidad de la Membrana Celular (Diálisis)."},
@@ -340,10 +231,10 @@
         ]
       }
     },
-    bioq: {
-      nombre:"Bioquímica",
-      secciones:{
-        teoria:[
+
+    "Bioquímica": {
+      subcursos: {
+        "Teoría": [
           {sem:1, tema:"Bioelementos y Biomoléculas: Agua, pH, soluciones buffer, bioelementos y vitaminas. Estructuras supramoleculares."},
           {sem:2, tema:"Aminoácidos y Proteínas: Estructura, clasificación y propiedades. Plegamiento y desnaturalización."},
           {sem:3, tema:"Enzimas y Cinética: Energía de activación y factores que afectan la actividad enzimática. Evaluación Continua 1."},
@@ -353,7 +244,7 @@
           {sem:7, tema:"Colesterol y Ácidos Nucleicos: Síntesis de colesterol, estructura de ADN/ARN y replicación."},
           {sem:8, tema:"Síntesis de Proteínas: Transcripción y traducción. Presentación de situación clínica. Evaluación Final."}
         ],
-        laboratorio:[
+        "Laboratorio": [
           {sem:1, tema:"Espectrofotometría: Principios de bioseguridad y determinación de concentración de compuestos."},
           {sem:2, tema:"Proteínas totales: Determinación de proteínas totales, albúmina y globulinas en suero."},
           {sem:3, tema:"Degradación de proteínas y factores que afectan la actividad enzimática."},
@@ -364,304 +255,374 @@
           {sem:8, tema:"Ácido Úrico y ADN: Extracción de ADN y determinación de ácido úrico en suero. Evaluación Final."}
         ]
       }
-    }
-  };
-<!-- PARTE 7: Contenido interactivo por cursos y semanas -->
-<div id="contenidoCurso" class="card hidden" style="padding:30px; margin-top:20px;">
-  <button onclick="volverInicio()" style="background:#f97316; margin-bottom:20px;">← Volver al inicio</button>
-  <div id="detalleCurso"></div>
+    };
+
+</script>
+<!-- CONTENEDOR PRINCIPAL PARA CURSOS -->
+<div id="cursos-container" class="container hidden">
+  <h2>Cursos Disponibles</h2>
+  <div id="cursos-list" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:20px;"></div>
+</div>
+
+<!-- CONTENEDOR DE SUBCURSOS -->
+<div id="subcurso-container" class="container hidden">
+  <h2 id="subcurso-title"></h2>
+  <div id="subcurso-list" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:20px;"></div>
+  <button onclick="volverACursos()" style="margin-top:20px; padding:10px 20px; background:#2563eb; color:white; border:none; border-radius:10px; cursor:pointer;">Volver a Cursos</button>
+</div>
+
+<!-- CONTENEDOR DE SEMANAS -->
+<div id="semana-container" class="container hidden">
+  <h2 id="semana-title"></h2>
+  <div id="semana-list" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:20px;"></div>
+  <button onclick="volverASubcurso()" style="margin-top:20px; padding:10px 20px; background:#2563eb; color:white; border:none; border-radius:10px; cursor:pointer;">Volver a Subcursos</button>
+</div>
+
+<!-- CONTENEDOR DE CONTENIDO -->
+<div id="contenido-semana-container" class="container hidden">
+  <h2 id="contenido-title"></h2>
+  <div style="margin-top:20px;">
+    <button onclick="alert('Ver grabación')" style="margin-right:10px; padding:10px 15px; background:#10b981; color:white; border:none; border-radius:8px; cursor:pointer;">📹 Grabación</button>
+    <button onclick="alert('Abrir PDF')" style="margin-right:10px; padding:10px 15px; background:#3b82f6; color:white; border:none; border-radius:8px; cursor:pointer;">📄 PDF</button>
+    <button onclick="alert('Apliquemos lo aprendido')" style="padding:10px 15px; background:#f59e0b; color:white; border:none; border-radius:8px; cursor:pointer;">📝 Apliquemos lo aprendido</button>
+  </div>
+  <button onclick="volverASemanas()" style="margin-top:20px; padding:10px 20px; background:#2563eb; color:white; border:none; border-radius:10px; cursor:pointer;">Volver a Semanas</button>
 </div>
 
 <script>
-  // Función para mostrar contenido del curso
-  function entrarCurso(curso, subcurso=null) {
-    document.getElementById('contenido').classList.add('hidden');
-    document.getElementById('contenidoCurso').classList.remove('hidden');
+  let cursoActual = '';
+  let subcursoActual = '';
 
-    let detalle = document.getElementById('detalleCurso');
-    detalle.innerHTML = ""; // Limpiar contenido previo
-
-    let cursoData = contenidoCursos[curso];
-    let titulo = cursoData.nombre;
-    
-    if(subcurso) {
-      cursoData = cursoData.subcursos[subcurso] || cursoData.secciones[subcurso];
-      titulo += " - " + (cursoData.nombre || subcurso);
+  // FUNCION PARA MOSTRAR CURSOS PRINCIPALES
+  function mostrarCursos() {
+    document.getElementById('cursos-container').classList.remove('hidden');
+    const cursosList = document.getElementById('cursos-list');
+    cursosList.innerHTML = '';
+    for (const curso in cursos) {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <h3>${curso}</h3>
+        <button onclick="abrirCurso('${curso}')">Entrar al curso</button>
+      `;
+      cursosList.appendChild(card);
     }
+  }
 
-    let html = `<h2 style="color:#1e3a8a;">${titulo}</h2>`;
-
-    // Manejar semanas
-    let semanas = cursoData.semanas || cursoData.teoria || cursoData.laboratorio;
-    
-    if(cursoData.subcursos) {
-      // Para Morfo2, mostrar botones para subcursos
-      html += "<div style='margin:20px 0;'>";
-      for(let sc in cursoData.subcursos){
-        html += `<button style="margin:5px; background:#2563eb; color:white; padding:10px 15px; border-radius:10px; cursor:pointer;" onclick="entrarCurso('${curso}','${sc}')">${cursoData.subcursos[sc].nombre}</button>`;
-      }
-      html += "</div>";
-      detalle.innerHTML = html;
-      return;
+  // FUNCION PARA ABRIR CURSO
+  function abrirCurso(curso) {
+    cursoActual = curso;
+    document.getElementById('cursos-container').classList.add('hidden');
+    // Verificar si tiene subcursos
+    if (cursos[curso].subcursos) {
+      mostrarSubcursos(curso);
+    } else {
+      mostrarSemanas(curso);
     }
+  }
 
-    // Si tiene teoría y laboratorio (Bio/Bioq)
-    if(cursoData.teoria && cursoData.laboratorio) {
-      html += "<div style='margin:20px 0;'>";
-      html += `<button onclick="mostrarSeccion('${curso}','teoria')" style="margin:5px; background:#10b981; color:white; padding:10px 15px; border-radius:10px;">Teoría</button>`;
-      html += `<button onclick="mostrarSeccion('${curso}','laboratorio')" style="margin:5px; background:#8b5cf6; color:white; padding:10px 15px; border-radius:10px;">Laboratorio</button>`;
-      html += "</div>";
-      detalle.innerHTML = html;
-      return;
-    }
-
-    // Si solo tiene semanas
-    html += "<ul style='margin-top:20px;'>";
-    semanas.forEach(s=>{
-      let tema = s.tema || (s.fisiologia + " | " + s.histologia);
-      html += `<li style='margin-bottom:15px;'><strong>Semana ${s.sem}:</strong> ${tema} <br/>
-      <button style='margin-top:5px; background:#facc15; color:#1f2937; border:none; padding:5px 10px; border-radius:5px;'>📹 Grabación</button>
-      <button style='margin-top:5px; background:#3b82f6; color:white; border:none; padding:5px 10px; border-radius:5px;'>📄 PDF</button>
-      <button style='margin-top:5px; background:#10b981; color:white; border:none; padding:5px 10px; border-radius:5px;'>✍️ Apliquemos lo aprendido</button>
-      </li>`;
+  // FUNCION PARA MOSTRAR SUBCURSOS
+  function mostrarSubcursos(curso) {
+    document.getElementById('subcurso-container').classList.remove('hidden');
+    document.getElementById('subcurso-title').innerText = `Subcursos de ${curso}`;
+    const subcursoList = document.getElementById('subcurso-list');
+    subcursoList.innerHTML = '';
+    const subcursos = Object.keys(cursos[curso].subcursos);
+    subcursos.forEach(sc => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <h3>${sc}</h3>
+        <button onclick="abrirSubcurso('${sc}')">Ver semanas</button>
+      `;
+      subcursoList.appendChild(card);
     });
-    html += "</ul>";
-
-    detalle.innerHTML = html;
   }
 
-  // Mostrar teoría/laboratorio de Bio/Bioq
-  function mostrarSeccion(curso, seccion){
-    let data = contenidoCursos[curso][seccion];
-    let detalle = document.getElementById('detalleCurso');
-    let html = `<h2 style="color:#1e3a8a;">${contenidoCursos[curso].nombre} - ${seccion.charAt(0).toUpperCase()+seccion.slice(1)}</h2>`;
-    html += "<ul style='margin-top:20px;'>";
-    data.forEach(s=>{
-      html += `<li style='margin-bottom:15px;'><strong>Semana ${s.sem}:</strong> ${s.tema} <br/>
-      <button style='margin-top:5px; background:#facc15; color:#1f2937; border:none; padding:5px 10px; border-radius:5px;'>📹 Grabación</button>
-      <button style='margin-top:5px; background:#3b82f6; color:white; border:none; padding:5px 10px; border-radius:5px;'>📄 PDF</button>
-      <button style='margin-top:5px; background:#10b981; color:white; border:none; padding:5px 10px; border-radius:5px;'>✍️ Apliquemos lo aprendido</button>
-      </li>`;
+  // FUNCION PARA ABRIR SUBCURSO
+  function abrirSubcurso(subcurso) {
+    subcursoActual = subcurso;
+    document.getElementById('subcurso-container').classList.add('hidden');
+    mostrarSemanas(cursoActual, subcurso);
+  }
+
+  // FUNCION PARA MOSTRAR SEMANAS
+  function mostrarSemanas(curso, subcurso=null) {
+    document.getElementById('semana-container').classList.remove('hidden');
+    let semanas;
+    if (subcurso) {
+      semanas = cursos[curso].subcursos[subcurso];
+      document.getElementById('semana-title').innerText = `${curso} - ${subcurso} (Semanas)`;
+    } else {
+      semanas = cursos[curso].semanas;
+      document.getElementById('semana-title').innerText = `${curso} (Semanas)`;
+    }
+
+    const semanaList = document.getElementById('semana-list');
+    semanaList.innerHTML = '';
+    semanas.forEach(s => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <h3>Semana ${s.sem}</h3>
+        <p>${s.fisiologia || s.histologia || s.tema}</p>
+        <button onclick="abrirContenido(${s.sem})">Ver contenido</button>
+      `;
+      semanaList.appendChild(card);
     });
-    html += "</ul>";
-    html += `<button onclick="entrarCurso('${curso}')" style="background:#2563eb; color:white; padding:8px 15px; border-radius:10px;">← Volver</button>`;
-    detalle.innerHTML = html;
   }
 
-  function volverInicio(){
-    document.getElementById('contenidoCurso').classList.add('hidden');
-    document.getElementById('contenido').classList.remove('hidden');
+  // FUNCION PARA ABRIR CONTENIDO
+  function abrirContenido(sem) {
+    document.getElementById('semana-container').classList.add('hidden');
+    document.getElementById('contenido-semana-container').classList.remove('hidden');
+
+    let contenidoText = '';
+    const curso = cursoActual;
+    const subcurso = subcursoActual;
+
+    if (subcurso) {
+      const semanaObj = cursos[curso].subcursos[subcurso].find(s => s.sem === sem);
+      contenidoText = `Semana ${sem}: ${semanaObj.tema}`;
+    } else {
+      const semanaObj = cursos[curso].semanas.find(s => s.sem === sem);
+      contenidoText = `Semana ${sem}: ${semanaObj.fisiologia || semanaObj.histologia || semanaObj.tema}`;
+    }
+
+    document.getElementById('contenido-title').innerText = contenidoText;
   }
+
+  // FUNCIONES DE VOLVER
+  function volverACursos() {
+    document.getElementById('subcurso-container').classList.add('hidden');
+    mostrarCursos();
+  }
+  function volverASubcurso() {
+    document.getElementById('semana-container').classList.add('hidden');
+    mostrarSubcursos(cursoActual);
+  }
+  function volverASemanas() {
+    document.getElementById('contenido-semana-container').classList.add('hidden');
+    mostrarSemanas(cursoActual, subcursoActual);
+  }
+
+  // INICIAMOS MOSTRANDO CURSOS
+  mostrarCursos();
 </script>
-<style>
-  body {
-    margin:0;
-    font-family:'Poppins', sans-serif;
-    background:#f3f4f6;
-    color:#1f2937;
-  }
-
-  header {
-    background: linear-gradient(90deg,#3b82f6,#60a5fa);
-    color:white;
-    padding:20px 40px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-  }
-
-  header h1 {
-    font-size:28px;
-    letter-spacing:1px;
-  }
-
-  nav a {
-    margin-left:20px;
-    color:white;
-    font-weight:600;
-    text-decoration:none;
-    transition:0.3s;
-  }
-
-  nav a:hover {
-    text-decoration:underline;
-  }
-
-  .container {
-    max-width:1200px;
-    margin:40px auto;
-    padding:0 20px;
-  }
-
-  .card {
-    background:white;
-    padding:30px;
-    border-radius:16px;
-    box-shadow:0 8px 20px rgba(0,0,0,0.08);
-    margin-bottom:20px;
-    transition:0.3s;
-  }
-
-  .card:hover {
-    transform:translateY(-5px);
-    box-shadow:0 12px 30px rgba(0,0,0,0.12);
-  }
-
-  button {
-    padding:10px 18px;
-    border:none;
-    border-radius:12px;
-    cursor:pointer;
-    transition:0.2s;
-  }
-
-  .btn-primary {
-    background:#3b82f6;
-    color:white;
-  }
-  .btn-primary:hover { background:#2563eb; }
-
-  .btn-success {
-    background:#10b981;
-    color:white;
-  }
-  .btn-success:hover { background:#059669; }
-
-  .btn-warning {
-    background:#facc15;
-    color:#1f2937;
-  }
-  .btn-warning:hover { background:#eab308; }
-
-  .btn-danger {
-    background:#f97316;
-    color:white;
-  }
-  .btn-danger:hover { background:#ea580c; }
-
-  footer {
-    text-align:center;
-    padding:30px;
-    color:#64748b;
-  }
-
-  #login-google {
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    background:#4285f4;
-    color:white;
-    padding:12px 20px;
-    border-radius:12px;
-    font-weight:600;
-    cursor:pointer;
-    margin-top:15px;
-  }
-  #login-google img {
-    height:24px;
-    margin-right:10px;
-  }
-
-  @media(max-width:768px){
-    header { flex-direction:column; text-align:center; }
-    nav a { margin:10px 5px 0 5px; display:inline-block; }
-  }
-</style>
-<div id="login" class="card">
-  <h2>Inicia sesión</h2>
-  <input type="email" id="email" placeholder="Correo electrónico" />
-  <input type="password" id="password" placeholder="Contraseña" />
-  <button class="btn-primary" onclick="login()">Entrar</button>
-  <div id="login-google" onclick="loginGoogle()">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="G">
-    Entrar con Google
-  </div>
-</div>
-
+<!-- FIREBASE SDK -->
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.1/firebase-app.js";
-  import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.6.1/firebase-auth.js";
+  // Importar Firebase
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js";
+  import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-auth.js";
+  import { getFirestore, collection, getDocs, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-firestore.js";
 
+  // CONFIGURACIÓN DE FIREBASE
   const firebaseConfig = {
-    apiKey: "TU_API_KEY",
-    authDomain: "TU_AUTH_DOMAIN",
-    projectId: "TU_PROJECT_ID",
-    storageBucket: "TU_STORAGE_BUCKET",
-    messagingSenderId: "TU_SENDER_ID",
-    appId: "TU_APP_ID",
-    measurementId: "TU_MEASUREMENT_ID"
+    apiKey: "AIzaSyDAmEVU8J-uk2Yg6bL5n28xbP1771cHGME",
+    authDomain: "neurovap53-cdbcf.firebaseapp.com",
+    projectId: "neurovap53-cdbcf",
+    storageBucket: "neurovap53-cdbcf.firebasestorage.app",
+    messagingSenderId: "558340314022",
+    appId: "1:558340314022:web:2027622d3b86af54ddb567",
+    measurementId: "G-70R7JRGVKG"
   };
 
+  // Inicializamos Firebase
   const app = initializeApp(firebaseConfig);
   const auth = getAuth();
+  const db = getFirestore();
 
-  function login(){
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
+  const provider = new GoogleAuthProvider();
 
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        const user = userCredential.user;
-        alert('Bienvenido '+user.email);
-        document.getElementById('login').classList.add('hidden');
-        document.getElementById('contenido').classList.remove('hidden');
-      })
-      .catch((error) => {
-        alert(error.message);
-      });
-  }
+  // ELEMENTOS DEL DOM
+  const loginBtn = document.getElementById('login-google-btn');
+  const logoutBtn = document.getElementById('logout-btn');
+  const userDisplay = document.getElementById('user-display');
 
-  function loginGoogle(){
-    const provider = new GoogleAuthProvider();
-    signInWithPopup(auth, provider)
-      .then((result) => {
-        const user = result.user;
-        alert('Bienvenido '+user.displayName);
-        document.getElementById('login').classList.add('hidden');
-        document.getElementById('contenido').classList.remove('hidden');
-      })
-      .catch((error)=>{
-        alert(error.message);
-      });
-  }
-</script>
-<div id="horario" class="card hidden">
-  <h2>Horario Semanal</h2>
-  <table style="width:100%; border-collapse:collapse; margin-top:20px;">
-    <thead>
-      <tr style="background:#3b82f6; color:white;">
-        <th>Hora/Día</th>
-        <th>Lunes</th>
-        <th>Martes</th>
-        <th>Miércoles</th>
-        <th>Jueves</th>
-        <th>Viernes</th>
-      </tr>
-    </thead>
-    <tbody id="tablaHorario">
-      <!-- Aquí se llenará con JS -->
-    </tbody>
-  </table>
-</div>
-
-<script>
-  const horarioAlumnos = {
-    alumno1: {
-      "08:00-10:00": ["Morfo I","Bioquímica","","Anatomía",""],
-      "10:00-12:00": ["","","Morfo II","Fisiología","Biología Celular"]
+  // LOGIN CON GOOGLE
+  loginBtn.addEventListener('click', async () => {
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      // Guardar usuario en Firestore si no existe
+      const userDocRef = doc(db, 'usuarios', user.uid);
+      await setDoc(userDocRef, {
+        nombre: user.displayName,
+        email: user.email,
+        rol: 'alumno', // puedes cambiarlo manualmente a "admin" si quieres
+        horario: cursosAsignados[user.uid] || []
+      }, { merge: true });
+    } catch (err) {
+      console.error(err);
+      alert('Error al iniciar sesión con Google');
     }
+  });
+
+  // CERRAR SESIÓN
+  logoutBtn.addEventListener('click', async () => {
+    await signOut(auth);
+  });
+
+  // DETECTAR CAMBIO DE SESIÓN
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      loginBtn.classList.add('hidden');
+      logoutBtn.classList.remove('hidden');
+      userDisplay.innerText = `Hola, ${user.displayName}`;
+      // Mostrar cursos
+      mostrarCursos();
+      // Cargar rol desde Firestore
+      const userDoc = await getDocs(collection(db, 'usuarios'));
+      userDoc.forEach(doc => {
+        if (doc.id === user.uid) {
+          if(doc.data().rol === 'admin') {
+            mostrarHorariosAdmin();
+          } else {
+            mostrarHorarioAlumno(doc.data().horario);
+          }
+        }
+      });
+    } else {
+      loginBtn.classList.remove('hidden');
+      logoutBtn.classList.add('hidden');
+      userDisplay.innerText = '';
+    }
+  });
+
+  // HORARIOS DE EJEMPLO PARA ALUMNOS
+  const cursosAsignados = {
+    // uid: [horario]
   };
 
-  function mostrarHorario(usuario){
-    let tbody = document.getElementById('tablaHorario');
-    tbody.innerHTML = "";
-    let data = horarioAlumnos[usuario];
-    for(let hora in data){
-      let row = "<tr><td style='padding:8px; border:1px solid #ddd;'>"+hora+"</td>";
-      data[hora].forEach(c=> row+="<td style='padding:8px; border:1px solid #ddd;'>"+c+"</td>");
-      row += "</tr>";
-      tbody.innerHTML += row;
+  // FUNCIÓN PARA MOSTRAR HORARIO DEL ALUMNO
+  function mostrarHorarioAlumno(horario) {
+    const container = document.getElementById('horario-container');
+    container.innerHTML = '<h2>Horario Semanal</h2>';
+    if (!horario || horario.length === 0) {
+      container.innerHTML += '<p>No tienes cursos asignados.</p>';
+      return;
     }
-    document.getElementById('horario').classList.remove('hidden');
+    const table = document.createElement('table');
+    table.style.width = '100%';
+    table.style.borderCollapse = 'collapse';
+    table.innerHTML = `
+      <tr style="background:#3b82f6; color:white;">
+        <th>Dia</th>
+        <th>Curso</th>
+        <th>Hora</th>
+      </tr>
+    `;
+    horario.forEach(h => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${h.dia}</td><td>${h.curso}</td><td>${h.hora}</td>`;
+      tr.style.borderBottom = '1px solid #ddd';
+      table.appendChild(tr);
+    });
+    container.appendChild(table);
   }
+
+  // FUNCIÓN PARA MOSTRAR HORARIOS DE TODOS LOS ALUMNOS (ADMIN)
+  async function mostrarHorariosAdmin() {
+    const container = document.getElementById('horario-container');
+    container.innerHTML = '<h2>Horarios de todos los alumnos</h2>';
+    const usuariosSnapshot = await getDocs(collection(db, 'usuarios'));
+    usuariosSnapshot.forEach(doc => {
+      const data = doc.data();
+      container.innerHTML += `<h3>${data.nombre} (${data.email})</h3>`;
+      if(data.horario && data.horario.length > 0) {
+        const table = document.createElement('table');
+        table.style.width = '100%';
+        table.style.borderCollapse = 'collapse';
+        table.innerHTML = `
+          <tr style="background:#2563eb; color:white;">
+            <th>Dia</th><th>Curso</th><th>Hora</th>
+          </tr>
+        `;
+        data.horario.forEach(h => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td>${h.dia}</td><td>${h.curso}</td><td>${h.hora}</td>`;
+          tr.style.borderBottom = '1px solid #ddd';
+          table.appendChild(tr);
+        });
+        container.appendChild(table);
+      } else {
+        container.innerHTML += '<p>No hay cursos asignados</p>';
+      }
+    });
+  }
+
 </script>
+
+<!-- BOTONES LOGIN / LOGOUT -->
+<div style="text-align:center; margin-top:20px;">
+  <button id="login-google-btn" style="padding:12px 20px; background:#4285F4; color:white; border:none; border-radius:8px; cursor:pointer;">Login con Google</button>
+  <button id="logout-btn" class="hidden" style="padding:12px 20px; background:#ef4444; color:white; border:none; border-radius:8px; cursor:pointer;">Cerrar sesión</button>
+  <div id="user-display" style="margin-top:10px; font-weight:bold;"></div>
+</div>
+
+<!-- CONTENEDOR HORARIO -->
+<div id="horario-container" class="container" style="margin-top:40px;"></div>
+<!-- ================== SCRIPTS FINALES ================== -->
+<script>
+  // Función para mostrar secciones principales
+  function showSection(id) {
+    const sections = ['inicio', 'cursos', 'material', 'horario-container'];
+    sections.forEach(s => {
+      const el = document.getElementById(s);
+      if(el) el.classList.add('hidden');
+    });
+    document.getElementById(id).classList.remove('hidden');
+  }
+
+  // Función para mostrar contenido de un curso (subcursos y semanas)
+  function openCurso(cursoId) {
+    const contenidoCurso = document.getElementById('contenido-curso');
+    contenidoCurso.innerHTML = ''; // Limpiar contenido previo
+    contenidoCurso.classList.remove('hidden');
+
+    // Ejemplo de estructura para Morfo 2: subcursos Anatomía, Fisiología, Histología
+    if(cursoId === 'morfo2') {
+      const subcursos = ['Anatomía', 'Fisiología', 'Histología'];
+      subcursos.forEach(sub => {
+        const div = document.createElement('div');
+        div.style.marginBottom = '30px';
+        div.innerHTML = `<h3 style="color:#2563eb;">${sub}</h3>`;
+        
+        // Crear semanas 1-8
+        const ul = document.createElement('ul');
+        for(let i=1;i<=8;i++){
+          const li = document.createElement('li');
+          li.innerHTML = `<strong>Semana ${i}:</strong> Tema de ${sub} - <button onclick="alert('Ver grabación')">Grabación</button> <button onclick="alert('Descargar PDF')">PDF</button> <button onclick="alert('Apliquemos lo aprendido')">Apliquemos lo aprendido</button>`;
+          ul.appendChild(li);
+        }
+        div.appendChild(ul);
+        contenidoCurso.appendChild(div);
+      });
+    }
+
+    // Ejemplo para un curso individual, como Anatomía General
+    if(cursoId === 'anatomia') {
+      const div = document.createElement('div');
+      div.innerHTML = `<h3 style="color:#2563eb;">Anatomía General</h3>`;
+      const ul = document.createElement('ul');
+      for(let i=1;i<=8;i++){
+        const li = document.createElement('li');
+        li.innerHTML = `<strong>Semana ${i}:</strong> Tema de Anatomía - <button onclick="alert('Ver grabación')">Grabación</button> <button onclick="alert('Descargar PDF')">PDF</button> <button onclick="alert('Apliquemos lo aprendido')">Apliquemos lo aprendido</button>`;
+        ul.appendChild(li);
+      }
+      div.appendChild(ul);
+      contenidoCurso.appendChild(div);
+    }
+  }
+
+  // Inicializamos paneles ocultos
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('contenido-curso').classList.add('hidden');
+  });
+</script>
+
+<!-- CONTENEDOR PARA EL CURSO SELECCIONADO -->
+<div id="contenido-curso" class="container card hidden" style="margin-top:40px;"></div>
+
+</body>
+</html>
