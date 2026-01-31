@@ -13,7 +13,6 @@
       background: #f8fbff;
       color: #1f2937;
     }
-
     header {
       background: linear-gradient(90deg, #e0f2fe, #bae6fd, #93c5fd);
       padding: 20px 40px;
@@ -21,14 +20,12 @@
       align-items: center;
       justify-content: space-between;
     }
-
     header h1 {
       margin: 0;
       color: #0f172a;
       font-size: 28px;
       letter-spacing: 1px;
     }
-
     nav a {
       margin-left: 20px;
       text-decoration: none;
@@ -36,13 +33,11 @@
       font-weight: 500;
       cursor: pointer;
     }
-
     .container {
       max-width: 1100px;
       margin: 40px auto;
       padding: 0 20px;
     }
-
     .card {
       background: white;
       border-radius: 16px;
@@ -51,12 +46,7 @@
       margin-bottom: 20px;
       text-align: center;
     }
-
-    .card h3 {
-      color: #0077cc;
-      margin-bottom: 15px;
-    }
-
+    .card h3 { color: #0077cc; }
     button {
       margin-top: 15px;
       padding: 12px 20px;
@@ -65,72 +55,140 @@
       background: #0077cc;
       color: white;
       cursor: pointer;
-      transition: 0.2s;
     }
-
-    button:hover {
-      background: #005fa3;
-    }
-
-    .hidden {
-      display: none;
-    }
-
+    button:hover { background: #005fa3; }
+    .hidden { display: none; }
     .blocked {
       background: #ccc;
       color: #555;
       cursor: not-allowed;
     }
-
-    footer {
-      text-align: center;
-      padding: 30px;
-      color: #64748b;
-    }
-
-    .subcurso-btn {
-      background: #f97316;
-    }
-
-    .subcurso-btn:hover {
-      background: #ea580c;
-    }
-
-    h2 {
-      color: #1e3a8a;
-      margin-bottom: 20px;
-    }
-
-    /* Tablas de horarios */
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 15px;
-    }
-
-    th, td {
-      border: 1px solid #ddd;
-      padding: 10px;
-      text-align: center;
-    }
-
-    th {
-      background: #3b82f6;
-      color: white;
-    }
-
-    /* Formularios admin */
-    input, select, textarea {
-      padding: 10px;
-      width: 100%;
-      margin-bottom: 15px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      font-size: 14px;
-    }
+    h2 { color: #1e3a8a; margin-bottom: 20px; }
   </style>
 </head>
+
 <body>
+  <!-- HEADER -->
+  <header>
+    <img src="logo.jpeg" alt="Neurova P53" style="height:90px;">
+    <h1>Neurova P53</h1>
+    <nav>
+      <a onclick="showSection('inicio')">Inicio</a>
+      <a onclick="showSection('cursos-container')">Cursos</a>
+      <a onclick="showSection('horario-container')">Horario</a>
+    </nav>
+  </header>
+
+  <div class="container">
+
+    <!-- LOGIN -->
+    <div id="login-container" class="card">
+      <h2>Iniciar sesión</h2>
+      <button id="login-btn">Login con Google</button>
+      <div id="user-display" style="margin-top:10px; font-weight:bold;"></div>
+      <button id="logout-btn" class="hidden" style="background:#ef4444;">Cerrar sesión</button>
+    </div>
+
+    <!-- CONTENEDOR CURSOS -->
+    <div id="cursos-container" class="container hidden">
+      <h2>Cursos Disponibles</h2>
+      <div id="cursos-list" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:20px;"></div>
+    </div>
+
+    <!-- PANEL ADMIN -->
+    <div id="admin-panel" class="container card hidden">
+      <h2>Panel Admin</h2>
+      <p>Aquí podrás agregar cursos, subir PDFs, grabaciones y formularios para los alumnos.</p>
+      <button onclick="alert('Función de agregar curso')">Agregar Curso</button>
+      <button onclick="alert('Función de agregar PDF/Grabación')">Agregar Contenido</button>
+      <button onclick="alert('Ver avance de alumnos')">Ver Avance</button>
+    </div>
+
+    <!-- CONTENEDOR HORARIO -->
+    <div id="horario-container" class="container hidden"></div>
+
+    <!-- INICIO -->
+    <div id="inicio" class="container">
+      <h2>Bienvenido a Neurova P53</h2>
+      <p>Academia premium especializada en ciencias de la salud. Formación rigurosa, clara y progresiva, diseñada por ciclos académicos.</p>
+    </div>
+
+  </div>
+
+  <!-- FIREBASE -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDAmEVU8J-uk2Yg6bL5n28xbP1771cHGME",
+      authDomain: "neurovap53-cdbcf.firebaseapp.com",
+      projectId: "neurovap53-cdbcf",
+      storageBucket: "neurovap53-cdbcf.firebasestorage.app",
+      messagingSenderId: "558340314022",
+      appId: "1:558340314022:web:2027622d3b86af54ddb567"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth();
+    const provider = new GoogleAuthProvider();
+
+    const loginBtn = document.getElementById('login-btn');
+    const logoutBtn = document.getElementById('logout-btn');
+    const userDisplay = document.getElementById('user-display');
+
+    loginBtn.addEventListener('click', async () => {
+      try {
+        const result = await signInWithPopup(auth, provider);
+        const user = result.user;
+
+        if(user.email === "jamesucribanco333@gmail.com") {
+          document.getElementById('admin-panel').classList.remove('hidden');
+        }
+
+        userDisplay.innerText = `Hola, ${user.displayName}`;
+        loginBtn.classList.add('hidden');
+        mostrarCursos();
+      } catch(err) {
+        alert("Error al iniciar sesión: " + err.message);
+      }
+    });
+
+    logoutBtn.addEventListener('click', async () => {
+      await signOut(auth);
+      document.getElementById('admin-panel').classList.add('hidden');
+      userDisplay.innerText = '';
+      loginBtn.classList.remove('hidden');
+      document.getElementById('cursos-container').classList.add('hidden');
+    });
+
+    function showSection(id) {
+      const sections = ['inicio','cursos-container','horario-container','admin-panel'];
+      sections.forEach(s => {
+        document.getElementById(s).classList.add('hidden');
+      });
+      document.getElementById(id).classList.remove('hidden');
+    }
+
+    function mostrarCursos() {
+      const cursosList = document.getElementById('cursos-list');
+      cursosList.innerHTML = '';
+      const cursos = [
+        "Morfofisiología 1", "Morfofisiología 2", "Anatomía General",
+        "Biología Celular y Molecular", "Bioquímica"
+      ];
+      cursos.forEach(c => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `<h3>${c}</h3><button onclick="alert('Abrir curso: ${c}')">Entrar</button>`;
+        cursosList.appendChild(card);
+      });
+      document.getElementById('cursos-container').classList.remove('hidden');
+    }
+  </script>
+</body>
+</html>
+
 
   <!-- HEADER -->
   <header>
@@ -818,3 +876,4 @@
 
 </body>
 </html>
+
