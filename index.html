@@ -1,782 +1,269 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Neurova P53</title>
+  <meta charset="UTF-8">
+  <title>Neurova P53 | Academia de Ciencias de la Salud</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<style>
-body {
-  margin:0;
-  font-family:'Segoe UI', Arial, sans-serif;
-  background:#f8fbff;
-  color:#1f2937;
-}
-header {
-  background: linear-gradient(90deg, #e0f2fe, #bae6fd, #93c5fd);
-  padding: 20px 40px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-}
-header h1 { margin:0; color:#0f172a; font-size:28px; letter-spacing:1px;}
-nav a { margin-left:20px; text-decoration:none; color:#0f172a; font-weight:500; cursor:pointer;}
-.container { max-width:1100px; margin:40px auto; padding:0 20px; }
-.card {
-  background:white;
-  border-radius:16px;
-  box-shadow:0 10px 30px rgba(0,0,0,0.08);
-  padding:30px;
-  margin-bottom:20px;
-  text-align:center;
-}
-.card h3 { color:#0077cc; }
-button {
-  margin-top:15px;
-  padding:12px 20px;
-  border:none;
-  border-radius:12px;
-  background:#0077cc;
-  color:white;
-  cursor:pointer;
-}
-button:hover { background:#005fa3; }
-.hidden { display:none; }
-h2 { color:#1e3a8a; margin-bottom:20px; }
-</style>
+  <!-- Estilos -->
+  <link rel="stylesheet" href="styles.css">
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 </head>
 
 <body>
 
-<header>
-  <img src="logo.jpeg" alt="Neurova P53" style="height:90px;">
-  <h1>Neurova P53</h1>
-  <nav>
-    <a onclick="showSection('inicio')">Inicio</a>
-    <a onclick="showSection('cursos-container')">Cursos</a>
-    <a onclick="showSection('horario-container')">Horario</a>
-    <a id="admin-nav" class="hidden" onclick="showSection('admin-panel')">Admin</a>
+<!-- ================= HEADER ================= -->
+<header class="header">
+  <div class="header-left">
+    <img src="logo.jpeg" alt="Neurova P53" class="logo">
+    <h1>Neurova P53</h1>
+  </div>
+
+  <nav class="nav">
+    <button onclick="show('inicio')">Inicio</button>
+    <button onclick="mostrarCursos()">Cursos</button>
+    <button id="adminBtn" class="hidden" onclick="show('admin')">Admin</button>
   </nav>
 </header>
 
-<!-- LOGIN -->
-<div class="container card" id="login-container">
+<!-- ================= LOGIN ================= -->
+<section id="login" class="card center">
   <h2>Iniciar sesión</h2>
-  <button id="login-btn">Login con Google</button>
-  <div id="user-display" style="margin-top:10px; font-weight:bold;"></div>
-  <button id="logout-btn" class="hidden" style="background:#ef4444;">Cerrar sesión</button>
-</div>
+  <p>Accede a tus cursos</p>
+  <button id="loginBtn">Ingresar con Google</button>
+  <button id="logoutBtn" class="hidden">Cerrar sesión</button>
+</section>
 
-<!-- INICIO -->
-<div id="inicio" class="container">
+<!-- ================= INICIO ================= -->
+<section id="inicio" class="container">
   <h2>Bienvenido a Neurova P53</h2>
-  <p>Academia premium especializada en ciencias de la salud. Formación rigurosa, clara y progresiva, diseñada por ciclos académicos.</p>
-</div>
+  <p>
+    Academia especializada en Morfofisiología, Anatomía,
+    Biología Celular y Bioquímica para ciencias de la salud.
+  </p>
+</section>
 
-<!-- CURSOS -->
-<div id="cursos-container" class="container hidden">
-  <h2>Cursos Disponibles</h2>
-  <div id="cursos-list" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:20px;"></div>
-</div>
+<!-- ================= CURSOS ================= -->
+<section id="cursos" class="container hidden">
+  <h2>Cursos disponibles</h2>
+  <div id="listaCursos" class="grid"></div>
+</section>
 
-<!-- ADMIN PANEL -->
-<div id="admin-panel" class="container card hidden">
-  <h2>Panel Admin</h2>
-  <p>Aquí puedes agregar cursos, subir PDFs, grabaciones y formularios para los alumnos.</p>
-  <button onclick="alert('Agregar curso')">Agregar Curso</button>
-  <button onclick="alert('Agregar Contenido')">Agregar PDF/Grabación</button>
-  <button onclick="alert('Ver avance de alumnos')">Ver Avance</button>
-</div>
+<!-- ================= SEMANAS ================= -->
+<section id="semanas" class="container hidden">
+  <h2 id="tituloSemanas"></h2>
+  <div id="listaSemanas" class="grid"></div>
+  <button class="volver" onclick="mostrarCursos()">⬅ Volver a cursos</button>
+</section>
 
-<!-- HORARIO -->
-<div id="horario-container" class="container hidden"></div>
-
-<!-- SUBCURSOS Y SEMANAS -->
-<div id="subcurso-container" class="container hidden">
-  <h2 id="subcurso-title"></h2>
-  <div id="subcurso-list" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:20px;"></div>
-  <button onclick="volverACursos()" style="margin-top:20px; padding:10px 20px; background:#2563eb; color:white; border:none; border-radius:10px; cursor:pointer;">Volver a Cursos</button>
-</div>
-
-<div id="semana-container" class="container hidden">
-  <h2 id="semana-title"></h2>
-  <div id="semana-list" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:20px;"></div>
-  <button onclick="volverASubcurso()" style="margin-top:20px; padding:10px 20px; background:#2563eb; color:white; border:none; border-radius:10px; cursor:pointer;">Volver a Subcursos</button>
-</div>
-
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-auth.js";
-
-const firebaseConfig = {
-  apiKey:"AIzaSyDAmEVU8J-uk2Yg6bL5n28xbP1771cHGME",
-  authDomain:"neurovap53-cdbcf.firebaseapp.com",
-  projectId:"neurovap53-cdbcf"
-};
-const app = initializeApp(firebaseConfig);
-const auth = getAuth();
-const provider = new GoogleAuthProvider();
-
-const loginBtn = document.getElementById('login-btn');
-const logoutBtn = document.getElementById('logout-btn');
-const userDisplay = document.getElementById('user-display');
-const adminNav = document.getElementById('admin-nav');
-
-loginBtn.addEventListener('click', async ()=>{
-  try{
-    const result = await signInWithPopup(auth, provider);
-    const user = result.user;
-    loginBtn.classList.add('hidden');
-    logoutBtn.classList.remove('hidden');
-    userDisplay.innerText=`Hola, ${user.displayName}`;
-    document.getElementById('login-container').classList.add('hidden');
-
-    if(user.email === "jamesucribanco333@gmail.com"){
-      adminNav.classList.remove('hidden');
-      document.getElementById('admin-panel').classList.remove('hidden');
-    }
-
-    mostrarCursos();
-  }catch(err){alert("Error: "+err.message);}
-});
-
-logoutBtn.addEventListener('click', async ()=>{
-  await signOut(auth);
-  loginBtn.classList.remove('hidden');
-  logoutBtn.classList.add('hidden');
-  adminNav.classList.add('hidden');
-  userDisplay.innerText='';
-  document.getElementById('cursos-container').classList.add('hidden');
-  document.getElementById('admin-panel').classList.add('hidden');
-});
-
-function showSection(id){
-  const sections = ['inicio','cursos-container','horario-container','admin-panel','subcurso-container','semana-container'];
-  sections.forEach(s=>document.getElementById(s).classList.add('hidden'));
-  document.getElementById(id).classList.remove('hidden');
-}
-
-let cursoActual='';
-
-const cursos = {
-  "Morfofisiología 1": ["Semana 1","Semana 2","Semana 3","Semana 4","Semana 5","Semana 6","Semana 7","Semana 8"],
-  "Morfofisiología 2": ["Semana 1","Semana 2","Semana 3","Semana 4","Semana 5","Semana 6","Semana 7","Semana 8"],
-  "Anatomía General": ["Semana 1","Semana 2","Semana 3","Semana 4","Semana 5","Semana 6","Semana 7","Semana 8"],
-  "Biología Celular y Molecular": ["Semana 1","Semana 2","Semana 3","Semana 4","Semana 5","Semana 6","Semana 7","Semana 8"],
-  "Bioquímica": ["Semana 1","Semana 2","Semana 3","Semana 4","Semana 5","Semana 6","Semana 7","Semana 8"]
-};
-
-function mostrarCursos(){
-  const cursosList = document.getElementById('cursos-list');
-  cursosList.innerHTML='';
-  for(const c in cursos){
-    const card = document.createElement('div');
-    card.className='card';
-    card.innerHTML=`<h3>${c}</h3><button onclick="abrirCurso('${c}')">Entrar</button>`;
-    cursosList.appendChild(card);
-  }
-  showSection('cursos-container');
-}
-
-function abrirCurso(curso){
-  cursoActual=curso;
-  const subContainer=document.getElementById('subcurso-container');
-  const title=document.getElementById('subcurso-title');
-  const list=document.getElementById('subcurso-list');
-  list.innerHTML='';
-  title.innerText=`${curso} - Semanas`;
-  cursos[curso].forEach((s,idx)=>{
-    const card=document.createElement('div');
-    card.className='card';
-    card.innerHTML=`<h3>${s}</h3><button onclick="abrirSemana(${idx+1})">Ver contenido</button>`;
-    list.appendChild(card);
-  });
-  showSection('subcurso-container');
-}
-
-function abrirSemana(semana){
-  const semanaContainer=document.getElementById('semana-container');
-  const title=document.getElementById('semana-title');
-  title.innerText=`${cursoActual} - Semana ${semana}`;
-  showSection('semana-container');
-}
-
-function volverACursos(){ mostrarCursos(); }
-function volverASubcurso(){ showSection('subcurso-container'); }
-
-</script>
-</body>
-</html>
-<!-- ================= PARTE 2: CURSOS Y SUBCURSOS ================= -->
-<div id="cursos-container" class="container hidden">
-  <h2>Cursos Disponibles</h2>
-  <div id="cursos-list" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:20px;"></div>
-</div>
-
-<div id="subcurso-container" class="container hidden">
-  <h2 id="subcurso-title"></h2>
-  <div id="subcurso-list" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:20px;"></div>
-  <button onclick="volverACursos()" style="margin-top:20px; padding:10px 20px; background:#2563eb; color:white; border:none; border-radius:10px; cursor:pointer;">Volver a Cursos</button>
-</div>
-
-<div id="semana-container" class="container hidden">
-  <h2 id="semana-title"></h2>
-  <div id="semana-list" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:20px;"></div>
-  <button onclick="volverASubcurso()" style="margin-top:20px; padding:10px 20px; background:#2563eb; color:white; border:none; border-radius:10px; cursor:pointer;">Volver a Subcursos</button>
-</div>
-
-<script>
-let cursoActual = '';
-let subcursoActual = '';
-
-// ================== CONTENIDO DE CURSOS ==================
-const cursos = {
-  "Morfofisiología 1": {
-    semanas: [
-      {sem:1, fisiologia:"Membrana celular, receptores, canales, transporte y potenciales de membrana/acción. Regularización y señalización celular.", histologia:"Procesamiento histológico, membrana celular, organelas y núcleo. Desarrollo embrionario del esqueleto y tejido cartilaginoso."},
-      {sem:2, fisiologia:"Transmisión de señales celulares. Composición y regulación del medio interno, ósmosis y líquidos corporales.", histologia:"Tejido óseo y osificación. Origen embrionario del sistema muscular y Tejido muscular I."},
-      {sem:3, fisiologia:"Neurotransmisores, receptores y sinapsis. Contracción y excitación muscular.", histologia:"Tejido muscular II. Neurohistogénesis y tejido nervioso."},
-      {sem:4, fisiologia:"Metabolismo óseo. Evaluación Parcial.", histologia:"Introducción al sistema vascular. Evaluación Parcial."},
-      {sem:5, fisiologia:"Sangre y sus propiedades, hematopoyesis, eritropoyesis y hemograma. Fisiología eritrocitaria I (membrana, metabolismo y hemoglobina).", histologia:"Tejido epitelial de revestimiento. Tejido epitelial glandular."},
-      {sem:6, fisiologia:"Fisiología eritrocitaria II (hierro, Vit B12 y B9). Fisiología plaquetaria, hemostasia y fibrinólisis.", histologia:"Matriz extracelular, tejido conectivo y tejido adiposo. Tejido sanguíneo y hematopoyesis."},
-      {sem:7, fisiologia:"Generalidades del sistema inmunológico, respuesta innata y fagocitosis. Inmunidad adquirida, linfocitos T y B, y grupos sanguíneos.", histologia:"Tejido linfoide y MALT. Órganos linfoides."},
-      {sem:8, fisiologia:"Respuesta inflamatoria, tolerancia e hipersensibilidad. Evaluación Final.", histologia:"Sistema tegumentario y sus anexos. Evaluación Final."},
-    ]
-  },
-  "Morfofisiología 2": {
-    subcursos: {
-      "Anatomía": [
-        {sem:1, tema:"Pared torácica, región mamaria y radioanatomía de tórax."},
-        {sem:2, tema:"Mediastino superior, anterior y medio (pericardio y morfología externa)."},
-        {sem:3, tema:"Mediastino medio II (morfología interna y conducción) y radioanatomía cardiaca."},
-        {sem:4, tema:"Mediastino posterior y radioanatomía del mediastino posterior. Examen Parcial."},
-        {sem:5, tema:"Pulmones (segmentación e inervación) y radioanatomía pulmonar."},
-        {sem:6, tema:"Columna vertebral dorsal y músculos paravertebrales."},
-        {sem:7, tema:"Radioanatomía de columna torácica, anatomía del riñón y vías urinarias."},
-        {sem:8, tema:"Radioanatomía del riñón y vías urinarias. Examen Final."},
-      ],
-      "Fisiología": [
-        {sem:1, tema:"Hemodinamia y electrofisiología cardiaca."},
-        {sem:2, tema:"Electrocardiograma I, contracción y ciclo cardiaco."},
-        {sem:3, tema:"Presión arterial, gasto cardiaco, retorno venoso y circulaciones especiales."},
-        {sem:4, tema:"Mecánica respiratoria, volúmenes y capacidades. Examen Parcial."},
-        {sem:5, tema:"Intercambio de gases, transporte de O₂/CO₂, control respiratorio y circulación pulmonar."},
-        {sem:6, tema:"Estructura renal, aclaramiento, filtración glomerular, reabsorción y secreción renal."},
-        {sem:7, tema:"Regulación de electrolitos, volumen, equilibrio ácido-base y diuréticos."},
-        {sem:8, tema:"Fisiología de la aviación, grandes alturas y buceo profundo. Examen Final."},
-      ],
-      "Histología": [
-        {sem:1, tema:"Embriología cardiovascular e histología del corazón y válvulas."},
-        {sem:2, tema:"Histología vascular (arterias, capilares, venas y linfáticos)."},
-        {sem:3, tema:"Integración de embriología e histología cardíaca."},
-        {sem:4, tema:"Integración de histología vascular. Examen Parcial."},
-        {sem:5, tema:"Embriología e histología del aparato respiratorio (I y II)."},
-        {sem:6, tema:"Embriología urinaria e histología del riñón y la pelvis renal."},
-        {sem:7, tema:"Histología de uréter, vejiga y uretra; malformaciones congénitas renales."},
-        {sem:8, tema:"Histopatología renal y de las vías urinarias. Examen Final."},
-      ]
-    }
-  },
-  "Anatomía General": {
-    semanas: [
-      {sem:1, tema:"Hombro, Axila, Brazo y Codo."},
-      {sem:2, tema:"Antebrazo, Muñeca y Mano."},
-      {sem:3, tema:"Región Glútea, Cadera, Muslo y Rodilla."},
-      {sem:4, tema:"Pierna, Región Poplítea, Tobillo y Pie."},
-      {sem:5, tema:"Vértebras cervicales, regiones y triángulos del cuello."},
-      {sem:6, tema:"Vísceras del cuello, Cabeza ósea (Neuro/Viscerocráneo)."},
-      {sem:7, tema:"Músculos mímica/masticación y Regiones profundas de la cara."},
-      {sem:8, tema:"Cavidad oral, fosas nasales y paredes de tronco."},
-    ]
-  },
-  "Biología Celular y Molecular": {
-    subcursos:{
-      "Teoría":[
-        {sem:1, tema:"Niveles de organización, Bioelementos, Enlaces químicos y Agua. Glúcidos y Lípidos."},
-        {sem:2, tema:"Aminoácidos, Proteínas y Enzimas. Dogma Central: Estructura del ADN y ARN."},
-        {sem:3, tema:"La Célula: Evolución (Proca vs. Euca) y Membrana Celular. Transporte de membrana (Pasivo/Activo)."},
-        {sem:4, tema:"Citoesqueleto, Matriz Extracelular y Uniones celulares. Evaluación Parcial."},
-        {sem:5, tema:"Sistema de Endomembranas (RER, REL, Golgi) y Digestión Celular (Lisosomas/Peroxisomas). Mitocondrias y Bioenergética."},
-        {sem:6, tema:"Núcleo Celular, Cromatina y Replicación del ADN. Transcripción y Procesamiento de ARN."},
-        {sem:7, tema:"Traducción (Síntesis de Proteínas). Ciclo Celular, Mitosis, Meiosis y Apoptosis."},
-        {sem:8, tema:"Señalización celular, Introducción al Cáncer y Genética Molecular. Evaluación Final."},
-      ],
-      "Laboratorio":[
-        {sem:1, tema:"Normas de Bioseguridad y Manejo del Microscopio. Identificación de Glúcidos y Lípidos."},
-        {sem:2, tema:"Identificación de Proteínas y Enzimas. Extracción de ADN."},
-        {sem:3, tema:"Célula Procariota y Eucariota. Permeabilidad de la Membrana Celular (Diálisis)."},
-        {sem:4, tema:"Diversidad Celular y Diferenciación. Evaluación Parcial."},
-        {sem:5, tema:"Fraccionamiento Celular. Respiración Celular (Fermentación)."},
-        {sem:6, tema:"Observación de Núcleo y Corpúsculo de Barr. Soluciones y Diluciones."},
-        {sem:7, tema:"Síntesis de Proteínas (Simulación). Mitosis y Meiosis (Células vegetales/animales)."},
-        {sem:8, tema:"Tecnología del ADN Recombinante (Simulación). Evaluación Final."},
-      ]
-    }
-  },
-  "Bioquímica": {
-    subcursos:{
-      "Teoría":[
-        {sem:1, tema:"Bioelementos y Biomoléculas: Agua, pH, soluciones buffer, bioelementos y vitaminas. Estructuras supramoleculares."},
-        {sem:2, tema:"Aminoácidos y Proteínas: Estructura, clasificación y propiedades. Plegamiento y desnaturalización."},
-        {sem:3, tema:"Enzimas y Cinética: Energía de activación y factores que afectan la actividad enzimática. Evaluación Continua 1."},
-        {sem:4, tema:"Metabolismo de Carbohidratos: Glicólisis, ciclo de la urea y degradación de aminoácidos. Evaluación Parcial."},
-        {sem:5, tema:"Glucógeno y Bioenergética: Síntesis/degradación de glucógeno, ciclo de Krebs y fosforilación oxidativa."},
-        {sem:6, tema:"Metabolismo de Lípidos: Lipogénesis, beta-oxidación y síntesis de triglicéridos. Evaluación Continua 2."},
-        {sem:7, tema:"Colesterol y Ácidos Nucleicos: Síntesis de colesterol, estructura de ADN/ARN y replicación."},
-        {sem:8, tema:"Síntesis de Proteínas: Transcripción y traducción. Presentación de situación clínica. Evaluación Final."},
-      ],
-      "Laboratorio":[
-        {sem:1, tema:"Espectrofotometría: Principios de bioseguridad y determinación de concentración de compuestos."},
-        {sem:2, tema:"Proteínas totales: Determinación de proteínas totales, albúmina y globulinas en suero."},
-        {sem:3, tema:"Degradación de proteínas y factores que afectan la actividad enzimática."},
-        {sem:4, tema:"Concentración de urea: Determinación en suero e identificación de biomoléculas. Evaluación Parcial."},
-        {sem:5, tema:"Metabolismo en ayuno/postprandial: Evaluación de rutas metabólicas en condiciones de alimentación."},
-        {sem:6, tema:"Digestión y Hidrólisis: Digestión enzimática del almidón e hidrólisis de lípidos."},
-        {sem:7, tema:"Perfil Lipídico: Determinación de triglicéridos, colesterol y lipoproteínas en suero."},
-        {sem:8, tema:"Ácido Úrico y ADN: Extracción de ADN y determinación de ácido úrico en suero. Evaluación Final."},
-      ]
-    }
-  };
-
-// ================== FUNCIONES DE NAVEGACIÓN ==================
-function mostrarCursos(){
-  document.getElementById('cursos-container').classList.remove('hidden');
-  document.getElementById('subcurso-container').classList.add('hidden');
-  document.getElementById('semana-container').classList.add('hidden');
-
-  const cursosList = document.getElementById('cursos-list');
-  cursosList.innerHTML = '';
-  for(const curso in cursos){
-    const card = document.createElement('div');
-    card.className='card';
-    card.innerHTML = `<h3>${curso}</h3>
-      <button onclick="abrirCurso('${curso}')">Entrar al curso</button>`;
-    cursosList.appendChild(card);
-  }
-}
-
-function abrirCurso(curso){
-  cursoActual = curso;
-  const tieneSubcursos = cursos[curso].subcursos !== undefined;
-  document.getElementById('cursos-container').classList.add('hidden');
-  if(tieneSubcursos){
-    mostrarSubcursos(curso);
-  } else {
-    mostrarSemanas(curso);
-  }
-}
-
-function mostrarSubcursos(curso){
-  document.getElementById('subcurso-container').classList.remove('hidden');
-  document.getElementById('subcurso-title').innerText = `Subcursos de ${curso}`;
-  const subcursoList = document.getElementById('subcurso-list');
-  subcursoList.innerHTML='';
-  const subcursos = Object.keys(cursos[curso].subcursos);
-  subcursos.forEach(sc=>{
-    const card = document.createElement('div');
-    card.className='card';
-    card.innerHTML=`<h3>${sc}</h3><button onclick="abrirSubcurso('${sc}')">Ver semanas</button>`;
-    subcursoList.appendChild(card);
-  });
-}
-
-function abrirSubcurso(subcurso){
-  subcursoActual = subcurso;
-  document.getElementById('subcurso-container').classList.add('hidden');
-  mostrarSemanas(cursoActual, subcurso);
-}
-
-function volverACursos(){ mostrarCursos(); }
-function volverASubcurso(){
-  document.getElementById('semana-container').classList.add('hidden');
-  mostrarSubcursos(cursoActual);
-}
-</script>
-<!-- ================= PARTE 3: SEMANAS Y CONTENIDO ================= -->
-<script>
-// ================== FUNCIONES PARA MOSTRAR SEMANAS ==================
-function mostrarSemanas(curso, subcurso){
-  document.getElementById('semana-container').classList.remove('hidden');
-  const semanaTitle = document.getElementById('semana-title');
-  const semanaList = document.getElementById('semana-list');
-  semanaList.innerHTML='';
-
-  let semanas = [];
-  if(subcurso){
-    semanas = cursos[curso].subcursos[subcurso];
-  } else {
-    semanas = cursos[curso].semanas;
-  }
-
-  semanaTitle.innerText = subcurso ? `Semanas de ${subcurso}` : `Semanas de ${curso}`;
-
-  semanas.forEach((s,i)=>{
-    const card = document.createElement('div');
-    card.className='card';
-    let contenido = '';
-    if(s.fisiologia && s.histologia){ // Para Morfofisiología 1
-      contenido = `<p><b>Fisiología:</b> ${s.fisiologia}</p>
-                   <p><b>Histología:</b> ${s.histologia}</p>`;
-    } else if(s.tema){
-      contenido = `<p>${s.tema}</p>`;
-    }
-    card.innerHTML = `<h3>Semana ${s.sem || i+1}</h3>
-                      ${contenido}
-                      <button onclick="abrirRecurso('${curso}','${subcurso || ''}',${i},'video')">📹 Ver Grabación</button>
-                      <button onclick="abrirRecurso('${curso}','${subcurso || ''}',${i},'pdf')">📄 Ver PDF</button>
-                      <button onclick="abrirFormulario('${curso}','${subcurso || ''}',${i})">📝 Apliquemos lo aprendido</button>`;
-    semanaList.appendChild(card);
-  });
-}
-
-// ================== FUNCIONES DE RECURSOS ==================
-function abrirRecurso(curso, subcurso, index, tipo){
-  const semanas = subcurso ? cursos[curso].subcursos[subcurso] : cursos[curso].semanas;
-  let mensaje = `Curso: ${curso}\n`;
-  if(subcurso) mensaje += `Subcurso: ${subcurso}\n`;
-  mensaje += `Semana: ${semanas[index].sem || index+1}\n`;
-  mensaje += tipo === 'video' ? 'Aquí se abriría la grabación.' : 'Aquí se abriría el PDF.';
-  alert(mensaje);
-}
-
-// ================== FORMULARIO “APLIQUEMOS LO APRENDIDO” ==================
-let respuestasAlumno = {}; // Guardar respuestas de cada alumno
-
-function abrirFormulario(curso, subcurso, index){
-  const semanas = subcurso ? cursos[curso].subcursos[subcurso] : cursos[curso].semanas;
-  const semana = semanas[index];
-  const formularioHtml = `
-    <div class="container">
-      <h2>Formulario: Semana ${semana.sem || index+1}</h2>
-      <p>Curso: ${curso} ${subcurso ? '| Subcurso: '+subcurso : ''}</p>
-      <label>Pregunta 1: ¿Qué aprendiste esta semana?</label><br>
-      <input type="text" id="resp1" style="width:100%; padding:8px; margin-bottom:10px;"><br>
-      <label>Pregunta 2: ¿Qué fue más difícil?</label><br>
-      <input type="text" id="resp2" style="width:100%; padding:8px; margin-bottom:10px;"><br>
-      <button onclick="guardarFormulario('${curso}','${subcurso || ''}',${index})">Enviar Respuestas</button>
-      <button onclick="cerrarFormulario()" style="margin-left:10px; background:#555;">Cerrar</button>
-    </div>
-  `;
-  const semanaList = document.getElementById('semana-list');
-  semanaList.innerHTML = formularioHtml;
-}
-
-function guardarFormulario(curso, subcurso, index){
-  const resp1 = document.getElementById('resp1').value;
-  const resp2 = document.getElementById('resp2').value;
-  const key = `${curso}-${subcurso}-${index}`;
-  respuestasAlumno[key] = {resp1, resp2};
-  alert('Respuestas guardadas correctamente');
-  mostrarSemanas(curso, subcurso);
-}
-
-function cerrarFormulario(){
-  mostrarSemanas(cursoActual, subcursoActual);
-}
-
-// ================== ADMIN: VER AVANCE ==================
-function verAvance(){
-  if(!isAdmin) return alert('Solo administradores pueden ver el avance');
-  let texto = 'Avance de los alumnos:\n';
-  for(const key in respuestasAlumno){
-    texto += `${key}: \nRespuesta 1: ${respuestasAlumno[key].resp1}\nRespuesta 2: ${respuestasAlumno[key].resp2}\n\n`;
-  }
-  if(Object.keys(respuestasAlumno).length===0) texto+='No hay respuestas aún';
-  alert(texto);
-}
-</script>
-<!-- ================= PARTE 4: ADMINISTRACIÓN ================= -->
-<script>
-// ================== CONFIGURACIÓN ADMIN ==================
-const isAdmin = auth.currentUser && auth.currentUser.email === 'jamesucribanco333@gmail.com';
-
-// Función para mostrar panel de admin
-function mostrarPanelAdmin(){
-  if(!isAdmin) return;
-  
-  const container = document.getElementById('cursos-list');
-  container.innerHTML = '<h2>Panel de Administrador</h2>';
-
-  // Botones de acción
-  const btnAgregarCurso = document.createElement('button');
-  btnAgregarCurso.innerText = '➕ Agregar Curso';
-  btnAgregarCurso.style.background = '#16a34a';
-  btnAgregarCurso.onclick = mostrarFormularioAgregarCurso;
-  container.appendChild(btnAgregarCurso);
-
-  const btnVerAvance = document.createElement('button');
-  btnVerAvance.innerText = '📊 Ver Avance Alumnos';
-  btnVerAvance.style.background = '#2563eb';
-  btnVerAvance.style.marginLeft='10px';
-  btnVerAvance.onclick = verAvance;
-  container.appendChild(btnVerAvance);
-
-  // Mostrar lista de cursos actuales
-  mostrarCursos();
-}
-
-// ================== FORMULARIO AGREGAR CURSO ==================
-function mostrarFormularioAgregarCurso(){
-  const container = document.getElementById('cursos-list');
-  container.innerHTML = `
-    <h2>Agregar Nuevo Curso</h2>
-    <label>Nombre del Curso:</label><br>
-    <input type="text" id="nuevo-curso-nombre" style="width:100%; padding:8px; margin-bottom:10px;"><br>
-    <label>Subcursos (separados por coma, opcional):</label><br>
-    <input type="text" id="nuevo-curso-subcursos" style="width:100%; padding:8px; margin-bottom:10px;"><br>
-    <button onclick="agregarCurso()">Guardar Curso</button>
-    <button onclick="mostrarPanelAdmin()" style="margin-left:10px; background:#555;">Cancelar</button>
-  `;
-}
-
-// ================== FUNCION AGREGAR CURSO ==================
-function agregarCurso(){
-  const nombre = document.getElementById('nuevo-curso-nombre').value.trim();
-  const subcursosInput = document.getElementById('nuevo-curso-subcursos').value.trim();
-  if(!nombre) return alert('Debes ingresar un nombre de curso');
-  
-  if(subcursosInput){
-    const subcursosArr = subcursosInput.split(',').map(s=>s.trim());
-    cursos[nombre] = {subcursos:{}};
-    subcursosArr.forEach(sc => cursos[nombre].subcursos[sc]=[]);
-  } else {
-    cursos[nombre] = {semanas:[]};
-  }
-  alert(`Curso "${nombre}" agregado correctamente`);
-  mostrarPanelAdmin();
-}
-
-// ================== ADMIN: AGREGAR SEMANA, GRABACION, PDF Y PREGUNTAS ==================
-function mostrarFormularioAgregarSemana(curso, subcurso=null){
-  const semanaList = document.getElementById('semana-list');
-  semanaList.innerHTML = `
-    <h2>Agregar Semana</h2>
-    <label>Contenido Fisiología/Teoría:</label><br>
-    <textarea id="semana-fisiologia" style="width:100%; height:60px; margin-bottom:10px;"></textarea><br>
-    <label>Contenido Histología/Laboratorio:</label><br>
-    <textarea id="semana-histologia" style="width:100%; height:60px; margin-bottom:10px;"></textarea><br>
-    <label>URL Grabación:</label><br>
-    <input type="text" id="semana-video" style="width:100%; margin-bottom:10px;"><br>
-    <label>URL PDF:</label><br>
-    <input type="text" id="semana-pdf" style="width:100%; margin-bottom:10px;"><br>
-    <button onclick="guardarSemana('${curso}','${subcurso || ''}')">Guardar Semana</button>
-    <button onclick="mostrarPanelAdmin()" style="margin-left:10px; background:#555;">Cancelar</button>
-  `;
-}
-
-function guardarSemana(curso, subcurso){
-  const f = document.getElementById('semana-fisiologia').value.trim();
-  const h = document.getElementById('semana-histologia').value.trim();
-  const v = document.getElementById('semana-video').value.trim();
-  const p = document.getElementById('semana-pdf').value.trim();
-
-  const semanaObj = {sem:(subcurso ? cursos[curso].subcursos[subcurso].length+1 : cursos[curso].semanas.length+1)};
-  if(f) semanaObj.fisiologia=f;
-  if(h) semanaObj.histologia=h;
-  if(v) semanaObj.video=v;
-  if(p) semanaObj.pdf=p;
-
-  if(subcurso){
-    cursos[curso].subcursos[subcurso].push(semanaObj);
-  } else {
-    cursos[curso].semanas.push(semanaObj);
-  }
-  alert('Semana agregada correctamente');
-  mostrarPanelAdmin();
-}
-
-// ================== ADMIN: VER RESPUESTAS ==================
-function verRespuestasAlumno(curso, subcurso){
-  if(!isAdmin) return alert('Solo admin puede ver respuestas');
-  let texto = `Respuestas de alumnos - ${curso} ${subcurso? '| Subcurso: '+subcurso : ''}\n`;
-  for(const key in respuestasAlumno){
-    if(key.includes(curso) && (!subcurso || key.includes(subcurso))){
-      texto += `${key}:\n  Pregunta 1: ${respuestasAlumno[key].resp1}\n  Pregunta 2: ${respuestasAlumno[key].resp2}\n\n`;
-    }
-  }
-  alert(texto || 'No hay respuestas aún');
-}
-
-// ================== SOBRE CARGA DEL LOGIN ==================
-onAuthStateChanged(auth, async (user) => {
-  if(user){
-    if(user.email === 'jamesucribanco333@gmail.com'){
-      mostrarPanelAdmin();
-    } else {
-      mostrarCursos();
-    }
-  } else {
-    // Usuario no logueado
-    document.getElementById('cursos-list').innerHTML='';
-  }
-});
-</script>
-<!-- ================== PARTE 6: ADMIN Y FORMULARIOS ================== -->
-<!-- Contenedor de administración -->
-<div id="admin-container" class="container hidden">
+<!-- ================= ADMIN ================= -->
+<section id="admin" class="container hidden">
   <h2>Panel de Administración</h2>
-  
-  <p>Bienvenido, administrador. Aquí puedes gestionar cursos, subcursos, semanas, grabaciones, PDFs y formularios.</p>
+  <p>Solo visible para el administrador.</p>
+  <ul>
+    <li>✔ Gestión de cursos</li>
+    <li>✔ Control de contenidos</li>
+    <li>✔ Plataforma privada</li>
+  </ul>
+</section>
 
-  <!-- Agregar contenido a un curso -->
-  <div id="admin-cursos" class="card">
-    <h3>Agregar/Editar contenido de un curso</h3>
-    <label for="admin-curso-select">Selecciona un curso:</label>
-    <select id="admin-curso-select">
-      <option value="">--Selecciona curso--</option>
-    </select>
-    <br><br>
+<!-- ================= SCRIPTS ================= -->
+<script src="auth.js"></script>
+<script src="ui.js"></script>
+<script src="courses.js"></script>
 
-    <label for="admin-subcurso-select">Selecciona subcurso (si aplica):</label>
-    <select id="admin-subcurso-select">
-      <option value="">--Selecciona subcurso--</option>
-    </select>
-    <br><br>
-
-    <label for="admin-semana">Semana:</label>
-    <input type="number" id="admin-semana" min="1" max="8">
-    <br><br>
-
-    <label for="admin-grabacion">URL Grabación:</label>
-    <input type="text" id="admin-grabacion" placeholder="https://...">
-    <br><br>
-
-    <label for="admin-pdf">URL PDF:</label>
-    <input type="text" id="admin-pdf" placeholder="https://...">
-    <br><br>
-
-    <label for="admin-aplicar">Preguntas (JSON array):</label>
-    <textarea id="admin-aplicar" placeholder='[{"pregunta":"¿Qué es...?","opciones":["a","b","c"],"correcta":"a"}]' rows="5" style="width:100%;"></textarea>
-    <br><br>
-
-    <button onclick="guardarContenidoAdmin()">Guardar contenido</button>
-  </div>
-
-  <!-- Ver respuestas y avance de alumnos -->
-  <div id="admin-avance" class="card" style="margin-top:30px;">
-    <h3>Avance y respuestas de alumnos</h3>
-    <div id="admin-respuestas">
-      <!-- Tabla de progreso se generará aquí -->
-    </div>
-  </div>
-</div>
-
-<script>
-  // Verificar si usuario es admin
-  onAuthStateChanged(auth, async (user) => {
-    if(user && user.email === "jamesucribanco333@gmail.com") {
-      document.getElementById('admin-container').classList.remove('hidden');
-    } else {
-      document.getElementById('admin-container').classList.add('hidden');
-    }
-  });
-
-  // Llenar selects de cursos y subcursos
-  const cursoSelect = document.getElementById('admin-curso-select');
-  const subcursoSelect = document.getElementById('admin-subcurso-select');
-
-  function actualizarCursosAdmin() {
-    cursoSelect.innerHTML = '<option value="">--Selecciona curso--</option>';
-    for(const curso in cursos){
-      const option = document.createElement('option');
-      option.value = curso;
-      option.innerText = curso;
-      cursoSelect.appendChild(option);
-    }
-    subcursoSelect.innerHTML = '<option value="">--Selecciona subcurso--</option>';
-  }
-  actualizarCursosAdmin();
-
-  cursoSelect.addEventListener('change', () => {
-    const curso = cursoSelect.value;
-    subcursoSelect.innerHTML = '<option value="">--Selecciona subcurso--</option>';
-    if(cursos[curso] && cursos[curso].subcursos){
-      Object.keys(cursos[curso].subcursos).forEach(sc => {
-        const option = document.createElement('option');
-        option.value = sc;
-        option.innerText = sc;
-        subcursoSelect.appendChild(option);
-      });
-    }
-  });
-
-  // Guardar contenido desde admin
-  function guardarContenidoAdmin() {
-    const curso = cursoSelect.value;
-    const subcurso = subcursoSelect.value || null;
-    const semana = parseInt(document.getElementById('admin-semana').value);
-    const grabacion = document.getElementById('admin-grabacion').value;
-    const pdf = document.getElementById('admin-pdf').value;
-    const preguntasJSON = document.getElementById('admin-aplicar').value;
-
-    if(!curso || !semana) { alert("Selecciona curso y semana"); return; }
-
-    let semanaObj;
-    if(subcurso){
-      semanaObj = cursos[curso].subcursos[subcurso].find(s => s.sem === semana);
-      if(!semanaObj){
-        semanaObj = {sem: semana};
-        cursos[curso].subcursos[subcurso].push(semanaObj);
-      }
-    } else {
-      semanaObj = cursos[curso].semanas.find(s => s.sem === semana);
-      if(!semanaObj){
-        semanaObj = {sem: semana};
-        cursos[curso].semanas.push(semanaObj);
-      }
-    }
-
-    if(grabacion) semanaObj.grabacion = grabacion;
-    if(pdf) semanaObj.pdf = pdf;
-    if(preguntasJSON){
-      try {
-        semanaObj.aplicar = JSON.parse(preguntasJSON);
-      } catch(e){
-        alert("JSON de preguntas inválido");
-        return;
-      }
-    }
-
-    alert("Contenido guardado exitosamente");
-  }
-
-  // Función para ver respuestas de alumnos (simulación)
-  function mostrarAvanceAlumnos() {
-    const container = document.getElementById('admin-respuestas');
-    container.innerHTML = "";
-    // Simulación: sacamos los datos de Firestore
-    getDocs(collection(db, 'usuarios')).then(snapshot => {
-      snapshot.forEach(doc => {
-        const data = doc.data();
-        const div = document.createElement('div');
-        div.className = "card";
-        div.innerHTML = `<h4>${data.nombre} (${data.email})</h4>`;
-        if(data.respuestas){
-          const table = document.createElement('table');
-          table.style.width = "100%";
-          table.style.borderCollapse = "collapse";
-          table.innerHTML = "<tr style='background:#2563eb; color:white;'><th>Curso</th><th>Semana</th><th>Pregunta</th><th>Respuesta</th><th>Correcta</th></tr>";
-          data.respuestas.forEach(r => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `<td>${r.curso}</td><td>${r.semana}</td><td>${r.pregunta}</td><td>${r.respuesta}</td><td>${r.correcta}</td>`;
-            tr.style.borderBottom = '1px solid #ddd';
-            table.appendChild(tr);
-          });
-          div.appendChild(table);
-        } else {
-          div.innerHTML += "<p>No hay respuestas registradas</p>";
-        }
-        container.appendChild(div);
-      });
-    });
-  }
-
-  // Llamar función cada vez que se abra admin
-  onAuthStateChanged(auth, user => {
-    if(user && user.email === "jamesucribanco333@gmail.com"){
-      mostrarAvanceAlumnos();
-    }
-  });
-</script>
 </body>
 </html>
+/* ===== RESET ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+body {
+  background: linear-gradient(135deg, #fde2d8, #e6d9ff);
+  min-height: 100vh;
+  color: #333;
+}
+
+/* ===== UTILIDADES ===== */
+.hidden {
+  display: none;
+}
+
+.center {
+  text-align: center;
+}
+
+button {
+  background: #b48cff;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+button:hover {
+  background: #9c6bff;
+}
+
+/* ===== HEADER ===== */
+.header {
+  background: white;
+  padding: 12px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo {
+  width: 45px;
+  height: 45px;
+  object-fit: contain;
+}
+
+.header h1 {
+  font-size: 1.4rem;
+  color: #7a4cff;
+}
+
+.nav button {
+  margin-left: 10px;
+}
+
+/* ===== SECCIONES ===== */
+.container {
+  padding: 30px 20px;
+}
+
+.container h2 {
+  margin-bottom: 15px;
+  color: #7a4cff;
+}
+
+/* ===== CARDS ===== */
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+  margin: 20px auto;
+  max-width: 400px;
+}
+
+.card h3, .card h4 {
+  color: #7a4cff;
+  margin-bottom: 8px;
+}
+
+.card p {
+  margin-bottom: 10px;
+}
+
+.card a {
+  display: inline-block;
+  margin-top: 6px;
+  color: #b48cff;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.card a:hover {
+  text-decoration: underline;
+}
+
+/* ===== GRID ===== */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 20px;
+}
+
+/* ===== LOGIN ===== */
+#login {
+  margin-top: 40px;
+}
+
+/* ===== VOLVER ===== */
+.volver {
+  margin-top: 20px;
+  background: #ff9f7f;
+}
+
+.volver:hover {
+  background: #ff855f;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 600px) {
+  .header {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .nav button {
+    margin: 5px 0;
+  }
+}
+// ================= FIREBASE CONFIG =================
+const firebaseConfig = {
+  apiKey: "PEGA_AQUI_TU_APIKEY",
+  authDomain: "TU_PROYECTO.firebaseapp.com",
+  projectId: "TU_PROYECTO"
+};
+
+// ================= INIT =================
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const provider = new firebase.auth.GoogleAuthProvider();
+
+// ================= ELEMENTOS =================
+const loginBtn = document.getElementById("loginBtn");
+const logoutBtn = document.getElementById("logoutBtn");
+const adminBtn = document.getElementById("adminBtn");
+
+// 👑 CORREO ADMIN (EL TUYO)
+const ADMIN_EMAIL = "tu_correo@gmail.com";
+
+// ================= LOGIN =================
+loginBtn.onclick = () => {
+  auth.signInWithPopup(provider)
+    .then(() => alert("Sesión iniciada"))
+    .catch(err => alert(err.message));
+};
+
+// ================= LOGOUT =================
+logoutBtn.onclick = () => {
+  auth.signOut();
+};
+
+// ================= ESTADO =================
+auth.onAuthStateChanged(user => {
+  if (user) {
+    loginBtn.classList.add("hidden");
+    logoutBtn.classList.remove("hidden");
+
+    if (user.email === ADMIN_EMAIL) {
+      adminBtn.classList.remove("hidden");
+    }
+  } else {
+    loginBtn.classList.remove("hidden");
+    logoutBtn.classList.add("hidden");
+    adminBtn.classList.add("hidden");
+  }
+});
