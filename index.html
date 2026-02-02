@@ -6,117 +6,112 @@
   <title>Neurova P53 - Plataforma Médica</title>
   <style>
     :root { --primary: #1e40af; --accent: #3b82f6; --bg: #f8fafc; --white: #ffffff; }
-    body { margin:0; font-family:'Segoe UI', Roboto, sans-serif; background: var(--bg); color: #1e293b; line-height: 1.5; }
-    header { background: var(--white); border-bottom: 2px solid #e2e8f0; padding: 15px 30px; display: flex; align-items: center; justify-content: space-between; position: sticky; top:0; z-index: 1000; }
-    .logo-container { display: flex; align-items: center; gap: 12px; }
-    .logo-circle { width: 35px; height: 35px; background: var(--primary); border-radius: 50%; }
+    body { margin:0; font-family:'Segoe UI', system-ui, sans-serif; background: var(--bg); color: #1e293b; }
+    header { background: var(--white); border-bottom: 2px solid #e2e8f0; padding: 15px 40px; display: flex; align-items: center; justify-content: space-between; position: sticky; top:0; z-index: 1000; }
+    
+    .logo-container { display: flex; align-items: center; gap: 12px; cursor: pointer; }
+    .logo-img { width: 45px; height: 45px; border-radius: 10px; background: var(--primary); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 24px; border: 2px solid #bfdbfe; }
+    
     nav a { margin-left: 20px; text-decoration: none; color: #64748b; font-weight: 600; cursor: pointer; }
     .container { max-width: 1100px; margin: 30px auto; padding: 0 20px; }
-    .card { background: var(--white); border-radius: 15px; padding: 25px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 20px; border: 1px solid #f1f5f9; }
+    .card { background: var(--white); border-radius: 15px; padding: 25px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 20px; border: 1px solid #e2e8f0; }
     .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
-    button { background: var(--primary); color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; }
-    button:disabled { background: #cbd5e1; cursor: not-allowed; }
+    
+    button { background: var(--primary); color: white; border: none; padding: 10px 18px; border-radius: 8px; cursor: pointer; font-weight: 600; }
+    .btn-admin { background: #f59e0b; margin-top: 10px; }
     .hidden { display: none; }
-    .semana-item { background: white; border-radius: 12px; padding: 20px; margin-bottom: 15px; border-left: 6px solid var(--accent); box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-    .tema-titulo { font-weight: bold; color: #1e293b; display: block; font-size: 1.1em; }
-    .tema-desc { font-size: 0.95em; color: #64748b; display: block; margin-top: 5px; }
-    .btn-group { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
-    .btn-rec { background: #f1f5f9; color: var(--primary); border: 1px solid #e2e8f0; padding: 8px 14px; border-radius: 6px; font-size: 12px; }
-    .admin-zone { background: #fff7ed; border: 2px dashed #f97316; padding: 20px; border-radius: 12px; margin-bottom: 30px; }
+    
+    .semana-card { border-left: 6px solid var(--accent); padding: 15px; margin-bottom: 15px; background: white; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+    .tema-titulo { font-weight: bold; display: block; color: #1e3a8a; }
+    .tema-detalle { font-size: 0.9em; color: #64748b; font-style: italic; }
   </style>
 </head>
 <body>
 <header>
-  <div class="logo-container">
-    <div class="logo-circle"></div>
-    <h1 style="font-size: 20px; margin:0;">NEUROVA <span style="color:var(--accent)">P53</span></h1>
+  <div class="logo-container" onclick="nav('inicio')">
+    <div class="logo-img">N</div>
+    <h1 style="font-size: 22px; margin:0; letter-spacing:-1px;">NEUROVA <span style="color:var(--accent)">P53</span></h1>
   </div>
   <nav>
     <a onclick="nav('inicio')">Inicio</a>
-    <a onclick="nav('cursos-container')">Cursos</a>
-    <a id="admin-nav" class="hidden" onclick="nav('admin-panel')">Panel James</a>
+    <a onclick="nav('cursos-container')">Mis Cursos</a>
+    <a id="link-admin" class="hidden" onclick="nav('admin-respuestas')">Panel James</a>
   </nav>
 </header>
 
+<input type="file" id="subir-pdf-input" class="hidden" accept="application/pdf">
+
 <div id="inicio" class="container">
-  <div class="card" style="text-align:center; padding: 60px 20px;">
-    <h2>Plataforma de Estudio Neurova</h2>
-    <div id="login-area">
-      <p>Bienvenido. Por favor, identifícate para continuar.</p>
-      <button onclick="login()" style="font-size: 1.1em; padding: 15px 40px;">Entrar con Google</button>
+  <div class="card" style="text-align:center; padding: 50px;">
+    <h2>Plataforma Educativa de Medicina</h2>
+    <div id="login-section">
+      <button onclick="login()" style="padding:15px 40px; font-size:18px;">Ingresar con Google</button>
     </div>
-    <div id="user-info" class="hidden">
-      <h3 id="welcome-msg"></h3>
+    <div id="user-section" class="hidden">
+      <h3 id="user-greeting"></h3>
       <button onclick="logout()" style="background:#ef4444;">Cerrar Sesión</button>
     </div>
   </div>
 </div>
 
 <div id="cursos-container" class="container hidden">
-  <h2 style="margin-bottom:20px;">Mis Cursos</h2>
-  <div id="lista-cursos" class="grid"></div>
+  <div id="grid-cursos" class="grid"></div>
 </div>
 
 <div id="submaterias-container" class="container hidden">
-  <h2 id="display-curso"></h2>
-  <div id="lista-submaterias" class="grid"></div>
-  <button onclick="nav('cursos-container')" style="background:#64748b; margin-top:20px;">← Volver</button>
+  <h2 id="titulo-curso"></h2>
+  <div id="grid-submaterias" class="grid"></div>
 </div>
 
 <div id="semanas-container" class="container hidden">
-  <h2 id="display-submateria"></h2>
-  
-  <div id="panel-james" class="admin-zone hidden">
-    <h4 style="margin:0 0 10px 0;">🛠 Panel de Control (James)</h4>
-    <select id="f-sem" style="padding:8px; margin-bottom:10px;">
-      <option value="1">Semana 1</option><option value="2">Semana 2</option><option value="3">Semana 3</option><option value="4">Semana 4</option>
-      <option value="5">Semana 5</option><option value="6">Semana 6</option><option value="7">Semana 7</option><option value="8">Semana 8</option>
-    </select>
-    <input type="text" id="f-url" placeholder="Pega el enlace aquí" style="width:50%; padding:8px;">
-    <div style="margin-top:10px;">
-      <button onclick="upload('pdf')" style="background:#10b981;">Subir PDF</button>
-      <button onclick="upload('video')" style="background:#06b6d4;">Subir Grabación</button>
-      <button onclick="upload('banco')" style="background:#f59e0b;">Subir Banqueo</button>
+  <h2 id="titulo-submateria"></h2>
+  <div id="panel-editor" class="card hidden" style="background: #fff7ed; border: 2px dashed #f97316;">
+    <h4>🛠 Editor para Semana <span id="num-sem-edit"></span></h4>
+    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+      <button onclick="document.getElementById('subir-pdf-input').click()">📁 Cargar PDF</button>
+      <button onclick="abrirModalLink()" style="background:#06b6d4;">🎬 Link Grabación</button>
+      <button onclick="irCrearBanqueo()" style="background:#8b5cf6;">✍️ Crear Banqueo</button>
     </div>
   </div>
-
   <div id="lista-semanas"></div>
-  <button onclick="nav('submaterias-container')" style="background:#64748b; margin-top:20px;">← Volver</button>
 </div>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js";
   import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-auth.js";
-  import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-firestore.js";
+  import { getFirestore, doc, setDoc, getDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-firestore.js";
+  import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-storage.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyDAmEVU8J-uk2Yg6bL5n28xbP1771cHGME",
     authDomain: "neurovap53-cdbcf.firebaseapp.com",
-    projectId: "neurovap53-cdbcf"
+    projectId: "neurovap53-cdbcf",
+    storageBucket: "neurovap53-cdbcf.appspot.com"
   };
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth();
   const db = getFirestore(app);
+  const storage = getStorage(app);
   const provider = new GoogleAuthProvider();
 
-  const TEMARIOS = {
+  const DB_MASTER = {
     "Morfofisiología 1": {
       "Fisiología": [
         "Semana 1: Membrana celular, receptores y potenciales.",
-        "Semana 2: Señales celulares, medio interno y ósmosis.",
+        "Semana 2: Transmisión de señales y ósmosis.",
         "Semana 3: Neurotransmisores y contracción muscular.",
         "Semana 4: Metabolismo óseo y Examen Parcial.",
         "Semana 5: Sangre, hematopoyesis y hemograma.",
         "Semana 6: Fisiología eritrocitaria y hemostasia.",
-        "Semana 7: Sistema inmunológico e inmunidad.",
+        "Semana 7: Sistema inmunológico y respuesta innata.",
         "Semana 8: Respuesta inflamatoria y Examen Final."
       ],
       "Histología": [
         "Semana 1: Procesamiento histológico y organelas.",
         "Semana 2: Tejido óseo y osificación.",
-        "Semana 3: Tejido muscular y tejido nervioso.",
+        "Semana 3: Tejido muscular y nervioso.",
         "Semana 4: Sistema vascular y Examen Parcial.",
-        "Semana 5: Epitelios de revestimiento y glandular.",
+        "Semana 5: Epitelios de revestimiento.",
         "Semana 6: Tejido conectivo y sanguíneo.",
         "Semana 7: Órganos linfoides.",
         "Semana 8: Sistema tegumentario y Examen Final."
@@ -124,7 +119,7 @@
     },
     "Morfofisiología 2": {
       "Anatomía": [
-        "Semana 1: Pared torácica, mama y radioanatomía.",
+        "Semana 1: Pared torácica y región mamaria.",
         "Semana 2: Mediastino superior y anterior.",
         "Semana 3: Morfología interna cardiaca.",
         "Semana 4: Mediastino posterior y Examen Parcial.",
@@ -135,117 +130,136 @@
       ],
       "Fisiología": [
         "Semana 1: Hemodinamia y electrofisiología.",
-        "Semana 2: EKG y ciclo cardiaco.",
+        "Semana 2: Electrocardiograma y ciclo cardiaco.",
         "Semana 3: Presión arterial y gasto cardiaco.",
         "Semana 4: Mecánica respiratoria y Examen Parcial.",
-        "Semana 5: Intercambio gaseoso y transporte.",
-        "Semana 6: Estructura renal y filtración.",
+        "Semana 5: Intercambio y transporte de gases.",
+        "Semana 6: Filtración glomerular y secreción.",
         "Semana 7: Equilibrio ácido-base.",
         "Semana 8: Fisiología de altura y Examen Final."
       ],
       "Histología y Embriología": [
-        "Semana 1: Embrio-histo del corazón.",
+        "Semana 1: Embriología e histología cardiaca.",
         "Semana 2: Histología vascular.",
-        "Semana 3: Integración cardiaca.",
+        "Semana 3: Integración embrio-histo cardiaca.",
         "Semana 4: Patología vascular y Examen Parcial.",
-        "Semana 5: Embrio-histo respiratorio.",
-        "Semana 6: Embrio-histo urinario.",
-        "Semana 7: Vejiga y uretra.",
+        "Semana 5: Embrio-histo del aparato respiratorio.",
+        "Semana 6: Embrio-histo renal.",
+        "Semana 7: Uréter, vejiga y uretra.",
         "Semana 8: Histopatología renal y Examen Final."
       ]
     },
     "Bioquímica": {
-      "Teoría": ["Semana 1: Bioelementos", "Semana 2: Proteínas", "Semana 3: Enzimas", "Semana 4: Parcial", "Semana 5: Carbohidratos", "Semana 6: Lípidos", "Semana 7: Ácidos Nucleicos", "Semana 8: Final"],
-      "Laboratorio": ["Semana 1: Bioseguridad", "Semana 2: Espectrofotometría", "Semana 3: Aminoácidos", "Semana 4: Parcial", "Semana 5: Glucosa", "Semana 6: Colesterol", "Semana 7: Orina", "Semana 8: Final"]
+      "Teoría": ["S1: Agua y pH", "S2: Aminoácidos", "S3: Enzimas", "S4: Parcial", "S5: Carbohidratos", "S6: Lípidos", "S7: ADN", "S8: Final"],
+      "Laboratorio": ["S1: Bioseguridad", "S2: Espectroscopía", "S3: Aminoácidos", "S4: Parcial", "S5: Glucosa", "S6: Perfil Lipídico", "S7: Orina", "S8: Final"]
     },
     "Biología Celular": {
-      "Teoría": ["Semana 1: La Célula", "Semana 2: Biomoléculas", "Semana 3: Membrana", "Semana 4: Parcial", "Semana 5: Citosol", "Semana 6: Organelas", "Semana 7: Núcleo", "Semana 8: Final"],
-      "Laboratorio": ["Semana 1: Microscopio", "Semana 2: Célula", "Semana 3: Transporte", "Semana 4: Parcial", "Semana 5: Mitosis", "Semana 6: Meiosis", "Semana 7: ADN", "Semana 8: Final"]
+      "Teoría": ["S1: Célula", "S2: Moléculas", "S3: Membrana", "S4: Parcial", "S5: Organelas", "S6: Mitocondria", "S7: Núcleo", "S8: Final"],
+      "Laboratorio": ["S1: Microscopio", "S2: Célula", "S3: Ósmosis", "S4: Parcial", "S5: Mitosis", "S6: Meiosis", "S7: ADN", "S8: Final"]
     }
   };
-  let selC = ""; let selS = "";
-  const JAMES = "jamesucribanco333@gmail.com";
+  let cursoSel = ""; let subSel = ""; let semSel = 1;
+  const JAMES_EMAIL = "jamesucribanco333@gmail.com";
 
   window.nav = (id) => {
-    ['inicio', 'cursos-container', 'submaterias-container', 'semanas-container'].forEach(s => document.getElementById(s).classList.add('hidden'));
+    ['inicio', 'cursos-container', 'submaterias-container', 'semanas-container'].forEach(v => document.getElementById(v).classList.add('hidden'));
     document.getElementById(id).classList.remove('hidden');
   };
 
-  function renderCursos() {
-    const box = document.getElementById('lista-cursos');
+  function cargarCursos() {
+    const box = document.getElementById('grid-cursos');
     box.innerHTML = "";
-    Object.keys(TEMARIOS).forEach(c => {
-      box.innerHTML += `<div class="card"><h3>${c}</h3><button onclick="verSub('${c}')">Entrar</button></div>`;
+    Object.keys(DB_MASTER).forEach(c => {
+      box.innerHTML += `<div class="card"><h3>${c}</h3><button onclick="abrirSub('${c}')">Explorar</button></div>`;
     });
   }
 
-  window.verSub = (c) => {
-    selC = c; document.getElementById('display-curso').innerText = c;
-    const box = document.getElementById('lista-submaterias');
+  window.abrirSub = (c) => {
+    cursoSel = c; document.getElementById('titulo-curso').innerText = c;
+    const box = document.getElementById('grid-submaterias');
     box.innerHTML = "";
-    Object.keys(TEMARIOS[c]).forEach(s => {
-      box.innerHTML += `<div class="card" style="border-top:5px solid var(--primary)"><h3>${s}</h3><button onclick="verSem('${s}')">Ver 8 Semanas</button></div>`;
+    Object.keys(DB_MASTER[c]).forEach(s => {
+      box.innerHTML += `<div class="card" style="border-top:5px solid var(--primary)"><h3>${s}</h3><button onclick="abrirSemanas('${s}')">Ver 8 Semanas</button></div>`;
     });
     nav('submaterias-container');
   };
 
-  window.verSem = async (sub) => {
-    selS = sub; document.getElementById('display-submateria').innerText = `${selC} > ${sub}`;
+  window.abrirSemanas = (s) => {
+    subSel = s; document.getElementById('titulo-submateria').innerText = `${cursoSel} > ${subSel}`;
     const box = document.getElementById('lista-semanas');
-    box.innerHTML = ""; // Limpiar
+    box.innerHTML = "";
     nav('semanas-container');
 
-    if(auth.currentUser?.email === JAMES) document.getElementById('panel-james').classList.remove('hidden');
-
-    const temas = TEMARIOS[selC][sub];
-    temas.forEach((tema, index) => {
-      const num = index + 1;
+    DB_MASTER[cursoSel][subSel].forEach((tema, i) => {
+      const n = i+1;
       const div = document.createElement('div');
-      div.className = "semana-item";
+      div.className = "semana-card";
       div.innerHTML = `
-        <span class="tema-titulo">SEMANA ${num}</span>
-        <span class="tema-desc">${tema}</span>
-        <div class="btn-group" id="links-sem-${num}"><small>Cargando links...</small></div>`;
+        <span class="tema-titulo">SEMANA ${n}</span>
+        <span class="tema-detalle">${tema}</span>
+        <div id="links-s${n}" style="margin-top:10px; display:flex; gap:8px;"></div>
+        ${auth.currentUser.email === JAMES_EMAIL ? `<button class="btn-admin" onclick="editarSem(${n})">⚙️ Editar S${n}</button>` : ''}
+      `;
       box.appendChild(div);
-      fetchLinks(num);
+      getRecursos(n);
     });
   };
 
-  async function fetchLinks(n) {
-    const id = `${selC}_${selS}_S${n}`.replace(/ /g, "_");
-    const snap = await getDoc(doc(db, "recursos", id));
-    const d = snap.exists() ? snap.data() : {};
-    const target = document.getElementById(`links-sem-${n}`);
-    target.innerHTML = `
-      <button class="btn-rec" onclick="openL('${d.pdf}')" ${!d.pdf ? 'disabled' : ''}>📄 PDF</button>
-      <button class="btn-rec" onclick="openL('${d.video}')" ${!d.video ? 'disabled' : ''}>🎬 Video</button>
-      <button class="btn-rec" onclick="openL('${d.banco}')" ${!d.banco ? 'disabled' : ''}>✍️ Banco</button>`;
-  }
-
-  window.openL = (u) => { if(u && u !== "undefined") window.open(u, '_blank'); };
-  window.upload = async (tipo) => {
-    const s = document.getElementById('f-sem').value;
-    const url = document.getElementById('f-url').value;
-    if(!url) return alert("Escribe un link primero");
-    const id = `${selC}_${selS}_S${s}`.replace(/ /g, "_");
-    await setDoc(doc(db, "recursos", id), { [tipo]: url }, { merge: true });
-    alert("¡Semana " + s + " actualizada!");
-    fetchLinks(s);
+  window.editarSem = (n) => {
+    semSel = n;
+    document.getElementById('num-sem-edit').innerText = n;
+    document.getElementById('panel-editor').classList.remove('hidden');
+    window.scrollTo(0,0);
   };
 
+  // SUBIR PDF REAL A STORAGE
+  document.getElementById('subir-pdf-input').onchange = async (e) => {
+    const file = e.target.files[0];
+    if(!file) return;
+    const refPath = `material/${cursoSel}/${subSel}/S${semSel}_${file.name}`;
+    const storageRef = ref(storage, refPath);
+    alert("Subiendo archivo...");
+    await uploadBytes(storageRef, file);
+    const url = await getDownloadURL(storageRef);
+    await setDoc(doc(db, "recursos", `${cursoSel}_${subSel}_S${semSel}`), { pdf: url }, { merge: true });
+    alert("PDF listo!");
+    abrirSemanas(subSel);
+  };
+  window.abrirModalLink = async () => {
+    const url = prompt("Pega el link de la grabación (Drive/Zoom):");
+    if(url) {
+      await setDoc(doc(db, "recursos", `${cursoSel}_${subSel}_S${semSel}`), { video: url }, { merge: true });
+      alert("Link guardado");
+      abrirSemanas(subSel);
+    }
+  };
+
+  async function getRecursos(n) {
+    const snap = await getDoc(doc(db, "recursos", `${cursoSel}_${subSel}_S${n}`));
+    const d = snap.exists() ? snap.data() : {};
+    const target = document.getElementById(`links-s${n}`);
+    target.innerHTML = `
+      <button onclick="window.open('${d.pdf}')" ${!d.pdf ? 'disabled' : ''} style="background:#10b981; font-size:12px;">📄 PDF</button>
+      <button onclick="window.open('${d.video}')" ${!d.video ? 'disabled' : ''} style="background:#06b6d4; font-size:12px;">🎬 Video</button>
+      <button onclick="verBanqueo(${n})" ${!d.banco ? 'disabled' : ''} style="background:#8b5cf6; font-size:12px;">✍️ Banqueo</button>
+    `;
+  }
+
+  // Lógica de Login
   window.login = () => signInWithPopup(auth, provider);
   window.logout = () => signOut(auth);
 
   onAuthStateChanged(auth, (user) => {
     if (user) {
-      document.getElementById('login-area').classList.add('hidden');
-      document.getElementById('user-info').classList.remove('hidden');
-      document.getElementById('welcome-msg').innerText = `Hola, ${user.displayName}`;
-      renderCursos();
+      document.getElementById('login-section').classList.add('hidden');
+      document.getElementById('user-section').classList.remove('hidden');
+      document.getElementById('user-greeting').innerText = `Hola, ${user.displayName}`;
+      if(user.email === JAMES_EMAIL) document.getElementById('link-admin').classList.remove('hidden');
+      cargarCursos();
       nav('cursos-container');
     } else {
-      document.getElementById('login-area').classList.remove('hidden');
-      document.getElementById('user-info').classList.add('hidden');
+      document.getElementById('login-section').classList.remove('hidden');
+      document.getElementById('user-section').classList.add('hidden');
       nav('inicio');
     }
   });
