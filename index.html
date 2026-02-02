@@ -5,78 +5,84 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Neurova P53 - Academia</title>
   <style>
-    body { margin:0; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:#f0f4f8; color:#333; }
-    header { background: linear-gradient(135deg, #1e3a8a, #2563eb); color: white; padding: 20px 50px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-    header h1 { margin: 0; font-size: 24px; }
+    body { margin:0; font-family:'Segoe UI', sans-serif; background:#f0f4f8; color:#333; }
+    header { background: linear-gradient(135deg, #1e3a8a, #2563eb); color: white; padding: 15px 40px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
     nav a { color: white; margin-left: 20px; text-decoration: none; font-weight: bold; cursor: pointer; }
-    .container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
-    .card { background: white; border-radius: 12px; padding: 25px; box-shadow: 0 6px 18px rgba(0,0,0,0.05); margin-bottom: 20px; }
-    .grid-cursos { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
-    button { background: #2563eb; color: white; border: none; padding: 10px 18px; border-radius: 8px; cursor: pointer; font-size: 14px; transition: 0.3s; }
+    .container { max-width: 1100px; margin: 30px auto; padding: 0 20px; }
+    .card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 20px; text-align: center; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+    button { background: #2563eb; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; transition: 0.3s; font-weight: 600; }
     button:hover { background: #1d4ed8; }
+    .btn-admin { background: #10b981; margin-top: 10px; }
     .hidden { display: none; }
-    .pregunta-box { border-bottom: 1px solid #eee; padding: 15px 0; }
-    .btn-opcion { display: block; width: 100%; text-align: left; margin: 5px 0; background: #f8fafc; color: #333; border: 1px solid #e2e8f0; }
-    .btn-opcion:hover { background: #e2e8f0; }
-    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-    th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
-    th { background: #1e3a8a; color: white; }
+    .semana-row { display: flex; align-items: center; justify-content: space-between; padding: 15px; border-bottom: 1px solid #eee; background: white; margin-bottom: 5px; border-radius: 8px; }
+    .recursos-btns button { margin-left: 5px; font-size: 12px; background: #64748b; }
+    .admin-upload-panel { background: #fef3c7; border: 1px solid #f59e0b; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
   </style>
 </head>
 <body>
 
 <header>
   <div style="display:flex; align-items:center;">
-    <img src="logo.jpeg" alt="Logo" style="height:50px; margin-right:15px; border-radius:50%;">
+    <img src="logo.jpeg" alt="Logo" style="height:50px; border-radius:50%; margin-right:10px;">
     <h1>Neurova P53</h1>
   </div>
   <nav>
-    <a onclick="showSection('inicio')">Inicio</a>
-    <a onclick="showSection('cursos-container')">Mis Cursos</a>
-    <a id="admin-nav" class="hidden" onclick="showSection('admin-panel')">Panel Admin</a>
+    <a onclick="navegar('inicio')">Inicio</a>
+    <a onclick="navegar('cursos-container')">Cursos</a>
+    <a id="admin-nav" class="hidden" onclick="navegar('admin-panel')">Panel Admin</a>
   </nav>
 </header>
 <div id="inicio" class="container">
-  <div class="card" style="text-align:center;">
-    <h2>Bienvenido a tu plataforma de estudio</h2>
-    <p>Inicia sesión con tu cuenta institucional para acceder a los materiales y evaluaciones.</p>
-    <div id="auth-status">
+  <div class="card">
+    <h2>Bienvenido Estudiante</h2>
+    <div id="login-section">
       <button id="login-btn">Iniciar Sesión con Google</button>
     </div>
     <div id="user-info" class="hidden">
-      <p id="welcome-msg"></p>
+      <p id="user-name"></p>
       <button onclick="logout()" style="background:#dc2626;">Cerrar Sesión</button>
     </div>
   </div>
 </div>
 
 <div id="cursos-container" class="container hidden">
-  <h2>Cursos Disponibles</h2>
-  <div id="cursos-list" class="grid-cursos"></div>
+  <h2>Nuestros Cursos</h2>
+  <div id="lista-cursos" class="grid"></div>
 </div>
 
-<div id="subcurso-container" class="container hidden">
-  <h2 id="subcurso-title"></h2>
-  <div id="subcurso-list" class="grid-cursos"></div>
-  <button onclick="showSection('cursos-container')" style="margin-top:20px; background:#64748b;">← Volver a Cursos</button>
+<div id="submaterias-container" class="container hidden">
+  <h2 id="txt-curso-parent"></h2>
+  <div id="lista-submaterias" class="grid"></div>
+  <button onclick="navegar('cursos-container')" style="background:#64748b; margin-top:20px;">← Volver</button>
 </div>
 
-<div id="semana-container" class="container hidden">
-  <h2 id="semana-title"></h2>
-  <div id="preguntas-list" class="card"></div>
-  <button onclick="showSection('subcurso-container')" style="background:#64748b;">← Volver</button>
+<div id="semanas-container" class="container hidden">
+  <h2 id="txt-submateria-parent"></h2>
+  
+  <div id="admin-upload-area" class="admin-upload-panel hidden">
+    <h3>Modo Administrador: Subir Recursos</h3>
+    <small>Selecciona semana y pega el link:</small><br>
+    <select id="sel-semana"><option value="1">Semana 1</option><option value="2">Semana 2</option><option value="3">Semana 3</option><option value="4">Semana 4</option><option value="5">Semana 5</option><option value="6">Semana 6</option><option value="7">Semana 7</option><option value="8">Semana 8</option></select>
+    <input type="text" id="link-url" placeholder="URL del archivo/video">
+    <button onclick="guardarRecurso('pdf')" class="btn-admin">Subir PDF</button>
+    <button onclick="guardarRecurso('video')" class="btn-admin">Subir Grabación</button>
+  </div>
+
+  <div id="lista-semanas"></div>
+  <button onclick="navegar('submaterias-container')" style="background:#64748b; margin-top:20px;">← Volver</button>
 </div>
 
 <div id="admin-panel" class="container hidden">
   <div class="card">
-    <h2>Resultados de Alumnos</h2>
-    <div id="admin-respuestas">Cargando datos...</div>
+    <h2>Resultados de Usuarios</h2>
+    <div id="resultados-admin"></div>
   </div>
 </div>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js";
   import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-auth.js";
-  import { getFirestore, doc, setDoc, getDocs, collection, arrayUnion } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-firestore.js";
+  import { getFirestore, doc, setDoc, getDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyDAmEVU8J-uk2Yg6bL5n28xbP1771cHGME",
@@ -89,100 +95,90 @@
   const db = getFirestore(app);
   const provider = new GoogleAuthProvider();
 
-  // --- BASE DE DATOS DE CURSOS COMPLETA ---
-  const academiaData = {
-    "Morfofisiología 1": [
-      { titulo: "Semana 1: Introducción y Biocélula", preguntas: [{p: "¿Qué organelo produce ATP?", r: ["Mitocondria", "Ribosoma"], c: "Mitocondria"}] },
-      { titulo: "Semana 2: Tejido Epitelial", preguntas: [] },
-      { titulo: "Semana 3: Sistema Esquelético", preguntas: [] },
-      { titulo: "Semana 4: Sistema Muscular", preguntas: [] }
-    ],
-    "Morfofisiología 2": [
-      { titulo: "Semana 1: Sistema Cardiovascular", preguntas: [] },
-      { titulo: "Semana 2: Sistema Respiratorio", preguntas: [] },
-      { titulo: "Semana 3: Sistema Digestivo", preguntas: [] },
-      { titulo: "Semana 4: Sistema Urinario", preguntas: [] }
-    ],
-    "Anatomía General": [
-      { titulo: "Semana 1: Generalidades", preguntas: [] },
-      { titulo: "Semana 2: Cabeza y Cuello", preguntas: [] }
-    ]
+  // --- CONFIGURACIÓN DE CURSOS ---
+  const DATA_ACADEMIA = {
+    "Morfofisiología 1": ["Fisiología", "Histología"],
+    "Morfofisiología 2": ["Fisiología", "Histología"],
+    "Anatomía General": ["Anatomía"],
+    "Bioquímica": ["Bioquímica"],
+    "Biología Celular y Molecular": ["Biología Celular"]
   };
 
-  // --- NAVEGACIÓN ---
-  window.showSection = (id) => {
-    ['inicio', 'cursos-container', 'subcurso-container', 'semana-container', 'admin-panel'].forEach(s => {
+  let cursoActivo = "";
+  let submateriaActiva = "";
+  const ADMIN_EMAIL = "jamesucribanco333@gmail.com";
+
+  window.navegar = (id) => {
+    ['inicio', 'cursos-container', 'submaterias-container', 'semanas-container', 'admin-panel'].forEach(s => {
       document.getElementById(s).classList.add('hidden');
     });
     document.getElementById(id).classList.remove('hidden');
-    if(id === 'admin-panel') cargarAdmin();
   };
 
-  window.abrirCurso = (nombreCurso) => {
-    window.cursoActual = nombreCurso;
-    const list = document.getElementById('subcurso-list');
-    document.getElementById('subcurso-title').innerText = nombreCurso;
-    list.innerHTML = "";
-    
-    academiaData[nombreCurso].forEach((semana, index) => {
-      const card = document.createElement('div');
-      card.className = "card";
-      card.innerHTML = `<h3>${semana.titulo}</h3><button onclick="abrirSemana(${index})">Entrar</button>`;
-      list.appendChild(card);
-    });
-    window.showSection('subcurso-container');
-  };
-
-  window.abrirSemana = (index) => {
-    const semana = academiaData[window.cursoActual][index];
-    document.getElementById('semana-title').innerText = semana.titulo;
-    const container = document.getElementById('preguntas-list');
-    container.innerHTML = semana.preguntas.length > 0 ? "" : "<p>No hay preguntas esta semana.</p>";
-    
-    semana.preguntas.forEach(pre => {
-      const div = document.createElement('div');
-      div.className = "pregunta-box";
-      div.innerHTML = `<p><strong>${pre.p}</strong></p>`;
-      pre.r.forEach(op => {
-        div.innerHTML += `<button class="btn-opcion" onclick="enviarRespuesta('${pre.p}', '${op}', '${pre.c}')">${op}</button>`;
-      });
-      container.appendChild(div);
-    });
-    window.showSection('semana-container');
-  };
-
-  // --- FIREBASE OPS ---
-  window.enviarRespuesta = async (pregunta, respuesta, correcta) => {
-    const user = auth.currentUser;
-    const esCorrecta = (respuesta === correcta);
-    await setDoc(doc(db, "usuarios", user.uid), {
-      nombre: user.displayName,
-      email: user.email,
-      respuestas: arrayUnion({
-        curso: window.cursoActual,
-        pregunta,
-        respuesta,
-        correcta: esCorrecta ? "SÍ" : "NO",
-        fecha: new Date().toLocaleString()
-      })
-    }, { merge: true });
-    alert(esCorrecta ? "¡Correcto!" : "Incorrecto, pero guardamos tu respuesta.");
-  };
-
-  async function cargarAdmin() {
-    const container = document.getElementById('admin-respuestas');
-    container.innerHTML = "Cargando...";
-    const snapshot = await getDocs(collection(db, "usuarios"));
-    container.innerHTML = "";
-    snapshot.forEach(doc => {
-      const u = doc.data();
-      let tabla = `<h4>${u.nombre}</h4><table><tr><th>Pregunta</th><th>Respuesta</th><th>Ok?</th></tr>`;
-      u.respuestas?.forEach(r => {
-        tabla += `<tr><td>${r.pregunta}</td><td>${r.respuesta}</td><td>${r.correcta}</td></tr>`;
-      });
-      container.innerHTML += tabla + `</table><br>`;
+  // 1. Mostrar Cursos
+  function renderCursos() {
+    const cont = document.getElementById('lista-cursos');
+    cont.innerHTML = "";
+    Object.keys(DATA_ACADEMIA).forEach(c => {
+      cont.innerHTML += `<div class="card"><h3>${c}</h3><button onclick="verSubmaterias('${c}')">Entrar</button></div>`;
     });
   }
+
+  // 2. Mostrar Submaterias (Fisio/Histo)
+  window.verSubmaterias = (curso) => {
+    cursoActivo = curso;
+    document.getElementById('txt-curso-parent').innerText = curso;
+    const cont = document.getElementById('lista-submaterias');
+    cont.innerHTML = "";
+    DATA_ACADEMIA[curso].forEach(sub => {
+      cont.innerHTML += `<div class="card" style="border-top:5px solid #2563eb"><h3>${sub}</h3><button onclick="verSemanas('${sub}')">Ver 8 Semanas</button></div>`;
+    });
+    navegar('submaterias-container');
+  };
+
+  // 3. Mostrar las 8 semanas
+  window.verSemanas = async (sub) => {
+    submateriaActiva = sub;
+    document.getElementById('txt-submateria-parent').innerText = `${cursoActivo} > ${sub}`;
+    const cont = document.getElementById('lista-semanas');
+    cont.innerHTML = "Cargando semanas...";
+    navegar('semanas-container');
+
+    // Revisar si James está logueado para mostrar panel de subida
+    if(auth.currentUser?.email === ADMIN_EMAIL) {
+      document.getElementById('admin-upload-area').classList.remove('hidden');
+    }
+
+    let html = "";
+    for(let i=1; i<=8; i++) {
+      // Intentar traer links de Firebase
+      const docRef = doc(db, "recursos", `${cursoActivo}_${sub}_S${i}`);
+      const docSnap = await getDoc(docRef);
+      const data = docSnap.exists() ? docSnap.data() : {};
+
+      html += `
+        <div class="semana-row">
+          <span><strong>Semana ${i}</strong></span>
+          <div class="recursos-btns">
+            <button onclick="window.open('${data.pdf || '#'}')">PDF</button>
+            <button onclick="window.open('${data.video || '#'}')">Grabación</button>
+            <button onclick="alert('Próximamente banqueo')">Banqueo</button>
+          </div>
+        </div>`;
+    }
+    cont.innerHTML = html;
+  };
+
+  // 4. Guardar links (Solo James)
+  window.guardarRecurso = async (tipo) => {
+    const sem = document.getElementById('sel-semana').value;
+    const url = document.getElementById('link-url').value;
+    if(!url) return alert("Pega un link primero");
+
+    const idDoc = `${cursoActivo}_${submateriaActiva}_S${sem}`;
+    await setDoc(doc(db, "recursos", idDoc), { [tipo]: url }, { merge: true });
+    alert("¡Guardado! Recarga la sección para ver los cambios.");
+  };
 
   // --- AUTH ---
   document.getElementById('login-btn').onclick = () => signInWithPopup(auth, provider);
@@ -190,22 +186,17 @@
 
   onAuthStateChanged(auth, (user) => {
     if (user) {
-      document.getElementById('auth-status').classList.add('hidden');
+      document.getElementById('login-section').classList.add('hidden');
       document.getElementById('user-info').classList.remove('hidden');
-      document.getElementById('welcome-msg').innerText = `Hola, ${user.displayName}`;
-      if(user.email === "jamesucribanco333@gmail.com") document.getElementById('admin-nav').classList.remove('hidden');
-      
-      const cList = document.getElementById('cursos-list');
-      cList.innerHTML = "";
-      Object.keys(academiaData).forEach(c => {
-        cList.innerHTML += `<div class="card"><h3>${c}</h3><button onclick="abrirCurso('${c}')">Ver Temario</button></div>`;
-      });
-      window.showSection('cursos-container');
+      document.getElementById('user-name').innerText = `Hola, ${user.displayName}`;
+      if(user.email === ADMIN_EMAIL) document.getElementById('admin-nav').classList.remove('hidden');
+      renderCursos();
+      navegar('cursos-container');
     } else {
-      document.getElementById('auth-status').classList.remove('hidden');
+      document.getElementById('login-section').classList.remove('hidden');
       document.getElementById('user-info').classList.add('hidden');
       document.getElementById('admin-nav').classList.add('hidden');
-      window.showSection('inicio');
+      navegar('inicio');
     }
   });
 </script>
