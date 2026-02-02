@@ -5,236 +5,104 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>NEUROVA P53 - Premium</title>
   <style>
-    /* Estilo Médico Minimalista */
     :root { 
       --primary: #1e3a8a; --accent: #3b82f6; --bg: #f8fafc; 
       --white: #ffffff; --success: #10b981; --gray: #64748b;
     }
-    body { margin:0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); }
+    body { margin:0; font-family: 'Segoe UI', sans-serif; background: var(--bg); color: #1e293b; }
 
-    /* Cabecera con Logo */
+    /* HEADER */
     header { 
       background: var(--white); border-bottom: 2px solid #e2e8f0; 
       padding: 1rem 5%; display: flex; align-items: center; justify-content: space-between;
-      position: sticky; top: 0; z-index: 100;
+      position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     }
     .logo-box { display: flex; align-items: center; gap: 10px; cursor: pointer; }
-    .logo-icon { 
-      background: var(--primary); color: white; width: 40px; height: 40px; 
-      display: flex; align-items: center; justify-content: center; 
-      border-radius: 8px; font-weight: bold; font-size: 22px;
-    }
+    .logo-icon { background: var(--primary); color: white; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-weight: bold; font-size: 22px; }
     .logo-text { font-size: 22px; font-weight: 800; color: var(--primary); margin: 0; }
     .logo-text span { color: var(--accent); }
 
-    /* Contenedores */
+    /* CONTENEDORES */
     .container { max-width: 1100px; margin: 2rem auto; padding: 0 1rem; }
-    .card { 
-      background: var(--white); border-radius: 15px; padding: 1.5rem; 
-      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border: 1px solid #f1f5f9;
-      margin-bottom: 1rem;
-    }
-    .btn-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; }
+    .card { background: var(--white); border-radius: 15px; padding: 1.5rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border: 1px solid #f1f5f9; margin-bottom: 1rem; }
+    .btn-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
     
-    /* Botones de James */
-    .btn-action { 
-      padding: 10px 15px; border: none; border-radius: 8px; font-weight: 600; 
-      cursor: pointer; transition: 0.2s; font-size: 14px;
-    }
+    /* BOTONES */
+    .btn-action { padding: 8px 12px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s; font-size: 13px; }
     .btn-pdf { background: #dcfce7; color: #166534; }
-    .btn-grabacion { background: #ecfeff; color: #0891b2; }
-    .btn-banqueo { background: #f5f3ff; color: #5b21b6; }
-    .btn-action:hover { filter: brightness(0.95); transform: translateY(-1px); }
+    .btn-grab { background: #ecfeff; color: #0891b2; }
+    .btn-ban { background: #f5f3ff; color: #5b21b6; }
+    .btn-main { background: var(--primary); color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; }
 
-    /* Ventana Modal Estilo James */
-    .modal-overlay {
+    /* MODAL CORREGIDO (Oculto por defecto con display: none) */
+    #james-modal {
       position: fixed; top:0; left:0; width:100%; height:100%;
-      background: rgba(0,0,0,0.5); display: none; /* Se activa con JS */
-      align-items: center; justify-content: center; z-index: 1000;
+      background: rgba(15, 23, 42, 0.7); 
+      display: none; /* ESTO EVITA QUE SALGA LA VENTANA SOLA */
+      align-items: center; justify-content: center; z-index: 2000;
+      backdrop-filter: blur(4px);
     }
     .modal-content { 
       background: white; padding: 2rem; border-radius: 20px; 
-      width: 90%; max-width: 400px; text-align: center;
+      width: 90%; max-width: 400px; text-align: center; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2);
     }
-    .modal-content h3 { margin-top: 0; color: var(--primary); }
-    input[type="text"], input[type="file"] { 
-      width: 100%; padding: 10px; margin: 15px 0; border: 1px solid #cbd5e1; border-radius: 8px;
-    }
-    .hidden { display: none; }
+    .hidden { display: none !important; }
+    input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #cbd5e1; border-radius: 8px; box-sizing: border-box; }
   </style>
 </head>
 <body>
 
 <header>
-  <div class="logo-box">
+  <div class="logo-box" onclick="location.reload()">
     <div class="logo-icon">N</div>
     <h1 class="logo-text">NEUROVA <span>P53</span></h1>
   </div>
-  <div id="auth-status"></div>
+  <div id="auth-status">
+    <button onclick="login()" class="btn-main">Entrar con Google</button>
+  </div>
 </header>
 
 <div class="container" id="main-content">
-  <div class="card" style="text-align: center;">
-    <h2>Plataforma de Estudio Médico</h2>
-    <p>Por favor, inicia sesión para gestionar tus materiales.</p>
-    <button onclick="login()" style="background: var(--primary); color: white; padding: 12px 25px; border-radius: 10px; border: none; font-weight: bold; cursor:pointer;">Entrar con Google</button>
+  <div class="card" style="text-align: center; padding: 50px;">
+    <h2>Cargando Plataforma Médica...</h2>
+    <p>Si no has iniciado sesión, pulsa el botón de arriba.</p>
   </div>
 </div>
 
-<div id="james-modal" class="modal-overlay">
+<div id="james-modal">
   <div class="modal-content">
-    <h3 id="modal-title">Configuración</h3>
+    <h3 id="modal-title" style="color:var(--primary)">Configuración</h3>
+    <hr style="border:0; border-top:1px solid #eee; margin: 15px 0;">
     
     <div id="box-pdf" class="hidden">
-      <p>Subir archivo PDF para esta sesión:</p>
+      <p><b>Subir archivo PDF</b></p>
       <input type="file" id="input-file-pdf" accept="application/pdf">
-      <button class="btn-action btn-pdf" style="width:100%" onclick="subirPDF()">Subir Archivo</button>
+      <button class="btn-action btn-pdf" style="width:100%; padding:15px;" onclick="ejecutarSubidaPDF()">Subir Archivo</button>
     </div>
 
     <div id="box-grabacion" class="hidden">
-      <p>Insertar enlace de la clase:</p>
-      <input type="text" id="input-link-grabacion" placeholder="https://zoom.us/j/...">
-      <button class="btn-action btn-grabacion" style="width:100%" onclick="guardarLink()">Insertar link y guardar</button>
+      <p><b>Link de Grabación</b></p>
+      <input type="text" id="input-link-grabacion" placeholder="Pega el enlace de Zoom/Drive">
+      <button class="btn-action btn-grab" style="width:100%; padding:15px;" onclick="ejecutarGuardarLink()">Insertar link y guardar</button>
     </div>
 
     <div id="box-banqueo" class="hidden">
-      <p>Configuración de preguntas:</p>
-      <button class="btn-action btn-banqueo" style="width:100%">Crear banqueo</button>
+      <p><b>Añadir Pregunta</b></p>
+      <input type="text" id="q-text" placeholder="Pregunta">
+      <input type="text" id="q-o1" placeholder="Opción 1 (Correcta)">
+      <input type="text" id="q-o2" placeholder="Opción 2">
+      <button class="btn-action btn-ban" style="width:100%; padding:15px;" onclick="alert('Pregunta guardada')">Guardar Pregunta</button>
     </div>
 
-    <button onclick="cerrarModal()" style="margin-top: 20px; background: none; border: none; color: var(--gray); cursor: pointer; text-decoration: underline;">Cerrar</button>
+    <button onclick="cerrarModal()" style="margin-top: 20px; background: none; border: none; color: var(--gray); cursor: pointer; text-decoration: underline;">Cerrar ventana</button>
   </div>
 </div>
 
-<script>
-  // Funciones básicas de UI
-  function abrirModal(tipo) {
-    document.getElementById('james-modal').style.display = 'flex';
-    document.getElementById('box-pdf').classList.add('hidden');
-    document.getElementById('box-grabacion').classList.add('hidden');
-    document.getElementById('box-banqueo').classList.add('hidden');
-
-    if(tipo === 'pdf') {
-      document.getElementById('modal-title').innerText = "Subir PDF";
-      document.getElementById('box-pdf').classList.remove('hidden');
-    } else if(tipo === 'grabacion') {
-      document.getElementById('modal-title').innerText = "Grabación";
-      document.getElementById('box-grabacion').classList.remove('hidden');
-    } else if(tipo === 'banqueo') {
-      document.getElementById('modal-title').innerText = "Banqueo";
-      document.getElementById('box-banqueo').classList.remove('hidden');
-    }
-  }
-
-  function cerrarModal() {
-    document.getElementById('james-modal').style.display = 'none';
-  }
-</script>
-
-</body>
-</html>
-<script>
-  // ESTRUCTURA DE DATOS SUPER COMPLETA (PARTE 2)
-  const TEMARIOS = {
-    "Anatomía General": {
-      "Teoría": [
-        "S1: Generalidades de anatomía, Hombro y Axila. Brazo y Codo.",
-        "S2: Antebrazo. Muñeca y mano.",
-        "S3: Región Glútea y Cadera. Muslo y Rodilla.",
-        "S4: Pierna y Región Poplítea. EXAMEN PARCIAL.",
-        "S5: Tobillo y Pie. Vertebras Cervicales, Regiones y Triángulos del cuello.",
-        "S6: Vísceras del cuello (faringe, laringe, esófago, tráquea y tiroides). Cabeza ósea, viscerocráneo y neurocráneo.",
-        "S7: Músculos de la mímica y de la masticación. Regiones profundas de la cara.",
-        "S8: Cavidad oral, fosas nasales y generalidades de pared de tórax, abdomen y pelvis. EXAMEN FINAL."
-      ]
-    },
-    "Morfofisiología 1": {
-      "Fisiología": ["S1: Homeostasis y Célula", "S2: Potencial de Membrana", "S3: Contracción Muscular", "S4: PARCIAL", "S5: Sistema Nervioso", "S6: Sinapsis", "S7: Receptores Sensoriales", "S8: FINAL"],
-      "Histología": ["S1: Epitelios", "S2: Tejido Conectivo", "S3: Tejido Adiposo", "S4: PARCIAL", "S5: Tejido Óseo", "S6: Tejido Muscular", "S7: Tejido Nervioso", "S8: FINAL"]
-    },
-    "Morfofisiología 2": {
-      "Anatomía": ["S1: Corazón y Pericardio", "S2: Mediastino", "S3: Pulmones", "S4: PARCIAL", "S5: Abdomen", "S6: Estómago e Intestinos", "S7: Hígado y Páncreas", "S8: FINAL"],
-      "Embriología": ["S1: Fecundación", "S2: Disco Bilaminar", "S3: Plegamiento", "S4: PARCIAL", "S5: Sist. Cardiovascular", "S6: Sist. Digestivo", "S7: Sist. Urogenital", "S8: FINAL"]
-    },
-    "Bioquímica": {
-      "Teoría": ["S1: Agua y pH", "S2: Aminoácidos", "S3: Proteínas", "S4: PARCIAL", "S5: Enzimas", "S6: Bioenergética", "S7: Metabolismo Glúcidos", "S8: FINAL"]
-    },
-    "Biología": {
-      "Teoría": ["S1: Bioelementos", "S2: Glúcidos y Lípidos", "S3: Proteínas y Ácidos Nucleicos", "S4: PARCIAL", "S5: La Célula", "S6: Membrana Celular", "S7: Dogma Central", "S8: FINAL"]
-    }
-  };
-
-  let cursoActual = "";
-  let subMateriaActual = "";
-
-  // FUNCIÓN PARA RENDERIZAR LOS 5 CURSOS EN LA PANTALLA PRINCIPAL
-  function mostrarCursos() {
-    const contenedor = document.getElementById('main-content');
-    let html = `
-      <h2 style="color:var(--primary); margin-bottom:20px;">Mis Cursos Especializados</h2>
-      <div class="btn-grid">`;
-    
-    for (let curso in TEMARIOS) {
-      html += `
-        <div class="card" style="border-top: 4px solid var(--accent);">
-          <h3 style="margin-top:0;">${curso}</h3>
-          <div style="display:flex; flex-wrap:wrap; gap:5px;">`;
-          
-      for (let sub in TEMARIOS[curso]) {
-        html += `<button onclick="verSemanas('${curso}', '${sub}')" style="background:var(--primary); color:white; border:none; padding:8px 12px; border-radius:5px; cursor:pointer;">Ver ${sub}</button>`;
-      }
-      
-      html += `</div></div>`;
-    }
-    
-    html += `</div>`;
-    contenedor.innerHTML = html;
-  }
-
-  // FUNCIÓN PARA VER LAS 8 SEMANAS DE UN CURSO
-  function verSemanas(curso, sub) {
-    cursoActual = curso;
-    subMateriaActual = sub;
-    const contenedor = document.getElementById('main-content');
-    const semanas = TEMARIOS[curso][sub];
-    
-    let html = `
-      <button onclick="mostrarCursos()" style="background:#64748b; color:white; border:none; padding:10px; border-radius:8px; margin-bottom:20px; cursor:pointer;">← Volver a Cursos</button>
-      <div class="card" style="background:var(--primary); color:white;">
-        <h2 style="margin:0;">${curso} - ${sub}</h2>
-      </div>`;
-
-    semanas.forEach((tema, index) => {
-      const numSemana = index + 1;
-      html += `
-        <div class="card">
-          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;">
-            <div style="max-width:60%;">
-              <b style="color:var(--accent);">SEMANA ${numSemana}</b>
-              <p style="margin:5px 0;">${tema}</p>
-            </div>
-            <div style="display:flex; gap:10px;">
-              <button class="btn-action btn-pdf" onclick="abrirModal('pdf')">📄 PDF</button>
-              <button class="btn-action btn-grabacion" onclick="abrirModal('grabacion')">🎬 Grabación</button>
-              <button class="btn-action btn-banqueo" onclick="abrirModal('banqueo')">✍️ Banqueo</button>
-            </div>
-          </div>
-        </div>`;
-    });
-
-    contenedor.innerHTML = html;
-  }
-
-  // Iniciamos la vista de cursos al cargar
-  window.onload = mostrarCursos;
-</script>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js";
   import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-auth.js";
   import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-firestore.js";
-  import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-storage.js";
 
-  // Configuración de tu proyecto Neurova P53
   const firebaseConfig = {
     apiKey: "AIzaSyDAmEVU8J-uk2Yg6bL5n28xbP1771cHGME",
     authDomain: "neurovap53-cdbcf.firebaseapp.com",
@@ -245,215 +113,81 @@
   const app = initializeApp(firebaseConfig);
   const auth = getAuth();
   const db = getFirestore(app);
-  const storage = getStorage(app);
   const provider = new GoogleAuthProvider();
 
-  // El correo maestro de James
   const JAMES_EMAIL = "jamesucribanco333@gmail.com";
-  let usuarioCargado = null;
-  let semanaSeleccionada = 0;
+  let userActual = null;
+  let cursoAct = ""; let subAct = ""; let semAct = 0;
 
-  // Función de Login
-  window.login = () => {
-    signInWithPopup(auth, provider).catch(err => alert("Error al entrar: " + err.message));
+  const TEMARIOS = {
+    "Anatomía General": { "Teoría": ["S1: Generalidades, Hombro y Axila. Brazo y Codo.", "S2: Antebrazo. Muñeca y mano.", "S3: Región Glútea y Cadera. Muslo y Rodilla.", "S4: PARCIAL", "S5: Tobillo y Pie. Cuello.", "S6: Vísceras del cuello. Cabeza ósea.", "S7: Músculos mímica y masticación.", "S8: FINAL"] },
+    "Morfofisiología 1": { "Fisiología": ["S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8"], "Histología": ["S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8"] },
+    "Morfofisiología 2": { "Anatomía": ["S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8"], "Embriología": ["S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8"] },
+    "Bioquímica": { "Teoría": ["S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8"] },
+    "Biología": { "Teoría": ["S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8"] }
   };
 
-  // Observador de usuario: Detecta quién entra
+  window.login = () => signInWithPopup(auth, provider);
+
   onAuthStateChanged(auth, (user) => {
     if (user) {
-      usuarioCargado = user;
-      document.getElementById('auth-status').innerHTML = `
-        <span style="font-size:12px; margin-right:10px;">${user.displayName}</span>
-        <button onclick="auth.signOut(); location.reload();" style="background:#ef4444; color:white; border:none; padding:5px 10px; border-radius:5px; cursor:pointer;">Salir</button>
-      `;
-      // Al loguearse, mostramos los cursos
-      window.mostrarCursos(); 
+      userActual = user;
+      document.getElementById('auth-status').innerHTML = `<b>${user.displayName}</b>`;
+      renderCursos();
     }
   });
 
-  // REDEFINIMOS LA FUNCIÓN DE ABRIR MODAL PARA QUE USE FIREBASE (SOBRESCRIVE LA ANTERIOR)
-  window.abrirJamesOAlumno = async (tipo, n) => {
-    semanaSeleccionada = n;
-    const esJames = (usuarioCargado && usuarioCargado.email === JAMES_EMAIL);
-    
-    // Consultamos si ya existe material en la base de datos
-    const docId = `${cursoActual}_${subMateriaActual}_S${n}`;
-    const docRef = doc(db, "contenido", docId);
-    const docSnap = await getDoc(docRef);
-    const data = docSnap.exists() ? docSnap.data() : null;
-
-    if (esJames) {
-      // SI ES JAMES: Abre la ventana de configuración
-      window.abrirModal(tipo); 
-    } else {
-      // SI ES ALUMNO: Intenta abrir el recurso
-      if (data) {
-        if (tipo === 'pdf' && data.pdfUrl) window.open(data.pdfUrl, '_blank');
-        else if (tipo === 'grabacion' && data.linkVideo) window.open(data.linkVideo, '_blank');
-        else if (tipo === 'banqueo') alert("Abriendo cuestionario...");
-        else alert("Este material aún no ha sido subido.");
-      } else {
-        alert("Material no disponible todavía.");
+  window.renderCursos = () => {
+    const cont = document.getElementById('main-content');
+    let html = `<h2>Mis Cursos Especializados</h2><div class="btn-grid">`;
+    for (let c in TEMARIOS) {
+      html += `<div class="card"><h3>${c}</h3>`;
+      for (let s in TEMARIOS[c]) {
+        html += `<button class="btn-main" onclick="verSemanas('${c}', '${s}')">Ver ${s}</button> `;
       }
+      html += `</div>`;
+    }
+    cont.innerHTML = html + `</div>`;
+  };
+
+  window.verSemanas = (c, s) => {
+    cursoAct = c; subAct = s;
+    const cont = document.getElementById('main-content');
+    let html = `<button onclick="renderCursos()" class="btn-action">← Volver</button><br><br><h2>${c} - ${s}</h2>`;
+    TEMARIOS[c][s].forEach((tema, i) => {
+      html += `
+        <div class="card" style="display:flex; justify-content:space-between; align-items:center;">
+          <div><b>S${i+1}</b>: ${tema}</div>
+          <div style="display:flex; gap:10px;">
+            <button class="btn-action btn-pdf" onclick="abrirOpcion('pdf', ${i+1})">📄 PDF</button>
+            <button class="btn-action btn-grab" onclick="abrirOpcion('grabacion', ${i+1})">🎬 Clase</button>
+            <button class="btn-action btn-ban" onclick="abrirOpcion('banqueo', ${i+1})">✍️ Banco</button>
+          </div>
+        </div>`;
+    });
+    cont.innerHTML = html;
+  };
+
+  window.abrirOpcion = (tipo, sem) => {
+    semAct = sem;
+    if(userActual.email === JAMES_EMAIL) {
+        document.getElementById('james-modal').style.display = 'flex';
+        document.getElementById('box-pdf').classList.add('hidden');
+        document.getElementById('box-grabacion').classList.add('hidden');
+        document.getElementById('box-banqueo').classList.add('hidden');
+        document.getElementById('box-' + tipo).classList.remove('hidden');
+    } else {
+        alert("Buscando material de la Semana " + sem + "...");
     }
   };
 
-  // FUNCIONES PARA QUE JAMES GUARDE DATOS
-  window.subirPDF = async () => {
-    const file = document.getElementById('input-file-pdf').files[0];
-    if (!file) return alert("Selecciona un PDF");
-    
-    const docId = `${cursoActual}_${subMateriaActual}_S${semanaSeleccionada}`;
-    const storageRef = ref(storage, `documentos/${docId}_${file.name}`);
-    
-    alert("Subiendo archivo... espera confirmación.");
-    await uploadBytes(storageRef, file);
-    const url = await getDownloadURL(storageRef);
-    
-    await setDoc(doc(db, "contenido", docId), { pdfUrl: url }, { merge: true });
-    alert("¡PDF guardado con éxito!");
-    window.cerrarModal();
-  };
-
-  window.guardarLink = async () => {
+  window.cerrarModal = () => { document.getElementById('james-modal').style.display = 'none'; };
+  
+  window.ejecutarGuardarLink = async () => {
     const link = document.getElementById('input-link-grabacion').value;
-    if (!link) return alert("Pega un link");
-    
-    const docId = `${cursoActual}_${subMateriaActual}_S${semanaSeleccionada}`;
-    await setDoc(doc(db, "contenido", docId), { linkVideo: link }, { merge: true });
-    
-    alert("¡Link de grabación guardado!");
-    window.cerrarModal();
+    alert("Guardando link: " + link);
+    cerrarModal();
   };
-</script>
-// --- LÓGICA DE BANQUEOS (PARTE 4) ---
-
-// 1. Función para guardar la pregunta que James escriba
-window.guardarPregunta = async () => {
-    const pregunta = document.getElementById('banco-pregunta').value;
-    const op1 = document.getElementById('banco-op1').value;
-    const op2 = document.getElementById('banco-op2').value;
-    const op3 = document.getElementById('banco-op3').value;
-    const op4 = document.getElementById('banco-op4').value;
-    const correcta = document.getElementById('banco-correcta').value;
-
-    if(!pregunta || !op1 || !correcta) return alert("Llena al menos la pregunta y la respuesta correcta");
-
-    const docId = `${cursoActual}_${subMateriaActual}_S${semanaSeleccionada}`;
-    const bancoRef = doc(db, "banqueos", docId);
-    
-    // Obtenemos lo que ya existe para no borrar preguntas anteriores
-    const snap = await getDoc(bancoRef);
-    let preguntasArray = snap.exists() ? snap.data().preguntas : [];
-    
-    preguntasArray.push({
-        q: pregunta,
-        options: [op1, op2, op3, op4],
-        ans: parseInt(correcta)
-    });
-
-    await setDoc(bancoRef, { preguntas: preguntasArray });
-    alert("¡Pregunta añadida al banco!");
-    
-    // Limpiar campos
-    document.getElementById('banco-pregunta').value = "";
-};
-
-// 2. Función para que el alumno vea el examen
-window.renderExamenAlumno = async (docId) => {
-    const contenedor = document.getElementById('main-content');
-    const snap = await getDoc(doc(db, "banqueos", docId));
-    
-    if(!snap.exists() || snap.data().preguntas.length === 0) {
-        return alert("James aún no ha creado preguntas para esta semana.");
-    }
-
-    const preguntas = snap.data().preguntas;
-    let html = `
-        <button onclick="verSemanas('${cursoActual}', '${subMateriaActual}')" style="background:#64748b; color:white; border:none; padding:10px; border-radius:8px; margin-bottom:20px; cursor:pointer;">← Salir del Examen</button>
-        <div class="card"><h2>Examen de Práctica: Semana ${semanaSeleccionada}</h2></div>`;
-
-    preguntas.forEach((p, i) => {
-        html += `
-            <div class="card">
-                <p><b>${i+1}. ${p.q}</b></p>
-                ${p.options.map((opt, idx) => opt ? `
-                    <label style="display:block; margin:10px 0; padding:10px; border:1px solid #e2e8f0; border-radius:8px; cursor:pointer;">
-                        <input type="radio" name="q${i}" value="${idx+1}"> ${opt}
-                    </label>
-                ` : '').join('')}
-            </div>`;
-    });
-
-    html += `<button onclick="calificarExamen('${docId}')" style="background:var(--success); color:white; width:100%; padding:20px; border-radius:15px; font-size:18px; border:none; cursor:pointer;">Finalizar y Calificar</button>`;
-    
-    contenedor.innerHTML = html;
-};
-<div id="box-banqueo" class="hidden">
-  <p><b>Creador de Preguntas</b></p>
-  <input type="text" id="banco-pregunta" placeholder="Escribe la pregunta aquí...">
-  <input type="text" id="banco-op1" placeholder="Opción 1">
-  <input type="text" id="banco-op2" placeholder="Opción 2">
-  <input type="text" id="banco-op3" placeholder="Opción 3">
-  <input type="text" id="banco-op4" placeholder="Opción 4">
-  <p>Número de la correcta (1-4):</p>
-  <input type="number" id="banco-correcta" min="1" max="4" style="width:50px; padding:5px;">
-  <button class="btn-action btn-banqueo" style="width:100%; margin-top:10px;" onclick="guardarPregunta()">+ Añadir Pregunta</button>
-</div>
-// --- LÓGICA DE CALIFICACIÓN Y MONITOREO (PARTE 5) ---
-
-window.calificarExamen = async (docId) => {
-    const snap = await getDoc(doc(db, "banqueos", docId));
-    const preguntas = snap.data().preguntas;
-    let correctas = 0;
-    const respuestasUsuario = [];
-
-    preguntas.forEach((p, i) => {
-        const seleccionado = document.querySelector(`input[name="q${i}"]:checked`);
-        const valor = seleccionado ? parseInt(seleccionado.value) : 0;
-        
-        if(valor === p.ans) correctas++;
-        
-        respuestasUsuario.push({
-            pregunta: p.q,
-            respuestaDada: valor,
-            esCorrecta: valor === p.ans
-        });
-    });
-
-    const nota = (correctas / preguntas.length) * 20; // Escala 0-20
-    alert(`Examen finalizado. Tu nota es: ${nota.toFixed(2)} / 20`);
-
-    // GUARDAR RESULTADO EN LA FICHA DEL ALUMNO
-    const resultadoRef = doc(db, "resultados", `${usuarioCargado.uid}_${docId}`);
-    await setDoc(resultadoRef, {
-        alumno: usuarioCargado.displayName,
-        correo: usuarioCargado.email,
-        curso: cursoActual,
-        semana: semanaSeleccionada,
-        nota: nota.toFixed(2),
-        fecha: new Date().toLocaleString()
-    });
-
-    verSemanas(cursoActual, subMateriaActual);
-};
-
-// FUNCIÓN PARA QUE JAMES VEA LA TABLA DE NOTAS (Solo visible para ti)
-window.verPanelAdmin = async () => {
-    if(usuarioCargado.email !== JAMES_EMAIL) return alert("Acceso denegado.");
-    
-    const contenedor = document.getElementById('main-content');
-    contenedor.innerHTML = "<h2>Panel de Control - Notas de Alumnos</h2><p>Cargando registros...</p>";
-    
-    // Aquí podrías usar getDocs para traer la colección "resultados"
-    // Por ahora, refrescamos la vista para James
-    alert("Accediendo a la base de datos de alumnos...");
-    // Lógica para listar resultados (Opcional según tu volumen de alumnos)
-};
-<div class="logo-box" onclick="mostrarCursos()">
-    <div class="logo-icon">N</div>
-    <h1 class="logo-text">NEUROVA <span>P53</span></h1>
-</div>
 </script>
 </body>
 </html>
