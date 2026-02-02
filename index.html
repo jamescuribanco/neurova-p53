@@ -2,271 +2,212 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Neurova P53 | Academia de Ciencias de la Salud</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- Estilos -->
-  <link rel="stylesheet" href="styles.css">
-
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <title>Neurova P53 - Academia</title>
+  <style>
+    body { margin:0; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:#f0f4f8; color:#333; }
+    header { background: linear-gradient(135deg, #1e3a8a, #2563eb); color: white; padding: 20px 50px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    header h1 { margin: 0; font-size: 24px; }
+    nav a { color: white; margin-left: 20px; text-decoration: none; font-weight: bold; cursor: pointer; }
+    .container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
+    .card { background: white; border-radius: 12px; padding: 25px; box-shadow: 0 6px 18px rgba(0,0,0,0.05); margin-bottom: 20px; }
+    .grid-cursos { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+    button { background: #2563eb; color: white; border: none; padding: 10px 18px; border-radius: 8px; cursor: pointer; font-size: 14px; transition: 0.3s; }
+    button:hover { background: #1d4ed8; }
+    .hidden { display: none; }
+    .pregunta-box { border-bottom: 1px solid #eee; padding: 15px 0; }
+    .btn-opcion { display: block; width: 100%; text-align: left; margin: 5px 0; background: #f8fafc; color: #333; border: 1px solid #e2e8f0; }
+    .btn-opcion:hover { background: #e2e8f0; }
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+    th { background: #1e3a8a; color: white; }
+  </style>
 </head>
-
 <body>
 
-<!-- ================= HEADER ================= -->
-<header class="header">
-  <div class="header-left">
-    <img src="logo.jpeg" alt="Neurova P53" class="logo">
+<header>
+  <div style="display:flex; align-items:center;">
+    <img src="logo.jpeg" alt="Logo" style="height:50px; margin-right:15px; border-radius:50%;">
     <h1>Neurova P53</h1>
   </div>
-
-  <nav class="nav">
-    <button onclick="show('inicio')">Inicio</button>
-    <button onclick="mostrarCursos()">Cursos</button>
-    <button id="adminBtn" class="hidden" onclick="show('admin')">Admin</button>
+  <nav>
+    <a onclick="showSection('inicio')">Inicio</a>
+    <a onclick="showSection('cursos-container')">Mis Cursos</a>
+    <a id="admin-nav" class="hidden" onclick="showSection('admin-panel')">Panel Admin</a>
   </nav>
 </header>
+<div id="inicio" class="container">
+  <div class="card" style="text-align:center;">
+    <h2>Bienvenido a tu plataforma de estudio</h2>
+    <p>Inicia sesión con tu cuenta institucional para acceder a los materiales y evaluaciones.</p>
+    <div id="auth-status">
+      <button id="login-btn">Iniciar Sesión con Google</button>
+    </div>
+    <div id="user-info" class="hidden">
+      <p id="welcome-msg"></p>
+      <button onclick="logout()" style="background:#dc2626;">Cerrar Sesión</button>
+    </div>
+  </div>
+</div>
 
-<!-- ================= LOGIN ================= -->
-<section id="login" class="card center">
-  <h2>Iniciar sesión</h2>
-  <p>Accede a tus cursos</p>
-  <button id="loginBtn">Ingresar con Google</button>
-  <button id="logoutBtn" class="hidden">Cerrar sesión</button>
-</section>
+<div id="cursos-container" class="container hidden">
+  <h2>Cursos Disponibles</h2>
+  <div id="cursos-list" class="grid-cursos"></div>
+</div>
 
-<!-- ================= INICIO ================= -->
-<section id="inicio" class="container">
-  <h2>Bienvenido a Neurova P53</h2>
-  <p>
-    Academia especializada en Morfofisiología, Anatomía,
-    Biología Celular y Bioquímica para ciencias de la salud.
-  </p>
-</section>
+<div id="subcurso-container" class="container hidden">
+  <h2 id="subcurso-title"></h2>
+  <div id="subcurso-list" class="grid-cursos"></div>
+  <button onclick="showSection('cursos-container')" style="margin-top:20px; background:#64748b;">← Volver a Cursos</button>
+</div>
 
-<!-- ================= CURSOS ================= -->
-<section id="cursos" class="container hidden">
-  <h2>Cursos disponibles</h2>
-  <div id="listaCursos" class="grid"></div>
-</section>
+<div id="semana-container" class="container hidden">
+  <h2 id="semana-title"></h2>
+  <div id="preguntas-list" class="card"></div>
+  <button onclick="showSection('subcurso-container')" style="background:#64748b;">← Volver</button>
+</div>
 
-<!-- ================= SEMANAS ================= -->
-<section id="semanas" class="container hidden">
-  <h2 id="tituloSemanas"></h2>
-  <div id="listaSemanas" class="grid"></div>
-  <button class="volver" onclick="mostrarCursos()">⬅ Volver a cursos</button>
-</section>
+<div id="admin-panel" class="container hidden">
+  <div class="card">
+    <h2>Resultados de Alumnos</h2>
+    <div id="admin-respuestas">Cargando datos...</div>
+  </div>
+</div>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js";
+  import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-auth.js";
+  import { getFirestore, doc, setDoc, getDocs, collection, arrayUnion } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-firestore.js";
 
-<!-- ================= ADMIN ================= -->
-<section id="admin" class="container hidden">
-  <h2>Panel de Administración</h2>
-  <p>Solo visible para el administrador.</p>
-  <ul>
-    <li>✔ Gestión de cursos</li>
-    <li>✔ Control de contenidos</li>
-    <li>✔ Plataforma privada</li>
-  </ul>
-</section>
+  const firebaseConfig = {
+    apiKey: "AIzaSyDAmEVU8J-uk2Yg6bL5n28xbP1771cHGME",
+    authDomain: "neurovap53-cdbcf.firebaseapp.com",
+    projectId: "neurovap53-cdbcf"
+  };
 
-<!-- ================= SCRIPTS ================= -->
-<script src="auth.js"></script>
-<script src="ui.js"></script>
-<script src="courses.js"></script>
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth();
+  const db = getFirestore(app);
+  const provider = new GoogleAuthProvider();
 
-</body>
-</html>
-/* ===== RESET ===== */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Segoe UI", Arial, sans-serif;
-}
+  // --- BASE DE DATOS DE CURSOS COMPLETA ---
+  const academiaData = {
+    "Morfofisiología 1": [
+      { titulo: "Semana 1: Introducción y Biocélula", preguntas: [{p: "¿Qué organelo produce ATP?", r: ["Mitocondria", "Ribosoma"], c: "Mitocondria"}] },
+      { titulo: "Semana 2: Tejido Epitelial", preguntas: [] },
+      { titulo: "Semana 3: Sistema Esquelético", preguntas: [] },
+      { titulo: "Semana 4: Sistema Muscular", preguntas: [] }
+    ],
+    "Morfofisiología 2": [
+      { titulo: "Semana 1: Sistema Cardiovascular", preguntas: [] },
+      { titulo: "Semana 2: Sistema Respiratorio", preguntas: [] },
+      { titulo: "Semana 3: Sistema Digestivo", preguntas: [] },
+      { titulo: "Semana 4: Sistema Urinario", preguntas: [] }
+    ],
+    "Anatomía General": [
+      { titulo: "Semana 1: Generalidades", preguntas: [] },
+      { titulo: "Semana 2: Cabeza y Cuello", preguntas: [] }
+    ]
+  };
 
-body {
-  background: linear-gradient(135deg, #fde2d8, #e6d9ff);
-  min-height: 100vh;
-  color: #333;
-}
+  // --- NAVEGACIÓN ---
+  window.showSection = (id) => {
+    ['inicio', 'cursos-container', 'subcurso-container', 'semana-container', 'admin-panel'].forEach(s => {
+      document.getElementById(s).classList.add('hidden');
+    });
+    document.getElementById(id).classList.remove('hidden');
+    if(id === 'admin-panel') cargarAdmin();
+  };
 
-/* ===== UTILIDADES ===== */
-.hidden {
-  display: none;
-}
+  window.abrirCurso = (nombreCurso) => {
+    window.cursoActual = nombreCurso;
+    const list = document.getElementById('subcurso-list');
+    document.getElementById('subcurso-title').innerText = nombreCurso;
+    list.innerHTML = "";
+    
+    academiaData[nombreCurso].forEach((semana, index) => {
+      const card = document.createElement('div');
+      card.className = "card";
+      card.innerHTML = `<h3>${semana.titulo}</h3><button onclick="abrirSemana(${index})">Entrar</button>`;
+      list.appendChild(card);
+    });
+    window.showSection('subcurso-container');
+  };
 
-.center {
-  text-align: center;
-}
+  window.abrirSemana = (index) => {
+    const semana = academiaData[window.cursoActual][index];
+    document.getElementById('semana-title').innerText = semana.titulo;
+    const container = document.getElementById('preguntas-list');
+    container.innerHTML = semana.preguntas.length > 0 ? "" : "<p>No hay preguntas esta semana.</p>";
+    
+    semana.preguntas.forEach(pre => {
+      const div = document.createElement('div');
+      div.className = "pregunta-box";
+      div.innerHTML = `<p><strong>${pre.p}</strong></p>`;
+      pre.r.forEach(op => {
+        div.innerHTML += `<button class="btn-opcion" onclick="enviarRespuesta('${pre.p}', '${op}', '${pre.c}')">${op}</button>`;
+      });
+      container.appendChild(div);
+    });
+    window.showSection('semana-container');
+  };
 
-button {
-  background: #b48cff;
-  color: white;
-  border: none;
-  padding: 10px 16px;
-  border-radius: 10px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: 0.3s;
-}
+  // --- FIREBASE OPS ---
+  window.enviarRespuesta = async (pregunta, respuesta, correcta) => {
+    const user = auth.currentUser;
+    const esCorrecta = (respuesta === correcta);
+    await setDoc(doc(db, "usuarios", user.uid), {
+      nombre: user.displayName,
+      email: user.email,
+      respuestas: arrayUnion({
+        curso: window.cursoActual,
+        pregunta,
+        respuesta,
+        correcta: esCorrecta ? "SÍ" : "NO",
+        fecha: new Date().toLocaleString()
+      })
+    }, { merge: true });
+    alert(esCorrecta ? "¡Correcto!" : "Incorrecto, pero guardamos tu respuesta.");
+  };
 
-button:hover {
-  background: #9c6bff;
-}
-
-/* ===== HEADER ===== */
-.header {
-  background: white;
-  padding: 12px 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-}
-
-.header-left {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.logo {
-  width: 45px;
-  height: 45px;
-  object-fit: contain;
-}
-
-.header h1 {
-  font-size: 1.4rem;
-  color: #7a4cff;
-}
-
-.nav button {
-  margin-left: 10px;
-}
-
-/* ===== SECCIONES ===== */
-.container {
-  padding: 30px 20px;
-}
-
-.container h2 {
-  margin-bottom: 15px;
-  color: #7a4cff;
-}
-
-/* ===== CARDS ===== */
-.card {
-  background: white;
-  padding: 20px;
-  border-radius: 15px;
-  box-shadow: 0 6px 15px rgba(0,0,0,0.1);
-  margin: 20px auto;
-  max-width: 400px;
-}
-
-.card h3, .card h4 {
-  color: #7a4cff;
-  margin-bottom: 8px;
-}
-
-.card p {
-  margin-bottom: 10px;
-}
-
-.card a {
-  display: inline-block;
-  margin-top: 6px;
-  color: #b48cff;
-  text-decoration: none;
-  font-weight: 600;
-}
-
-.card a:hover {
-  text-decoration: underline;
-}
-
-/* ===== GRID ===== */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-  gap: 20px;
-}
-
-/* ===== LOGIN ===== */
-#login {
-  margin-top: 40px;
-}
-
-/* ===== VOLVER ===== */
-.volver {
-  margin-top: 20px;
-  background: #ff9f7f;
-}
-
-.volver:hover {
-  background: #ff855f;
-}
-
-/* ===== RESPONSIVE ===== */
-@media (max-width: 600px) {
-  .header {
-    flex-direction: column;
-    gap: 10px;
+  async function cargarAdmin() {
+    const container = document.getElementById('admin-respuestas');
+    container.innerHTML = "Cargando...";
+    const snapshot = await getDocs(collection(db, "usuarios"));
+    container.innerHTML = "";
+    snapshot.forEach(doc => {
+      const u = doc.data();
+      let tabla = `<h4>${u.nombre}</h4><table><tr><th>Pregunta</th><th>Respuesta</th><th>Ok?</th></tr>`;
+      u.respuestas?.forEach(r => {
+        tabla += `<tr><td>${r.pregunta}</td><td>${r.respuesta}</td><td>${r.correcta}</td></tr>`;
+      });
+      container.innerHTML += tabla + `</table><br>`;
+    });
   }
 
-  .nav button {
-    margin: 5px 0;
-  }
-}
-// ================= FIREBASE CONFIG =================
-const firebaseConfig = {
-  apiKey: "PEGA_AQUI_TU_APIKEY",
-  authDomain: "TU_PROYECTO.firebaseapp.com",
-  projectId: "TU_PROYECTO"
-};
+  // --- AUTH ---
+  document.getElementById('login-btn').onclick = () => signInWithPopup(auth, provider);
+  window.logout = () => signOut(auth);
 
-// ================= INIT =================
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const provider = new firebase.auth.GoogleAuthProvider();
-
-// ================= ELEMENTOS =================
-const loginBtn = document.getElementById("loginBtn");
-const logoutBtn = document.getElementById("logoutBtn");
-const adminBtn = document.getElementById("adminBtn");
-
-// 👑 CORREO ADMIN (EL TUYO)
-const ADMIN_EMAIL = "tu_correo@gmail.com";
-
-// ================= LOGIN =================
-loginBtn.onclick = () => {
-  auth.signInWithPopup(provider)
-    .then(() => alert("Sesión iniciada"))
-    .catch(err => alert(err.message));
-};
-
-// ================= LOGOUT =================
-logoutBtn.onclick = () => {
-  auth.signOut();
-};
-
-// ================= ESTADO =================
-auth.onAuthStateChanged(user => {
-  if (user) {
-    loginBtn.classList.add("hidden");
-    logoutBtn.classList.remove("hidden");
-
-    if (user.email === ADMIN_EMAIL) {
-      adminBtn.classList.remove("hidden");
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      document.getElementById('auth-status').classList.add('hidden');
+      document.getElementById('user-info').classList.remove('hidden');
+      document.getElementById('welcome-msg').innerText = `Hola, ${user.displayName}`;
+      if(user.email === "jamesucribanco333@gmail.com") document.getElementById('admin-nav').classList.remove('hidden');
+      
+      const cList = document.getElementById('cursos-list');
+      cList.innerHTML = "";
+      Object.keys(academiaData).forEach(c => {
+        cList.innerHTML += `<div class="card"><h3>${c}</h3><button onclick="abrirCurso('${c}')">Ver Temario</button></div>`;
+      });
+      window.showSection('cursos-container');
+    } else {
+      document.getElementById('auth-status').classList.remove('hidden');
+      document.getElementById('user-info').classList.add('hidden');
+      document.getElementById('admin-nav').classList.add('hidden');
+      window.showSection('inicio');
     }
-  } else {
-    loginBtn.classList.remove("hidden");
-    logoutBtn.classList.add("hidden");
-    adminBtn.classList.add("hidden");
-  }
-});
+  });
 </script>
 </body>
 </html>
